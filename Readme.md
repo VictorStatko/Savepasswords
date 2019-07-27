@@ -2,6 +2,9 @@ _Requirements:_
 Docker-ce 18.09.7  
 OpenJDK 11
 
+_Before running:_
+mvn clean install (on parent project)
+
 _Running:_  
 **For simple run** use docker-compose.yml  
 sudo docker-compose -f docker-compose.yml up
