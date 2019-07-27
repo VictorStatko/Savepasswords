@@ -1,6 +1,5 @@
 _Requirements:_  
 Docker-ce 18.09.7  
-OpenJDK 11
 
 _Before running:_
 1) rename file .env.example to .env 
