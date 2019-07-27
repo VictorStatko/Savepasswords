@@ -1,0 +1,10 @@
+version: "3.6"
+services:
+
+  configuration-service:
+    ports:
+      - "81:81"
+    build:
+      context: ./configurationService
+      dockerfile: src/main/docker/Dockerfile
+    network_mode: host

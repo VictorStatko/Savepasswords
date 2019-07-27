@@ -1,0 +1,15 @@
+#The only difference between docker-compose.yaml and this debug file is moving
+#from Dockerfile "ENTRYPOINT"  into "command" of the compose file
+#don't forget in compose run config set=true "--build/force build images"
+
+version: "3.6"
+services:
+
+  configuration-service:
+    ports:
+      - "81:81"
+    build:
+      context: ./configurationService
+      dockerfile: src/main/docker/Dockerfile_debug
+    network_mode: host
+    command: java -jar /configuration-service.jar
