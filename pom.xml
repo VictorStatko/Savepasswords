@@ -8,11 +8,11 @@
     <artifactId>passwordManager</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1</version>
-    <modules>
-        <module>configurationService</module>
-    </modules>
+
     <properties>
         <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
+        <junit.jupiter.version>5.5.1</junit.jupiter.version>
+        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
     </properties>
 
 
@@ -31,6 +31,28 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>test</scope>
+
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
