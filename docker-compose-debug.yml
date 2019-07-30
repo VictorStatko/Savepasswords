@@ -10,11 +10,11 @@ services:
       - "88:88"
     build:
       context: ./configurationService
-      dockerfile: src/main/docker/Dockerfile_debug
+      dockerfile: docker/Dockerfile_debug
     network_mode: host
     environment:
       - SPRING_CLOUD_CONFIG_GIT_URL=${SPRING_CLOUD_CONFIG_GIT_URL}
       - SPRING_CLOUD_CONFIG_GIT_USERNAME=${SPRING_CLOUD_CONFIG_GIT_USERNAME}
       - SPRING_CLOUD_CONFIG_GIT_PASSWORD=${SPRING_CLOUD_CONFIG_GIT_PASSWORD}
       - SPRING_CLOUD_CONFIG_ENCRYPTION_KEY=${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY}
-    command: java -jar /configuration-service.jar
+    command: java -jar /configuration-service/configuration-service.jar

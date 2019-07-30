@@ -4,7 +4,6 @@ Docker-ce 18.09.7
 _Before running:_
 1) clone content of file .env.example to new file .env 
 2) change environment variables at .env file (if needed)
-3) mvn clean install (on parent project)
 
 _Running:_  
 **For simple run** use docker-compose.yml  
