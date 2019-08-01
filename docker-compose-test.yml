@@ -7,10 +7,11 @@ services:
     build:
       context: ./configurationService
       dockerfile: docker/Dockerfile
-      target: debug
+      target: builder
     network_mode: host
     environment:
       - SPRING_CLOUD_CONFIG_GIT_URL=${SPRING_CLOUD_CONFIG_GIT_URL}
       - SPRING_CLOUD_CONFIG_GIT_USERNAME=${SPRING_CLOUD_CONFIG_GIT_USERNAME}
       - SPRING_CLOUD_CONFIG_GIT_PASSWORD=${SPRING_CLOUD_CONFIG_GIT_PASSWORD}
       - SPRING_CLOUD_CONFIG_ENCRYPTION_KEY=${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY}
+    command: mvn test
