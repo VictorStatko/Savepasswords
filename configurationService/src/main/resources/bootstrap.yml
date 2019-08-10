@@ -15,3 +15,10 @@ server:
 debug: true
 encrypt:
   key: ${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY:aqj12Kuu432Iodfkitdne7YjsleuYCWQueh48jfuO9j4U2dw12o}
+
+eureka:
+  client:
+    region: default
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: ${SPRING_CLOUD_CONFIG_EUREKA_URL:http://localhost:8761/eureka/}

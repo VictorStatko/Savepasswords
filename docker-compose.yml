@@ -1,16 +1,36 @@
-version: "3.6"
+version: "2.4"
 services:
 
   configuration-service:
     ports:
-      - "88:88"
+      - "8088:8088"
     build:
       context: ./configurationService
       dockerfile: docker/Dockerfile
       target: run
     network_mode: host
+    healthcheck:
+      test: curl http://localhost:8088 || echo 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
     environment:
       - SPRING_CLOUD_CONFIG_GIT_URL=${SPRING_CLOUD_CONFIG_GIT_URL}
       - SPRING_CLOUD_CONFIG_GIT_USERNAME=${SPRING_CLOUD_CONFIG_GIT_USERNAME}
       - SPRING_CLOUD_CONFIG_GIT_PASSWORD=${SPRING_CLOUD_CONFIG_GIT_PASSWORD}
       - SPRING_CLOUD_CONFIG_ENCRYPTION_KEY=${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY}
+      - SPRING_CLOUD_CONFIG_EUREKA_URL=${SPRING_CLOUD_CONFIG_EUREKA_URL}
+
+  discovery-service:
+    ports:
+      - "8761:8761"
+    build:
+      context: ./discoveryService
+      dockerfile: docker/Dockerfile
+      target: run
+    depends_on:
+      configuration-service:
+        condition: service_healthy
+    network_mode: host
+    environment:
+      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}

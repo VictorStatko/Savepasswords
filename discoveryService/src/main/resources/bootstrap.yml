@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    config:
+      name: discovery
+      uri: ${SPRING_CLOUD_CONFIG_URL:http://localhost:8088}

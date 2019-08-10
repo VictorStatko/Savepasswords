@@ -1,7 +1,15 @@
-version: "3.6"
+version: "2.4"
 services:
 
   configuration-service:
     build:
       target: builder
+    command: mvn test
+
+  discovery-service:
+    build:
+      target: builder
+    depends_on:
+      configuration-service:
+        condition: service_started
     command: mvn test

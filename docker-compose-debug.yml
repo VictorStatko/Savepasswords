@@ -1,6 +1,10 @@
-version: "3.6"
+version: "2.4"
 services:
 
   configuration-service:
+    build:
+      target: debug
+
+  discovery-service:
     build:
       target: debug
