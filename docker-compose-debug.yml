@@ -2,15 +2,5 @@ version: "3.6"
 services:
 
   configuration-service:
-    ports:
-      - "88:88"
     build:
-      context: ./configurationService
-      dockerfile: docker/Dockerfile
       target: debug
-    network_mode: host
-    environment:
-      - SPRING_CLOUD_CONFIG_GIT_URL=${SPRING_CLOUD_CONFIG_GIT_URL}
-      - SPRING_CLOUD_CONFIG_GIT_USERNAME=${SPRING_CLOUD_CONFIG_GIT_USERNAME}
-      - SPRING_CLOUD_CONFIG_GIT_PASSWORD=${SPRING_CLOUD_CONFIG_GIT_PASSWORD}
-      - SPRING_CLOUD_CONFIG_ENCRYPTION_KEY=${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY}
