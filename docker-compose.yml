@@ -34,3 +34,17 @@ services:
     network_mode: host
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+
+  gateway-service:
+    ports:
+      - "8887:8887"
+    build:
+      context: ./gatewayService
+      dockerfile: docker/Dockerfile
+      target: run
+    depends_on:
+      configuration-service:
+        condition: service_healthy
+    network_mode: host
+    environment:
+      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
