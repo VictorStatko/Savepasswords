@@ -17,3 +17,7 @@ sudo docker-compose -f docker-compose.yml -f docker-compose-test.yml up --build
 sudo docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build  
 (Intelij debug https://www.jetbrains.com/help/idea/run-and-debug-a-spring-boot-application-using-docker-compose.html)  
 don't forget in compose debug config set=true "--build/force build images
+
+**Possible problems for windows**  
+can't connect to localhost:port  
+Please try to use Windows network interface for docker ip (for example, http://10.0.75.2:port)
