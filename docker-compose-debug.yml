@@ -16,3 +16,7 @@ services:
   authorization-service:
     build:
       target: debug
+
+  user-service:
+    build:
+      target: debug

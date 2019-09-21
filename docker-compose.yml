@@ -62,3 +62,17 @@ services:
     network_mode: host
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+
+  user-service:
+    ports:
+      - "8889:8889"
+    build:
+      context: ./userService
+      dockerfile: docker/Dockerfile
+      target: run
+    depends_on:
+      configuration-service:
+        condition: service_healthy
+    network_mode: host
+    environment:
+      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}

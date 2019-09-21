@@ -29,3 +29,11 @@ services:
       configuration-service:
         condition: service_started
     command: mvn test
+
+  user-service:
+    build:
+      target: builder
+    depends_on:
+      configuration-service:
+        condition: service_started
+    command: mvn test
