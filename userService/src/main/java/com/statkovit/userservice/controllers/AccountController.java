@@ -1,14 +1,14 @@
 package com.statkovit.userservice.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.statkovit.userservice.constants.ServerConstants.SERVER_ENDPOINT;
 
 @RestController
-public class RegistrationController {
+public class AccountController {
 
-    @GetMapping(SERVER_ENDPOINT + "/test")
+    @PostMapping(SERVER_ENDPOINT + "/sign-up")
     public String index() {
         return "Greetings from Registration controller!";
     }
