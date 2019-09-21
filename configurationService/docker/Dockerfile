@@ -1,4 +1,4 @@
-FROM maven:3.6.1-jdk-11-slim AS builder
+FROM maven:3.6.2-jdk-12 AS builder
 RUN mkdir -p /build
 WORKDIR /build
 COPY pom.xml /build
@@ -6,7 +6,7 @@ RUN mvn -B dependency:resolve dependency:resolve-plugins
 COPY src /build/src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:11 as run
+FROM openjdk:12 as run
 LABEL maintainer="statkovit@gmail.com"
 EXPOSE 8088
 ENV APP_HOME /configuration-service
@@ -17,7 +17,7 @@ WORKDIR $APP_HOME
 COPY --from=builder /build/target/*.jar configuration-service.jar
 ENTRYPOINT ["java", "-jar", "/configuration-service/configuration-service.jar"]
 
-FROM openjdk:11 as debug
+FROM openjdk:12 as debug
 LABEL maintainer="statkovit@gmail.com"
 EXPOSE 8088
 ENV APP_HOME /configuration-service

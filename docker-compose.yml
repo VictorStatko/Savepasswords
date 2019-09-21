@@ -48,3 +48,17 @@ services:
     network_mode: host
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+
+  authorization-service:
+    ports:
+      - "8888:8888"
+    build:
+      context: ./authorizationService
+      dockerfile: docker/Dockerfile
+      target: run
+    depends_on:
+      configuration-service:
+        condition: service_healthy
+    network_mode: host
+    environment:
+      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}

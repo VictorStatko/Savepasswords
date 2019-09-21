@@ -12,3 +12,7 @@ services:
   gateway-service:
     build:
       target: debug
+
+  authorization-service:
+    build:
+      target: debug
