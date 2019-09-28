@@ -1,8 +1,7 @@
-FROM maven:3.6.2-jdk-12 AS builder
+FROM dependencies AS builder
 RUN mkdir -p /build
 WORKDIR /build
 COPY pom.xml /build
-RUN mvn -B dependency:resolve dependency:resolve-plugins
 COPY src /build/src
 RUN mvn clean package -DskipTests
 
