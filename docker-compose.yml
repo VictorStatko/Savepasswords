@@ -18,7 +18,7 @@ services:
       - SPRING_CLOUD_CONFIG_GIT_USERNAME=${SPRING_CLOUD_CONFIG_GIT_USERNAME}
       - SPRING_CLOUD_CONFIG_GIT_PASSWORD=${SPRING_CLOUD_CONFIG_GIT_PASSWORD}
       - SPRING_CLOUD_CONFIG_ENCRYPTION_KEY=${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY}
-      - SPRING_CLOUD_CONFIG_EUREKA_URL=${SPRING_CLOUD_CONFIG_EUREKA_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
 
   discovery-service:
     ports:
@@ -32,6 +32,7 @@ services:
         condition: service_healthy
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
 
   gateway-service:
     ports:
@@ -45,6 +46,7 @@ services:
         condition: service_healthy
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
 
   authorization-service:
     ports:
@@ -58,6 +60,7 @@ services:
         condition: service_healthy
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
 
   user-postgres:
     ports:
@@ -88,3 +91,4 @@ services:
         condition: service_healthy
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
