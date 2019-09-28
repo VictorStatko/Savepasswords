@@ -18,6 +18,7 @@
         <java.version>12</java.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
         <postgres-driver.version>42.2.8</postgres-driver.version>
+        <liquibase.version>3.8.0</liquibase.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -75,5 +83,18 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>mymavenrepo.com</id>
+            <url>https://mymavenrepo.com/repo/K7rfuoRXkUdX90xWWUHn/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
