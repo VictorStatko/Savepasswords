@@ -6,7 +6,7 @@
 
     <groupId>com.statkolibraries</groupId>
     <artifactId>exceptions</artifactId>
-    <version>0.0.2.2</version>
+    <version>0.0.0.beta1</version>
 
     <properties>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
@@ -30,6 +30,13 @@
             <artifactId>spring-web</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.persistence</groupId>

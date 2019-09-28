@@ -13,10 +13,13 @@ public class LocalizedExceptionHandler {
 
     public static ResponseEntity<ErrorDTO> processLocalizedException(LocalizedException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
+
         if (ex.getException() instanceof EntityNotFoundException) {
             status = HttpStatus.NOT_FOUND;
         }
 
-        return ResponseEntity.status(status).body(new ErrorDTO(ex.getMessageKey(), ex.getMessage()));
+        return ResponseEntity.status(status).body(
+                new ErrorDTO(ex.getMessageKey(), ex.getMessage(), status.value())
+        );
     }
 }
