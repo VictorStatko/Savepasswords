@@ -1,5 +1,7 @@
 package com.statkovit.userservice.domain.base;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -7,6 +9,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class BaseIndexedEntity extends BaseAuditingEntity {
 
     @Id
@@ -23,22 +27,6 @@ public abstract class BaseIndexedEntity extends BaseAuditingEntity {
         if (uuid == null) {
             uuid = UUID.randomUUID();
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 
     @Override

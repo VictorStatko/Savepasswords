@@ -5,7 +5,7 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet author="Victor Statko" id="1" runAlways="false">
-        <createTable tableName="users">
+        <createTable tableName="accounts">
             <column name="id" type="BIGSERIAL">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -28,7 +28,7 @@
     </changeSet>
 
     <changeSet author="Victor Statko" id="2" runAlways="false">
-        <createSequence sequenceName="user_id_seq" startValue="1"/>
+        <createSequence sequenceName="account_id_seq" startValue="1"/>
     </changeSet>
 
 

@@ -1,5 +1,7 @@
 package com.statkovit.userservice.domain.base;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,6 +14,8 @@ import java.time.Instant;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public abstract class BaseAuditingEntity implements Serializable {
 
     @CreatedDate
@@ -21,20 +25,4 @@ public abstract class BaseAuditingEntity implements Serializable {
     @LastModifiedDate
     @Column(name = "updated_date", nullable = false)
     private Instant updateDate;
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Instant updateDate) {
-        this.updateDate = updateDate;
-    }
 }
