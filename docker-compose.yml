@@ -9,7 +9,7 @@ services:
       dockerfile: docker/Dockerfile
       target: run
     healthcheck:
-      test: curl http://localhost:8088 || echo 1
+      test: curl http://configuration-service:8088 || echo 1
       interval: 10s
       timeout: 10s
       retries: 5
@@ -68,7 +68,7 @@ services:
     image: postgres:11.5
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${USER_SERVICE_POSTGRES_USER} -d ${USER_SERVICE_POSTGRES_DB} -p 5432"]
+      test: ["CMD-SHELL", "pg_isready -U ${USER_SERVICE_POSTGRES_USER} -d ${USER_SERVICE_POSTGRES_DB} -h user-postgres -p 5432"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -92,3 +92,6 @@ services:
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
+      - POSTGRES_CONNECTION_URL=${USER_SERVICE_POSTGRES_CONNECTION_URL}
+      - POSTGRES_USER=${USER_SERVICE_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${USER_SERVICE_POSTGRES_PASSWORD}
