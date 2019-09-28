@@ -25,7 +25,7 @@ public class AccountServiceImpl implements AccountService {
                     ServerConstants.ERROR_KEY
             );
         }
-
+        //TODO encode password
         accountRepository.save(newAccount);
     }
 }
