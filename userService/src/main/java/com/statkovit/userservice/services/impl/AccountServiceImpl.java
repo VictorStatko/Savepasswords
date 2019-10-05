@@ -8,7 +8,9 @@ import com.statkovit.userservice.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +29,30 @@ public class AccountServiceImpl implements AccountService {
         }
         //TODO encode password
         accountRepository.save(newAccount);
+    }
+
+    @Override
+    public Account getByEmail(String email) {
+        return accountRepository.getByEmail(email).orElseThrow(() ->
+                new LocalizedException(
+                        new EntityNotFoundException("Account with email = " + email + " has not been found."),
+                        //TODO replace for real key
+                        "data"
+                )
+        );
+    }
+
+    @Override
+    public Account requestLogin(String email, String password) {
+        Account account = getByEmail(email);
+        //TODO encrypted password
+        if (!Objects.equals(account.getPassword(), password)) {
+            throw new LocalizedException(
+                    "Password for account with email " + email + " is invalid.",
+                    //TODO replace for real key
+                    "data"
+            );
+        }
+        return account;
     }
 }

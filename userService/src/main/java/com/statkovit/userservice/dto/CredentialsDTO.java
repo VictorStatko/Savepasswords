@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class SignUpDTO {
+public class CredentialsDTO {
 
     @ExtendedEmail
     @NotBlank

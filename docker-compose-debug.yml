@@ -2,21 +2,36 @@ version: "2.4"
 services:
 
   configuration-service:
+    ports:
+      - "8088:8088"
+      - "5005:5005"
     build:
       target: debug
 
   discovery-service:
+    ports:
+      - "8761:8761"
+      - "5006:5006"
     build:
       target: debug
 
   gateway-service:
+    ports:
+      - "8887:8887"
+      - "5007:5007"
     build:
       target: debug
 
   authorization-service:
+    ports:
+      - "8888:8888"
+      - "5008:5008"
     build:
       target: debug
 
   user-service:
+    ports:
+      - "8889:8889"
+      - "5009:5009"
     build:
       target: debug
