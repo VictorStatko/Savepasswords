@@ -13,7 +13,8 @@ public class RequestLoggingConfiguration {
         loggingFilter.setIncludeClientInfo(true);
         loggingFilter.setIncludeQueryString(true);
         loggingFilter.setIncludePayload(true);
-        loggingFilter.setIncludeHeaders(false);
+        loggingFilter.setIncludeHeaders(true);
+        loggingFilter.setMaxPayloadLength(1000);
         return loggingFilter;
     }
 }

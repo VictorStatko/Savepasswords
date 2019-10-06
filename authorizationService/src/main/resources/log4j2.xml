@@ -35,6 +35,7 @@
         </Root>
         <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile" />
         </Logger>
     </Loggers>
 

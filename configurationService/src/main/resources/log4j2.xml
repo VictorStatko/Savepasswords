@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="basePath">/user-service/log</Property>
+        <Property name="basePath">/configuration-service/log</Property>
     </Properties>
 
     <Appenders>
