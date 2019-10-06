@@ -5,7 +5,7 @@ public class DataErrorDTO {
     private final Object descriptor;
     private final String message;
 
-    DataErrorDTO(Object descriptor, String message) {
+    public DataErrorDTO(Object descriptor, String message) {
         this.descriptor = descriptor;
         this.message = message;
     }

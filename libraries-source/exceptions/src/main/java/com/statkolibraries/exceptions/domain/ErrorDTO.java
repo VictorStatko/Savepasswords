@@ -1,20 +1,13 @@
 package com.statkolibraries.exceptions.domain;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ErrorDTO {
-    private final String message;
-    private final String description;
-    private final int status;
-    private final Instant timestamp = Instant.now();
+public class ErrorDTO extends BaseErrorDTO {
     private List<DataErrorDTO> dataErrors;
 
     public ErrorDTO(String message, String description, int status) {
-        this.message = message;
-        this.description = description;
-        this.status = status;
+        super(message, description, status);
     }
 
     public ErrorDTO addDataError(Object descriptor, String message) {
@@ -27,23 +20,16 @@ public class ErrorDTO {
         return this;
     }
 
+    public ErrorDTO withDataErrors(List<DataErrorDTO> dataErrorList) {
+        if (dataErrors == null) {
+            dataErrors = new ArrayList<>();
+        }
+        dataErrors.addAll(dataErrorList);
+
+        return this;
+    }
+
     public List<DataErrorDTO> getDataErrors() {
         return dataErrors;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
     }
 }

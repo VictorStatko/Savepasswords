@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class AccountInternalController {
@@ -19,7 +21,7 @@ public class AccountInternalController {
     private final AccountRestService accountRestService;
 
     @PostMapping(CONTROLLER_ENDPOINT + "/request-login")
-    public ResponseEntity requestLogin(@RequestBody CredentialsDTO credentialsDTO) {
+    public ResponseEntity requestLogin(@Valid @RequestBody CredentialsDTO credentialsDTO) {
         AccountLoginDTO accountLoginDTO = accountRestService.requestLogin(credentialsDTO);
 
         return ResponseEntity.ok(accountLoginDTO);

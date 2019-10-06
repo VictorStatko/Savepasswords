@@ -1,7 +1,9 @@
 package com.statkovit.authorizationservice.exceptions;
 
 import com.statkolibraries.exceptions.domain.ErrorDTO;
+import com.statkolibraries.exceptions.exceptions.FeignClientException;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
+import com.statkolibraries.exceptions.handlers.FeignExceptionHandler;
 import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
 import com.statkolibraries.exceptions.handlers.LocalizedExceptionHandler;
 import com.statkolibraries.exceptions.handlers.MethodArgumentNotValidExceptionHandler;
@@ -19,6 +21,12 @@ public class ExceptionTranslator {
     public ResponseEntity<ErrorDTO> processLocalizedException(LocalizedException ex) {
         log.error(ex);
         return LocalizedExceptionHandler.processLocalizedException(ex);
+    }
+
+    @ExceptionHandler(FeignClientException.class)
+    public ResponseEntity<ErrorDTO> processFeignClientException(FeignClientException ex) {
+        log.error(ex);
+        return FeignExceptionHandler.processFeignClientException(ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
