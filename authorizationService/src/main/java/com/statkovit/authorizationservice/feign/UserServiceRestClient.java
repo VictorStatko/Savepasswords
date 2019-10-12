@@ -13,9 +13,11 @@ import java.util.UUID;
 @FeignClient(name = "user-service")
 public interface UserServiceRestClient {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/internal-api/v1/accounts/request-login")
+    String ACCOUNTS_URL = "/internal-api/v1/accounts/";
+
+    @RequestMapping(method = RequestMethod.POST, value = ACCOUNTS_URL + "request-login")
     AccountDTO requestLogin(@RequestBody SignInDTO body);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/internal-api/v1/accounts/{uuid}")
+    @RequestMapping(method = RequestMethod.GET, value = ACCOUNTS_URL + "{uuid}")
     AccountDTO getAccountData(@PathVariable("uuid") UUID uuid);
 }

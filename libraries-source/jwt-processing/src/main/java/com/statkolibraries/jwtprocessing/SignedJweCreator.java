@@ -6,9 +6,10 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.statkolibraries.jwtprocessing.exception.TokenEncryptionException;
+import com.statkolibraries.jwtprocessing.exception.TokenSigningException;
 import com.statkolibraries.jwtprocessing.payload.TokenData;
 
-import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
@@ -29,60 +30,68 @@ public final class SignedJweCreator {
         this.expirationInMs = expirationInMs;
     }
 
-    public String generateAccessToken(TokenData tokenData) throws ParseException, JOSEException {
+    public String generateAccessToken(TokenData tokenData) throws TokenSigningException, TokenEncryptionException {
         SignedJWT signedJWT = createAndSignJWT(tokenData.getUuid(), tokenData);
 
-        JWEObject jweObject = createAndEncryptJWE(signedJWT);
+        JWEObject jweObject = EncryptSignedJWTToJWE(signedJWT);
 
         return jweObject.serialize();
     }
 
-    public String generateRefreshToken(UUID userUuid) throws ParseException, JOSEException {
+    public String generateRefreshToken(UUID userUuid) throws TokenSigningException, TokenEncryptionException {
         SignedJWT signedJWT = createAndSignJWT(userUuid, null);
 
-        JWEObject jweObject = createAndEncryptJWE(signedJWT);
+        JWEObject jweObject = EncryptSignedJWTToJWE(signedJWT);
 
         return jweObject.serialize();
     }
 
-    private SignedJWT createAndSignJWT(UUID userUuid, TokenData tokenData) throws JOSEException, ParseException {
-        RSAKey senderPrivateRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(senderPrivateKey)));
+    private SignedJWT createAndSignJWT(UUID userUuid, TokenData tokenData) {
+        try {
+            RSAKey senderPrivateRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(senderPrivateKey)));
 
-        JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).build();
+            JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).build();
 
-        JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet
-                .Builder()
-                .subject(userUuid.toString())
-                .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + expirationInMs));
+            JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet
+                    .Builder()
+                    .subject(userUuid.toString())
+                    .issueTime(new Date())
+                    .expirationTime(new Date(System.currentTimeMillis() + expirationInMs));
 
-        if (Objects.nonNull(tokenData)) {
-            claimsSetBuilder = claimsSetBuilder.claim(USER_DATA_CLAIM, tokenData.toJSON());
+            if (Objects.nonNull(tokenData)) {
+                claimsSetBuilder = claimsSetBuilder.claim(USER_DATA_CLAIM, tokenData.toJSON());
+            }
+
+            JWTClaimsSet claimsSet = claimsSetBuilder.build();
+
+            SignedJWT signedJWT = new SignedJWT(jwsHeader, claimsSet);
+
+            signedJWT.sign(new RSASSASigner(senderPrivateRSAKey));
+
+            return signedJWT;
+        } catch (Exception e) {
+            throw new TokenSigningException(e.getMessage(), e.getCause());
         }
-
-        JWTClaimsSet claimsSet = claimsSetBuilder.build();
-
-        SignedJWT signedJWT = new SignedJWT(jwsHeader, claimsSet);
-
-        signedJWT.sign(new RSASSASigner(senderPrivateRSAKey));
-
-        return signedJWT;
     }
 
-    private JWEObject createAndEncryptJWE(SignedJWT payload) throws JOSEException, ParseException {
-        RSAKey recipientPublicRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(recipientPublicKey)));
+    private JWEObject EncryptSignedJWTToJWE(SignedJWT payload) {
+        try {
+            RSAKey recipientPublicRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(recipientPublicKey)));
 
-        JWEHeader jweHeader = new JWEHeader
-                .Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM)
-                .contentType(JWE_CONTENT_TYPE)
-                .build();
+            JWEHeader jweHeader = new JWEHeader
+                    .Builder(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM)
+                    .contentType(JWE_CONTENT_TYPE)
+                    .build();
 
-        Payload jwePayload = new Payload(payload);
+            Payload jwePayload = new Payload(payload);
 
-        JWEObject jweObject = new JWEObject(jweHeader, jwePayload);
+            JWEObject jweObject = new JWEObject(jweHeader, jwePayload);
 
-        jweObject.encrypt(new RSAEncrypter(recipientPublicRSAKey));
+            jweObject.encrypt(new RSAEncrypter(recipientPublicRSAKey));
 
-        return jweObject;
+            return jweObject;
+        } catch (Exception e) {
+            throw new TokenEncryptionException(e.getMessage(), e.getCause());
+        }
     }
 }
