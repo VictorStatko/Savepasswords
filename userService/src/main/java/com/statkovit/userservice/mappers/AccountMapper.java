@@ -1,7 +1,7 @@
 package com.statkovit.userservice.mappers;
 
 import com.statkovit.userservice.domain.Account;
-import com.statkovit.userservice.dto.AccountLoginDTO;
+import com.statkovit.userservice.dto.AccountDataDTO;
 import com.statkovit.userservice.dto.CredentialsDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,12 +19,12 @@ public class AccountMapper {
         return modelMapper.map(credentialsDTO, Account.class);
     }
 
-    public AccountLoginDTO toAccountLoginDto(Account account) {
-        AccountLoginDTO accountLoginDTO = modelMapper.map(account, AccountLoginDTO.class);
+    public AccountDataDTO toAccountDataDto(Account account) {
+        AccountDataDTO accountDataDTO = modelMapper.map(account, AccountDataDTO.class);
         //TODO replace to real
-        accountLoginDTO.setPermissions(Collections.singletonList("first permission"));
-        accountLoginDTO.setRoles(Collections.singletonList("first role"));
-        return accountLoginDTO;
+        accountDataDTO.setPermissions(Collections.singletonList("first permission"));
+        accountDataDTO.setRoles(Collections.singletonList("first role"));
+        return accountDataDTO;
     }
 
 }

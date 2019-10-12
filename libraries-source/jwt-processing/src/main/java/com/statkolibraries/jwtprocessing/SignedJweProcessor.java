@@ -12,6 +12,7 @@ import net.minidev.json.parser.JSONParser;
 
 import java.text.ParseException;
 import java.util.Base64;
+import java.util.UUID;
 
 public final class SignedJweProcessor {
 
@@ -23,7 +24,27 @@ public final class SignedJweProcessor {
         this.recipientPrivateKey = recipientPrivateKey;
     }
 
-    public TokenData processJWE(String jwe) throws ParseException, JOSEException, net.minidev.json.parser.ParseException {
+    public TokenData processAccessJWE(String jwe) throws ParseException, JOSEException, net.minidev.json.parser.ParseException {
+
+        SignedJWT signedJWT = processJWE(jwe);
+
+        JSONParser jsonParser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
+
+        JSONObject json = (JSONObject) jsonParser.parse(
+                signedJWT.getJWTClaimsSet().getClaim(SignedJweCreator.USER_DATA_CLAIM).toString()
+        );
+
+        return TokenData.fromJson(json);
+    }
+
+    public UUID processRefreshJWE(String jwe) throws ParseException, JOSEException {
+
+        SignedJWT signedJWT = processJWE(jwe);
+
+        return UUID.fromString(signedJWT.getJWTClaimsSet().getSubject());
+    }
+
+    private SignedJWT processJWE(String jwe) throws ParseException, JOSEException {
         RSAKey recipientPrivateRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(recipientPrivateKey)));
         RSAKey senderPublicRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(senderPublicKey)));
 
@@ -35,13 +56,6 @@ public final class SignedJweProcessor {
 
         signedJWT.verify(new RSASSAVerifier(senderPublicRSAKey));
 
-        JSONParser jsonParser = new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE);
-
-        JSONObject json = (JSONObject) jsonParser.parse(
-                signedJWT.getJWTClaimsSet().getClaim(SignedJweCreator.USER_DATA_CLAIM).toString()
-        );
-
-        return TokenData.fromJson(json);
-
+        return signedJWT;
     }
 }

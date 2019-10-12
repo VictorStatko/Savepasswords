@@ -17,6 +17,12 @@ public class JweProperties {
 
     private String recipientPublicKey;
 
+    private String senderPublicKey;
+
+    private String recipientPrivateKey;
+
     private Long accessTokenExpiration;
+
+    private Long refreshTokenExpiration;
 
 }

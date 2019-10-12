@@ -1,12 +1,15 @@
 package com.statkovit.userservice.rest;
 
-import com.statkovit.userservice.dto.AccountLoginDTO;
+import com.statkovit.userservice.dto.AccountDataDTO;
 import com.statkovit.userservice.dto.CredentialsDTO;
+
+import java.util.UUID;
 
 public interface AccountRestService {
 
     void signUp(CredentialsDTO credentialsDTO);
 
-    AccountLoginDTO requestLogin(CredentialsDTO requestLoginDTO);
+    AccountDataDTO requestLogin(CredentialsDTO requestLoginDTO);
 
+    AccountDataDTO getAccountData(UUID accountUuid);
 }

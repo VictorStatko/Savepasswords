@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountLoginDTO {
+public class AccountDataDTO {
 
     private Long id;
 

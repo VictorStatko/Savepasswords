@@ -11,6 +11,8 @@ import com.statkolibraries.jwtprocessing.payload.TokenData;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 public final class SignedJweCreator {
 
@@ -27,26 +29,38 @@ public final class SignedJweCreator {
         this.expirationInMs = expirationInMs;
     }
 
-    public String generate(TokenData tokenData) throws ParseException, JOSEException {
-        SignedJWT signedJWT = createAndSignJWT(tokenData);
+    public String generateAccessToken(TokenData tokenData) throws ParseException, JOSEException {
+        SignedJWT signedJWT = createAndSignJWT(tokenData.getUuid(), tokenData);
 
         JWEObject jweObject = createAndEncryptJWE(signedJWT);
 
         return jweObject.serialize();
     }
 
-    private SignedJWT createAndSignJWT(TokenData tokenData) throws JOSEException, ParseException {
+    public String generateRefreshToken(UUID userUuid) throws ParseException, JOSEException {
+        SignedJWT signedJWT = createAndSignJWT(userUuid, null);
+
+        JWEObject jweObject = createAndEncryptJWE(signedJWT);
+
+        return jweObject.serialize();
+    }
+
+    private SignedJWT createAndSignJWT(UUID userUuid, TokenData tokenData) throws JOSEException, ParseException {
         RSAKey senderPrivateRSAKey = RSAKey.parse(new String(Base64.getDecoder().decode(senderPrivateKey)));
 
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).build();
 
-        JWTClaimsSet claimsSet = new JWTClaimsSet
+        JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet
                 .Builder()
-                .subject(tokenData.getUuid().toString())
+                .subject(userUuid.toString())
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + expirationInMs))
-                .claim(USER_DATA_CLAIM, tokenData.toJSON())
-                .build();
+                .expirationTime(new Date(System.currentTimeMillis() + expirationInMs));
+
+        if (Objects.nonNull(tokenData)) {
+            claimsSetBuilder = claimsSetBuilder.claim(USER_DATA_CLAIM, tokenData.toJSON());
+        }
+
+        JWTClaimsSet claimsSet = claimsSetBuilder.build();
 
         SignedJWT signedJWT = new SignedJWT(jwsHeader, claimsSet);
 

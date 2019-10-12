@@ -19,25 +19,25 @@ public class ExceptionTranslator {
 
     @ExceptionHandler(LocalizedException.class)
     public ResponseEntity<ErrorDTO> processLocalizedException(LocalizedException ex) {
-        log.error(ex);
+        log.error(ex.getMessage(), ex.getException());
         return LocalizedExceptionHandler.processLocalizedException(ex);
     }
 
     @ExceptionHandler(FeignClientException.class)
     public ResponseEntity<ErrorDTO> processFeignClientException(FeignClientException ex) {
-        log.error(ex);
+        log.error(ex.getMessage(), ex.getException());
         return FeignExceptionHandler.processFeignClientException(ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> processMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error(ex);
+        log.error(ex.getMessage(), ex.getCause());
         return MethodArgumentNotValidExceptionHandler.processValidationError(ex);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTO> processGlobalException(Exception ex) {
-        log.error(ex);
+        log.error(ex.getMessage(), ex.getCause());
         return GlobalExceptionHandler.processException(ex);
     }
 

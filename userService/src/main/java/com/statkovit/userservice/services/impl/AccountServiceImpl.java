@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,17 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.getByEmail(email).orElseThrow(() ->
                 new LocalizedException(
                         new EntityNotFoundException("Account with email = " + email + " has not been found."),
+                        //TODO replace for real key
+                        "data"
+                )
+        );
+    }
+
+    @Override
+    public Account getByUuid(UUID uuid) {
+        return accountRepository.getByUuid(uuid).orElseThrow(() ->
+                new LocalizedException(
+                        new EntityNotFoundException("Account with uuid = " + uuid + " has not been found."),
                         //TODO replace for real key
                         "data"
                 )
