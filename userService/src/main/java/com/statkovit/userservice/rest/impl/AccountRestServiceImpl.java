@@ -2,6 +2,8 @@ package com.statkovit.userservice.rest.impl;
 
 import com.statkovit.userservice.domain.Account;
 import com.statkovit.userservice.dto.AccountDataDTO;
+import com.statkovit.userservice.dto.AccountExistsDTO;
+import com.statkovit.userservice.dto.BooleanDTO;
 import com.statkovit.userservice.dto.CredentialsDTO;
 import com.statkovit.userservice.mappers.AccountMapper;
 import com.statkovit.userservice.rest.AccountRestService;
@@ -38,5 +40,11 @@ public class AccountRestServiceImpl implements AccountRestService {
         Account account = accountService.getByUuid(accountUuid);
 
         return accountMapper.toAccountDataDto(account);
+    }
+
+    @Override
+    public BooleanDTO isAccountExists(AccountExistsDTO accountExistsDTO) {
+        boolean accountExists = accountService.existsByEmail(accountExistsDTO.getEmail());
+        return new BooleanDTO(accountExists);
     }
 }

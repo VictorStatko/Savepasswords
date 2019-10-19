@@ -10,6 +10,8 @@ public interface AccountService {
 
     Account getByEmail(String email);
 
+    boolean existsByEmail(String email);
+
     Account requestLogin(String email, String password);
 
     Account getByUuid(UUID uuid);

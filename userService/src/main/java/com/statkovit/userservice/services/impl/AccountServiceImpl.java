@@ -7,9 +7,9 @@ import com.statkovit.userservice.repository.AccountRepository;
 import com.statkovit.userservice.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public void signUp(Account newAccount) {
-        if (accountRepository.existsByEmail(newAccount.getEmail())) {
+        if (existsByEmail(newAccount.getEmail())) {
             throw new LocalizedException(
                     String.format("User with email '%s' already exists", newAccount.getEmail()),
                     ServerConstants.ERROR_KEY
@@ -41,6 +41,12 @@ public class AccountServiceImpl implements AccountService {
                         "data"
                 )
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        return accountRepository.existsByEmail(email);
     }
 
     @Override
