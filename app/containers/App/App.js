@@ -1,15 +1,14 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
-
-import './style.scss';
+import SignUpPage from 'containers/SignUpPage';
 
 const App = () => (
-    <div className="app-wrapper">
+    <React.Fragment>
         <Switch>
-            <Route exact path="/"/>
+            <Route exact path="/" component={SignUpPage}/>
             <Route path=""/>
         </Switch>
-    </div>
+    </React.Fragment>
 );
 
 export default App;
