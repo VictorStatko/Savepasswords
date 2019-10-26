@@ -7,7 +7,18 @@ export const checkAccountAlreadyExists = (payload) => async dispatch => {
         const response = await fetch(POST, "accounts/exists", payload);
         return response.data;
     } catch (response) {
-        processResponseError(response);
+        processResponseError(response.response);
+        throw response;
+    }
+
+};
+
+export const trySignUp = (payload) => async dispatch => {
+    try {
+       await fetch(POST, "accounts/sign-up", payload);
+    } catch (response) {
+        processResponseError(response.response);
+        throw response;
     }
 
 };

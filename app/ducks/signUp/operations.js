@@ -1,3 +1,3 @@
-import {checkAccountAlreadyExists} from "./actions";
+import {checkAccountAlreadyExists, trySignUp} from "./actions";
 
-export {checkAccountAlreadyExists};
+export {checkAccountAlreadyExists, trySignUp};

@@ -1,7 +1,9 @@
 {
 "global.next": "Next",
 "global.submit": "Submit",
+"global.back": "Back",
 "global.requestError": "An error occurred while accessing the server. Please contact your system administrator.",
+"global.serverValidationError": "An error occurred during server validation of form. Please check the entered data.",
 "global.validation.maxLength": "Field length must not exceed {{maxLength}} symbols.",
 "global.validation.notEmpty": "Field must not be empty.",
 
@@ -10,5 +12,9 @@
 "signUp.emailLabel": "Please enter your email",
 "signUp.passwordLabel": "Please enter your master password",
 "signUp.validation.email": "Please enter valid email address",
-"signUp.validation.emailAlreadyExists": "An account with this email is already registered in the system."
+"signUp.validation.emailAlreadyExists": "An account with this email is already registered in the system.",
+"signUp.alreadyRegisteredLink": "Already signed up? Please sign in",
+
+
+"exceptions.emailAlreadyExists"  : "An account with this email is already registered in the system."
 }

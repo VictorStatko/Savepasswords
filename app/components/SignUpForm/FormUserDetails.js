@@ -122,13 +122,6 @@ class FormUserDetails extends Component {
     }
 }
 
-FormUserDetails.propTypes = {
-    email: PropTypes.string.isRequired,
-    handleChange: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    nextStep: PropTypes.func.isRequired
-};
-
 const mapStateToProps = (state) => {
     return {
         signUp: state.signUp
@@ -141,5 +134,12 @@ const withConnect = connect(
         checkAccountAlreadyExists
     }
 );
+
+FormUserDetails.propTypes = {
+    email: PropTypes.string.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    nextStep: PropTypes.func.isRequired
+};
 
 export default compose(withTranslation(), withConnect)(FormUserDetails);

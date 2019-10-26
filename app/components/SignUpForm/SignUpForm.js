@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import FormUserDetails from "./FormUserDetails";
 import FormPassword from "./FormPassword";
+import styles from "./SignUpForm.module.scss";
+import {connect} from "react-redux";
+import {trySignUp} from "ducks/signUp/actions";
+import {compose} from "redux";
+import {withTranslation} from "react-i18next";
 
 class SignUpForm extends Component {
     state = {
@@ -17,13 +22,24 @@ class SignUpForm extends Component {
         });
     };
 
+    previousStep = () => {
+        const {step} = this.state;
+        this.setState({
+            step: step - 1
+        });
+    };
+
     handleChange = (input, value) => {
         this.setState({[input]: value});
     };
 
-    onSubmit = (e) => {
+    onSubmit = async e => {
         e.preventDefault();
-        console.log(this.state.name + "-" + this.state.email + "-" + this.state.password);
+        await this.props.trySignUp({
+            email: this.state.email,
+            name: this.state.name,
+            password: this.state.password
+        });
     };
 
     renderMultiStepForm = (step) => {
@@ -40,6 +56,7 @@ class SignUpForm extends Component {
             case 2:
                 return (
                     <FormPassword
+                        previousStep={this.previousStep}
                         handleChange={(this.handleChange)}
                         password={this.state.password}
                     />
@@ -51,15 +68,35 @@ class SignUpForm extends Component {
 
 
     render() {
+        const {t} = this.props;
         const {step} = this.state;
+
         return (
-            <form onSubmit={this.onSubmit}>
-                {this.renderMultiStepForm(step)}
-            </form>
+            <React.Fragment>
+                <form onSubmit={this.onSubmit}>
+                    {this.renderMultiStepForm(step)}
+                </form>
+                <div className={styles.alreadyRegistered}>
+                    <a href="#">{t('signUp.alreadyRegisteredLink')}</a>
+                </div>
+            </React.Fragment>
         )
     }
 }
 
 SignUpForm.propTypes = {};
 
-export default SignUpForm;
+const mapStateToProps = (state) => {
+    return {
+        signUp: state.signUp
+    }
+};
+
+const withConnect = connect(
+    mapStateToProps,
+    {
+        trySignUp: trySignUp
+    }
+);
+
+export default compose(withTranslation(), withConnect)(SignUpForm);

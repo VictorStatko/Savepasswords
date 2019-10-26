@@ -1,5 +1,9 @@
 @import "styles/colors";
 
+.alreadyRegistered {
+  text-align: center;
+}
+
 .textInput {
   margin-top: 1.2rem;
 }
@@ -8,4 +12,10 @@
   margin-top: 2rem;
   display: flex;
   justify-content: center;
+
+  & * {
+    margin: 1rem;
+    min-width: 100px;
+  }
+
 }
