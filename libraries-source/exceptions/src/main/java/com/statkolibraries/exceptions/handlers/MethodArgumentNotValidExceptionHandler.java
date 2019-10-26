@@ -11,8 +11,7 @@ public class MethodArgumentNotValidExceptionHandler {
     private MethodArgumentNotValidExceptionHandler() {
     }
 
-    //TODO replace to real keys (connected to frontend)
-    private static final String BAD_REQUEST_ERROR_KEY__OBJECT_VALIDATION_ERROR = "test.objectValidationError";
+    private static final String BAD_REQUEST_ERROR_KEY__OBJECT_VALIDATION_ERROR = "global.serverValidationError";
 
     public static ResponseEntity<ErrorDTO> processValidationError(MethodArgumentNotValidException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
