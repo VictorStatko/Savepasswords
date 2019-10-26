@@ -1,7 +1,7 @@
 package com.statkovit.userservice.domain;
 
 import com.statkovit.userservice.domain.base.BaseIndexedEntity;
-import com.statkovit.userservice.validation.constraints.ExtendedEmail;
+import com.statkovit.userservice.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,12 +19,15 @@ public class Account extends BaseIndexedEntity {
 
     public static final int MAX_LENGTH__EMAIL = 254;
     public static final int MAX_LENGTH__PASSWORD = 60;
+    public static final int MAX_LENGTH__NAME = 254;
 
     @Column(name = "email", nullable = false, unique = true, length = MAX_LENGTH__EMAIL)
-    @ExtendedEmail
+    @Email
     private String email;
 
     @Column(name = "password", nullable = false, length = MAX_LENGTH__PASSWORD)
     private String password;
 
+    @Column(name = "name", nullable = false, length = MAX_LENGTH__NAME)
+    private String name;
 }

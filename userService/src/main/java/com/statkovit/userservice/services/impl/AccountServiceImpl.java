@@ -1,7 +1,6 @@
 package com.statkovit.userservice.services.impl;
 
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
-import com.statkovit.userservice.constants.ServerConstants;
 import com.statkovit.userservice.domain.Account;
 import com.statkovit.userservice.repository.AccountRepository;
 import com.statkovit.userservice.services.AccountService;
@@ -25,7 +24,7 @@ public class AccountServiceImpl implements AccountService {
         if (existsByEmail(newAccount.getEmail())) {
             throw new LocalizedException(
                     String.format("User with email '%s' already exists", newAccount.getEmail()),
-                    ServerConstants.ERROR_KEY
+                    "exceptions.emailAlreadyExists"
             );
         }
         //TODO encode password

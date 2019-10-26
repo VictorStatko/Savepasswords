@@ -3,7 +3,7 @@ package com.statkovit.userservice.controllers.external;
 import com.statkovit.userservice.constants.ServerConstants;
 import com.statkovit.userservice.dto.AccountExistsDTO;
 import com.statkovit.userservice.dto.BooleanDTO;
-import com.statkovit.userservice.dto.CredentialsDTO;
+import com.statkovit.userservice.dto.SignUpDTO;
 import com.statkovit.userservice.rest.AccountRestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ public class AccountExternalController {
     private final AccountRestService accountRestService;
 
     @PostMapping(CONTROLLER_ENDPOINT + "/sign-up")
-    public void signUp(@Valid @RequestBody CredentialsDTO credentialsDTO) {
-        accountRestService.signUp(credentialsDTO);
+    public void signUp(@Valid @RequestBody SignUpDTO signUpDTO) {
+        accountRestService.signUp(signUpDTO);
     }
 
     @PostMapping(CONTROLLER_ENDPOINT + "/exists")

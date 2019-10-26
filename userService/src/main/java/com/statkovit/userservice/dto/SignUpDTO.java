@@ -1,7 +1,6 @@
 package com.statkovit.userservice.dto;
 
 import com.statkovit.userservice.domain.Account;
-import com.statkovit.userservice.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,15 +13,8 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CredentialsDTO {
-
-    @Email
+public class SignUpDTO extends CredentialsDTO {
     @NotBlank
-    @Size(max = Account.MAX_LENGTH__EMAIL)
-    private String email;
-
-    @NotBlank
-    @Size(max = Account.MAX_LENGTH__PASSWORD)
-    private String password;
-
+    @Size(max = Account.MAX_LENGTH__NAME)
+    private String name;
 }

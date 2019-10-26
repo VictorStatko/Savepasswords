@@ -18,3 +18,7 @@ _Debug:_
 sudo docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build  
 (Intelij debug https://www.jetbrains.com/help/idea/run-and-debug-a-spring-boot-application-using-docker-compose.html)  
 don't forget in compose debug config set=true "--build/force build images
+
+_Restart single service (example):_
+docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --detach --force-recreate --no-deps --build user-service
+

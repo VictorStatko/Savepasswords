@@ -5,5 +5,5 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <includeAll path="classpath:db/changelog/09.2019" relativeToChangelogFile="false"/>
-
+    <includeAll path="classpath:db/changelog/10.2019" relativeToChangelogFile="false"/>
 </databaseChangeLog>

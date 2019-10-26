@@ -1,10 +1,7 @@
 package com.statkovit.userservice.rest.impl;
 
 import com.statkovit.userservice.domain.Account;
-import com.statkovit.userservice.dto.AccountDataDTO;
-import com.statkovit.userservice.dto.AccountExistsDTO;
-import com.statkovit.userservice.dto.BooleanDTO;
-import com.statkovit.userservice.dto.CredentialsDTO;
+import com.statkovit.userservice.dto.*;
 import com.statkovit.userservice.mappers.AccountMapper;
 import com.statkovit.userservice.rest.AccountRestService;
 import com.statkovit.userservice.services.AccountService;
@@ -21,8 +18,8 @@ public class AccountRestServiceImpl implements AccountRestService {
     private final AccountMapper accountMapper;
 
     @Override
-    public void signUp(CredentialsDTO credentialsDTO) {
-        Account account = accountMapper.toEntity(credentialsDTO);
+    public void signUp(SignUpDTO signUpDTO) {
+        Account account = accountMapper.toEntity(signUpDTO);
         accountService.signUp(account);
     }
 
