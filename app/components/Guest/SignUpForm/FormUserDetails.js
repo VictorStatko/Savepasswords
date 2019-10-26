@@ -8,7 +8,7 @@ import {isEmpty} from "utils/stringUtils";
 import {isEmailValid, isStringMaxLengthValid} from "utils/validationUtils";
 import {compose} from "redux";
 import {connect} from "react-redux";
-import {checkAccountAlreadyExists} from "ducks/signUp/actions";
+import {checkAccountAlreadyExists} from "ducks/account/actions";
 
 const MAX_LENGTH_USERNAME = 254;
 const MAX_LENGTH_EMAIL = 254;
@@ -124,7 +124,7 @@ class FormUserDetails extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        signUp: state.signUp
+        account: state.account
     }
 };
 

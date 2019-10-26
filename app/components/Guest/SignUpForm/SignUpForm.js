@@ -3,9 +3,10 @@ import FormUserDetails from "./FormUserDetails";
 import FormPassword from "./FormPassword";
 import styles from "./SignUpForm.module.scss";
 import {connect} from "react-redux";
-import {trySignUp} from "ducks/signUp/actions";
+import {trySignUp} from "ducks/account/actions";
 import {compose} from "redux";
 import {withTranslation} from "react-i18next";
+import {Link} from "react-router-dom";
 
 class SignUpForm extends Component {
     state = {
@@ -76,8 +77,8 @@ class SignUpForm extends Component {
                 <form onSubmit={this.onSubmit}>
                     {this.renderMultiStepForm(step)}
                 </form>
-                <div className={styles.alreadyRegistered}>
-                    <a href="#">{t('signUp.alreadyRegisteredLink')}</a>
+                <div className={styles.changePageLink}>
+                    <Link to={'/sign-in'}>{t('signUp.alreadyRegisteredLink')}</Link>
                 </div>
             </React.Fragment>
         )
@@ -88,7 +89,7 @@ SignUpForm.propTypes = {};
 
 const mapStateToProps = (state) => {
     return {
-        signUp: state.signUp
+        account: state.account
     }
 };
 

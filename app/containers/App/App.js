@@ -1,12 +1,13 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom';
-import SignUpPage from 'containers/SignUpPage';
+import {Redirect, Route, Switch} from 'react-router-dom';
+import GuestPage from 'containers/GuestPage';
 
 const App = () => (
     <React.Fragment>
         <Switch>
-            <Route exact path="/" component={SignUpPage}/>
-            <Route path=""/>
+            <Route path="/sign-up" render={props => (<GuestPage {...props} process="sign-up"/>)}/>
+            <Route path="/sign-in" render={props => (<GuestPage {...props} process="sign-in"/>)}/>
+            <Route path="" render={() => (<Redirect to="/sign-up"/>)}/>
         </Switch>
     </React.Fragment>
 );

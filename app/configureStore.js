@@ -1,6 +1,5 @@
-
-import { createStore, combineReducers, compose, applyMiddleware} from 'redux';
-import { routerMiddleware } from 'connected-react-router';
+import {applyMiddleware, compose, createStore} from 'redux';
+import {routerMiddleware} from 'connected-react-router';
 import createReducer from './reducers';
 import thunk from 'redux-thunk';
 import * as reducers from 'ducks';
@@ -20,7 +19,7 @@ export default function configureStore(initialState = {}, history) {
     if (module.hot) {
         module.hot.accept('./reducers', () => {
             store.replaceReducer(createReducer(store.injectedReducers));
-            store.dispatch({ type: '@@REDUCER_INJECTED' });
+            store.dispatch({type: '@@REDUCER_INJECTED'});
         });
     }
 
