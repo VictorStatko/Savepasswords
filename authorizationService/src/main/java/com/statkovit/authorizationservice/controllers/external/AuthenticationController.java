@@ -16,12 +16,13 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private static final String HEADER_REFRESH_TOKEN = "Refresh-Token";
-
+    private static final String EXPOSE_HEADERS = "Access-Control-Expose-Headers";
     private final AuthenticationService authenticationService;
 
     @PostMapping(ServerConstants.API_V1_EXTERNAL_ENDPOINT + "sign-in")
     public void signIn(@RequestBody @Valid SignInDTO signInDTO, HttpServletResponse response) {
         String refreshToken = authenticationService.signIn(signInDTO, response);
+        response.addHeader(EXPOSE_HEADERS, HEADER_REFRESH_TOKEN);
         response.addHeader(HEADER_REFRESH_TOKEN, refreshToken);
     }
 

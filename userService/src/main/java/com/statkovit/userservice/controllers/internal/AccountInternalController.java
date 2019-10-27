@@ -28,7 +28,7 @@ public class AccountInternalController {
 
     //TODO security
     @GetMapping(CONTROLLER_ENDPOINT + "/{uuid}")
-    public ResponseEntity requestLogin(@PathVariable(name = "uuid") UUID uuid) {
+    public ResponseEntity getAccount(@PathVariable(name = "uuid") UUID uuid) {
         AccountDataDTO accountDataDTO = accountRestService.getAccountData(uuid);
 
         return ResponseEntity.ok(accountDataDTO);

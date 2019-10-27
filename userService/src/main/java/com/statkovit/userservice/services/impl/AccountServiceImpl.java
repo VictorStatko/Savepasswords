@@ -36,8 +36,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.getByEmail(email).orElseThrow(() ->
                 new LocalizedException(
                         new EntityNotFoundException("Account with email = " + email + " has not been found."),
-                        //TODO replace for real key
-                        "data"
+                        "exceptions.accountNotFoundByEmail"
                 )
         );
     }
@@ -66,8 +65,7 @@ public class AccountServiceImpl implements AccountService {
         if (!Objects.equals(account.getPassword(), password)) {
             throw new LocalizedException(
                     "Password for account with email " + email + " is invalid.",
-                    //TODO replace for real key
-                    "data"
+                    "exceptions.invalidPassword"
             );
         }
         return account;
