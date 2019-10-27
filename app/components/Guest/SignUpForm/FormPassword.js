@@ -6,8 +6,7 @@ import PrimaryButton from "components/default/buttons/PrimaryButton";
 import {withTranslation} from "react-i18next";
 import {isEmpty} from "utils/stringUtils";
 import {isStringMaxLengthValid} from "utils/validationUtils";
-
-const MAX_LENGTH_PASSWORD = 60;
+import {MAX_LENGTH_PASSWORD} from "utils/validationUtils";
 
 class FormPassword extends Component {
     state = {

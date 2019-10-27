@@ -9,9 +9,8 @@ import {isEmailValid, isStringMaxLengthValid} from "utils/validationUtils";
 import {compose} from "redux";
 import {connect} from "react-redux";
 import {checkAccountAlreadyExists} from "ducks/account/actions";
-
-const MAX_LENGTH_USERNAME = 254;
-const MAX_LENGTH_EMAIL = 254;
+import {MAX_LENGTH_EMAIL} from "utils/validationUtils";
+import {MAX_LENGTH_USERNAME} from "utils/validationUtils";
 
 class FormUserDetails extends Component {
     state = {

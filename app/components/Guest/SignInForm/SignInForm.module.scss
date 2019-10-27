@@ -1,1 +1,9 @@
 @import "components/Guest/Guest.module";
+@import "styles/colors";
+
+.serverError {
+  color: $red;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 600;
+}

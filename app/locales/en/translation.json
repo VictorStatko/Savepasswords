@@ -19,5 +19,8 @@
 "signIn.notRegisteredLink": "Don't have an account yet? Please sign up",
 "signIn.emailLabel": "Please enter your email",
 "signIn.passwordLabel": "Please enter the master password",
-"exceptions.emailAlreadyExists"  : "An account with this email is already registered in the system."
+"signIn.validation.email": "Please enter valid email address",
+"exceptions.emailAlreadyExists"  : "An account with this email is already registered in the system.",
+"exceptions.accountNotFoundByEmail": "Account with this email is not found in the system.",
+"exceptions.invalidPassword": "Incorrect password entered."
 }
