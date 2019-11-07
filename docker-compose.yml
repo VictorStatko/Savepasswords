@@ -58,11 +58,25 @@ services:
     depends_on:
       configuration-service:
         condition: service_healthy
+      auth-redis:
+        condition: service_healthy
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
       - JWT_PRIVATE_KEY=${AUTH_SERVICE_PRIVATE_KEY}
       - JWT_PUBLIC_KEY=${AUTH_SERVICE_PUBLIC_KEY}
+
+  auth-redis:
+    ports:
+      - "5001:6379"
+    image: redis:5.0.6
+    command: redis-server --requirepass ${AUTH_SERVICE_REDIS_PASSWORD}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h auth-redis -p 6379 -a ${AUTH_SERVICE_REDIS_PASSWORD} --no-auth-warning ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   user-postgres:
     ports:
