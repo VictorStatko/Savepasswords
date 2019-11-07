@@ -11,7 +11,7 @@
     <properties>
         <java.version>12</java.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-        <jwt-processing-library.version>0.0.0.beta2</jwt-processing-library.version>
+        <jwt-processing-library.version>0.0.1</jwt-processing-library.version>
         <exceptions-library.version>0.0.0.beta2</exceptions-library.version>
         <lombok.version>1.18.10</lombok.version>
         <commons-lang.version>3.9</commons-lang.version>

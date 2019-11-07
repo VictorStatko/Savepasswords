@@ -1,18 +1,15 @@
 package com.statkovit.authorizationservice.services.impl;
 
-import com.statkolibraries.exceptions.exceptions.LocalizedException;
-import com.statkolibraries.jwtprocessing.SignedJweCreator;
-import com.statkolibraries.jwtprocessing.SignedJweProcessor;
-import com.statkolibraries.jwtprocessing.exception.TokenProcessingException;
+import com.statkolibraries.jwtprocessing.JwsCreator;
+import com.statkolibraries.jwtprocessing.JwsProcessor;
 import com.statkolibraries.jwtprocessing.payload.TokenData;
 import com.statkovit.authorizationservice.feign.UserServiceRestClient;
 import com.statkovit.authorizationservice.payloads.AccountDTO;
 import com.statkovit.authorizationservice.payloads.SignInDTO;
-import com.statkovit.authorizationservice.properties.JweProperties;
+import com.statkovit.authorizationservice.properties.JwtProperties;
 import com.statkovit.authorizationservice.services.AuthenticationService;
 import com.statkovit.authorizationservice.services.CookieService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +23,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static final String AUTHORIZATION_COOKIE = "Authorization";
 
     private final UserServiceRestClient userServiceRestClient;
-    private final JweProperties jweProperties;
+    private final JwtProperties jwtProperties;
     private final CookieService cookieService;
 
     /**
@@ -51,14 +48,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public void refresh(String refreshToken, HttpServletResponse httpServletResponse) {
-        SignedJweProcessor jweProcessor = new SignedJweProcessor(jweProperties.getSenderPublicKey(), jweProperties.getRecipientPrivateKey());
-        UUID uuid;
-        try {
-            uuid = jweProcessor.processRefreshJWE(refreshToken);
-        } catch (TokenProcessingException e) {
-            //TODO replace to real
-            throw new LocalizedException(e, HttpStatus.UNAUTHORIZED, "data.data");
-        }
+
+        JwsProcessor jwsProcessor = new JwsProcessor(jwtProperties.getPublicKey());
+        TokenData tokenData = jwsProcessor.readToken(refreshToken);
+        //TODO get data from redis by refresh token
+        UUID uuid = UUID.randomUUID();
 
         AccountDTO accountDTO = userServiceRestClient.getAccountData(uuid);
 
@@ -69,27 +63,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     private String createAccessToken(AccountDTO accountDTO) {
-        SignedJweCreator signedJweCreator = new SignedJweCreator(
-                jweProperties.getSenderPrivateKey(),
-                jweProperties.getRecipientPublicKey(),
-                jweProperties.getAccessTokenExpiration()
+        JwsCreator jwsCreator = new JwsCreator(
+                jwtProperties.getPrivateKey(),
+                jwtProperties.getAccessTokenExpiration()
         );
 
         TokenData tokenData = new TokenData(
                 accountDTO.getId(), accountDTO.getUuid(), accountDTO.getRoles(), accountDTO.getPermissions()
         );
 
-        return signedJweCreator.generateAccessToken(tokenData);
+        return jwsCreator.generateToken(tokenData);
     }
 
     private String createRefreshToken(AccountDTO accountDTO) {
-        SignedJweCreator signedJweCreator = new SignedJweCreator(
-                jweProperties.getSenderPrivateKey(),
-                jweProperties.getRecipientPublicKey(),
-                jweProperties.getRefreshTokenExpiration()
-        );
+        //TODO implement
 
-        return signedJweCreator.generateRefreshToken(accountDTO.getUuid());
+        return createAccessToken(accountDTO);
     }
 
     private void addAccessTokenCookie(HttpServletResponse response, String accessToken) {

@@ -1,15 +1,15 @@
 package com.statkolibraries.jwtprocessing.payload;
 
-import net.minidev.json.JSONObject;
+import io.jsonwebtoken.Claims;
 
 import java.util.*;
 
 public class TokenData {
-    private static final String LIST_DELIMITER = " , ";
-    private static final String ID_JSON_FIELD = "id";
-    private static final String UUID_JSON_FIELD = "uuid";
-    private static final String ROLES_JSON_FIELD = "roles";
-    private static final String PERMISSIONS_JSON_FIELD = "permissions";
+    private static final String ID_CLAIM = "id";
+    private static final String UUID_CLAIM = "uuid";
+    private static final String ROLES_CLAIM = "roles";
+    private static final String PERMISSIONS_CLAIM = "permissions";
+
     private final Long id;
 
     private final UUID uuid;
@@ -24,6 +24,28 @@ public class TokenData {
         this.roles = roles == null ? new ArrayList<>() : roles;
         this.permissions = permissions == null ? new ArrayList<>() : permissions;
     }
+
+    public Map<String, Object> toClaimMap() {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(ID_CLAIM, id);
+        claims.put(UUID_CLAIM, uuid);
+        claims.put(ROLES_CLAIM, roles);
+        claims.put(PERMISSIONS_CLAIM, permissions);
+        return claims;
+    }
+
+    public static TokenData fromClaimsMap(Claims claims) {
+        Long id = claims.get(ID_CLAIM, Long.class);
+
+        UUID uuid = Optional.ofNullable(claims.get(UUID_CLAIM, String.class))
+                .map(UUID::fromString)
+                .orElse(null);
+
+        List<String> roles = claims.get(ROLES_CLAIM, List.class);
+        List<String> permissions = claims.get(PERMISSIONS_CLAIM, List.class);
+        return new TokenData(id, uuid, roles, permissions);
+    }
+
 
     public Long getId() {
         return id;
@@ -41,35 +63,4 @@ public class TokenData {
         return permissions;
     }
 
-    public JSONObject toJSON() {
-        JSONObject jsonObject = new JSONObject();
-
-        jsonObject.put(ID_JSON_FIELD, id);
-        jsonObject.put(UUID_JSON_FIELD, uuid);
-        jsonObject.put(ROLES_JSON_FIELD, String.join(LIST_DELIMITER, roles));
-        jsonObject.put(PERMISSIONS_JSON_FIELD, String.join(LIST_DELIMITER, permissions));
-
-        return jsonObject;
-    }
-
-    public static TokenData fromJson(JSONObject jsonObject) {
-        Long id = Optional.ofNullable(jsonObject.getAsNumber(ID_JSON_FIELD)).map(Number::longValue).orElse(null);
-        UUID uuid = Optional.ofNullable(jsonObject.getAsString(UUID_JSON_FIELD)).map(UUID::fromString).orElse(null);
-        String rolesString = jsonObject.getAsString(ROLES_JSON_FIELD);
-        List<String> roles;
-        if (rolesString == null || rolesString.isEmpty()) {
-            roles = new ArrayList<>();
-        } else {
-            roles = new ArrayList<>(Arrays.asList(rolesString.split(LIST_DELIMITER)));
-        }
-        String permissionsString = jsonObject.getAsString(PERMISSIONS_JSON_FIELD);
-        List<String> permissions;
-        if (permissionsString == null || permissionsString.isEmpty()) {
-            permissions = new ArrayList<>();
-        } else {
-            permissions = new ArrayList<>(Arrays.asList(permissionsString.split(LIST_DELIMITER)));
-            ;
-        }
-        return new TokenData(id, uuid, roles, permissions);
-    }
 }

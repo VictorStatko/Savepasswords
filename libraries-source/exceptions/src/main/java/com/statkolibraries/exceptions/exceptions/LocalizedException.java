@@ -28,10 +28,6 @@ public class LocalizedException extends RuntimeException {
         return this.messageKey;
     }
 
-    public Throwable getException() {
-        return this.getCause();
-    }
-
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }

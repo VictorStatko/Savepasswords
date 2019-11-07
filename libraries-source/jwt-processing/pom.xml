@@ -6,18 +6,30 @@
 
     <groupId>com.statkolibraries</groupId>
     <artifactId>jwt-processing</artifactId>
-    <version>0.0.0.beta2</version>
+    <version>0.0.1</version>
 
     <properties>
-        <nimbus-jose-jwt.version>7.8</nimbus-jose-jwt.version>
+        <io.jsonwebtoken.version>0.10.7</io.jsonwebtoken.version>
     </properties>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>${nimbus-jose-jwt.version}</version>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${io.jsonwebtoken.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>

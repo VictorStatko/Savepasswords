@@ -8,18 +8,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties(value = "app.jwe")
+@ConfigurationProperties(value = "app.jwt")
 @Getter
 @Setter
-public class JweProperties {
+public class JwtProperties {
 
-    private String senderPrivateKey;
+    private String privateKey;
 
-    private String recipientPublicKey;
-
-    private String senderPublicKey;
-
-    private String recipientPrivateKey;
+    private String publicKey;
 
     private Long accessTokenExpiration;
 

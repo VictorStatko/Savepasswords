@@ -17,19 +17,19 @@ public class ExceptionTranslator {
 
     @ExceptionHandler(LocalizedException.class)
     public ResponseEntity<ErrorDTO> processLocalizedException(LocalizedException ex) {
-        log.error(ex.getMessage(), ex.getException());
+        log.error(ex.getMessage(), ex);
         return LocalizedExceptionHandler.processLocalizedException(ex);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> processMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error(ex.getMessage(), ex.getCause());
+        log.error(ex.getMessage(), ex);
         return MethodArgumentNotValidExceptionHandler.processValidationError(ex);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTO> processGlobalException(Exception ex) {
-        log.error(ex.getMessage(), ex.getCause());
+        log.error(ex.getMessage(), ex);
         return GlobalExceptionHandler.processException(ex);
     }
 

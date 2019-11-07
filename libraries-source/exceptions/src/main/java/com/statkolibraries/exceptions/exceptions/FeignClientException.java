@@ -28,9 +28,4 @@ public class FeignClientException extends RuntimeException {
     public List<DataErrorDTO> getDataErrors() {
         return dataErrors;
     }
-
-    public Throwable getException() {
-        return this.getCause();
-    }
-
 }
