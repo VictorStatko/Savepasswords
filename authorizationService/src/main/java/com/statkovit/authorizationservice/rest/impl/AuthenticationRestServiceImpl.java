@@ -4,7 +4,7 @@ import com.statkovit.authorizationservice.payloads.SignInDTO;
 import com.statkovit.authorizationservice.rest.AuthenticationRestService;
 import com.statkovit.authorizationservice.services.AuthenticationService;
 import com.statkovit.authorizationservice.services.CookieService;
-import com.statkovit.authorizationservice.services.transfer.TokensCreationResult;
+import com.statkovit.authorizationservice.services.transfer.CurrentAccountTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Collections;
 public class AuthenticationRestServiceImpl implements AuthenticationRestService {
     private static final String AUTHORIZATION_COOKIE = "Authorization";
     private static final String HEADER_AUTHORIZATION_EXPIRATION = "Authorization-Expired-At";
-    private static final String HEADER_REFRESH_TOKEN = "Refresh-Token";
+    public static final String HEADER_REFRESH_TOKEN = "Refresh-Token";
     private static final String EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
     private final AuthenticationService authenticationService;
@@ -24,7 +24,7 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
 
     @Override
     public void signIn(SignInDTO signInDTO, HttpServletResponse httpServletResponse) {
-        TokensCreationResult result = authenticationService.signIn(signInDTO);
+        CurrentAccountTokens result = authenticationService.signIn(signInDTO);
 
         cookieService.addCookies(
                 Collections.singletonMap(AUTHORIZATION_COOKIE, result.getAccessToken()), httpServletResponse
@@ -33,5 +33,17 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
         httpServletResponse.addHeader(HEADER_REFRESH_TOKEN, result.getRefreshToken());
         httpServletResponse.addHeader(HEADER_AUTHORIZATION_EXPIRATION, result.getAccessTokenExpiration());
         httpServletResponse.addHeader(EXPOSE_HEADERS, String.join(", ", HEADER_REFRESH_TOKEN, HEADER_AUTHORIZATION_EXPIRATION));
+    }
+
+    @Override
+    public void refresh(String refreshToken, HttpServletResponse httpServletResponse) {
+        CurrentAccountTokens result = authenticationService.refresh(refreshToken);
+
+        cookieService.addCookies(
+                Collections.singletonMap(AUTHORIZATION_COOKIE, result.getAccessToken()), httpServletResponse
+        );
+
+        httpServletResponse.addHeader(HEADER_AUTHORIZATION_EXPIRATION, result.getAccessTokenExpiration());
+        httpServletResponse.addHeader(EXPOSE_HEADERS, HEADER_AUTHORIZATION_EXPIRATION);
     }
 }

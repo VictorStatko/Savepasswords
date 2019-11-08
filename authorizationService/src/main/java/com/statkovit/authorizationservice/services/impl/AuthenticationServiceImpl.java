@@ -1,5 +1,6 @@
 package com.statkovit.authorizationservice.services.impl;
 
+import com.statkolibraries.exceptions.exceptions.UnauthorizedException;
 import com.statkolibraries.jwtprocessing.JwsCreator;
 import com.statkolibraries.jwtprocessing.payload.TokenData;
 import com.statkolibraries.utils.DateTimeUtils;
@@ -13,7 +14,7 @@ import com.statkovit.authorizationservice.properties.JwtProperties;
 import com.statkovit.authorizationservice.repositories.AccessTokenRepository;
 import com.statkovit.authorizationservice.repositories.RefreshTokenRepository;
 import com.statkovit.authorizationservice.services.AuthenticationService;
-import com.statkovit.authorizationservice.services.transfer.TokensCreationResult;
+import com.statkovit.authorizationservice.services.transfer.CurrentAccountTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,49 +34,47 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public TokensCreationResult signIn(SignInDTO signInDTO) {
+    public CurrentAccountTokens signIn(SignInDTO signInDTO) {
         AccountDTO accountDTO = userServiceRestClient.requestLogin(signInDTO);
         UUID accountUuid = accountDTO.getUuid();
-
-        SecuredRandomStringGenerator opaqueTokenGenerator = new SecuredRandomStringGenerator(OPAQUE_TOKENS_LENGTH);
         Date accessTokenExpiration = new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration());
 
-        String jwtAccessToken = createJwtAccessToken(accountDTO, accessTokenExpiration);
-        String opaqueAccessToken = opaqueTokenGenerator.generate();
-        String opaqueRefreshToken = opaqueTokenGenerator.generate();
+        AccessToken accessToken = createAccessToken(accountDTO, accessTokenExpiration);
+        RefreshToken refreshToken = createRefreshToken(accountDTO);
 
-        AccessToken accessToken = new AccessToken(
-                accountUuid, jwtAccessToken, opaqueAccessToken, jwtProperties.getAccessTokenExpiration()
-        );
-
-        RefreshToken refreshToken = new RefreshToken(
-                accountUuid, opaqueRefreshToken, jwtProperties.getRefreshTokenExpiration()
-        );
-
-        accessTokenRepository.findByAccountUuid(accountUuid).forEach(accessTokenRepository::delete);
-        refreshTokenRepository.findByAccountUuid(accountUuid).forEach(refreshTokenRepository::delete);
+        accessTokenRepository.findByAccountUuid(accountUuid).ifPresent(accessTokenRepository::delete);
+        refreshTokenRepository.findByAccountUuid(accountUuid).ifPresent(refreshTokenRepository::delete);
 
         accessTokenRepository.save(accessToken);
         refreshTokenRepository.save(refreshToken);
 
-        return new TokensCreationResult(opaqueAccessToken, opaqueRefreshToken, DateTimeUtils.dateToHttpFormat(accessTokenExpiration));
+        return new CurrentAccountTokens(
+                accessToken.getOpaqueToken(), refreshToken.getOpaqueToken(), DateTimeUtils.dateToHttpFormat(accessTokenExpiration)
+        );
     }
 
-   /* @Override
-    public void refresh(String refreshToken, HttpServletResponse httpServletResponse) {
+    @Override
+    public CurrentAccountTokens refresh(String refreshToken) {
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByOpaqueToken(refreshToken)
+                .orElseThrow(() -> new UnauthorizedException("Refresh token " + refreshToken + " was not found."));
 
-        JwsProcessor jwsProcessor = new JwsProcessor(jwtProperties.getPublicKey());
-        TokenData tokenData = jwsProcessor.readToken(refreshToken);
-        //TODO get data from redis by refresh token
-        UUID uuid = UUID.randomUUID();
+        UUID accountUuid = refreshTokenEntity.getAccountUuid();
+        AccountDTO accountDTO = userServiceRestClient.getAccountData(accountUuid);
+        Date accessTokenExpiration = new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration());
 
-        AccountDTO accountDTO = userServiceRestClient.getAccountData(uuid);
+        AccessToken accessToken = createAccessToken(accountDTO, accessTokenExpiration);
 
-        String jwtAccessToken = createJwtAccessToken(accountDTO, new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration()));
+        accessTokenRepository.findByAccountUuid(accountUuid).ifPresent(accessTokenRepository::delete);
+        accessTokenRepository.save(accessToken);
 
-    }*/
+        return new CurrentAccountTokens(
+                accessToken.getOpaqueToken(), refreshTokenEntity.getOpaqueToken(), DateTimeUtils.dateToHttpFormat(accessTokenExpiration)
+        );
+    }
 
-    private String createJwtAccessToken(AccountDTO accountDTO, Date expirationDate) {
+    private AccessToken createAccessToken(AccountDTO accountDTO, Date expirationDate) {
+        SecuredRandomStringGenerator opaqueTokenGenerator = new SecuredRandomStringGenerator(OPAQUE_TOKENS_LENGTH);
+
         JwsCreator jwsCreator = new JwsCreator(
                 jwtProperties.getPrivateKey(),
                 expirationDate
@@ -85,6 +84,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 accountDTO.getId(), accountDTO.getUuid(), accountDTO.getRoles(), accountDTO.getPermissions()
         );
 
-        return jwsCreator.generateToken(tokenData);
+        String jwtAccessToken = jwsCreator.generateToken(tokenData);
+        String opaqueAccessToken = opaqueTokenGenerator.generate();
+
+        return new AccessToken(
+                accountDTO.getUuid(), jwtAccessToken, opaqueAccessToken, jwtProperties.getAccessTokenExpiration()
+        );
+    }
+
+    private RefreshToken createRefreshToken(AccountDTO accountDTO) {
+        SecuredRandomStringGenerator opaqueTokenGenerator = new SecuredRandomStringGenerator(OPAQUE_TOKENS_LENGTH);
+
+        String opaqueRefreshToken = opaqueTokenGenerator.generate();
+
+        return new RefreshToken(
+                accountDTO.getUuid(), opaqueRefreshToken, jwtProperties.getRefreshTokenExpiration()
+        );
+
     }
 }

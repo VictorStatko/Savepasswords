@@ -19,7 +19,7 @@
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
         <postgres-driver.version>42.2.8</postgres-driver.version>
         <liquibase.version>3.8.0</liquibase.version>
-        <exceptions-library.version>0.0.0.beta2</exceptions-library.version>
+        <exceptions-library.version>0.0.1</exceptions-library.version>
         <lombok.version>1.18.10</lombok.version>
         <model-mapper.version>2.3.0</model-mapper.version>
     </properties>

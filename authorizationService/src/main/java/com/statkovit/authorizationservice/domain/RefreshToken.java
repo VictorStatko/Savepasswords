@@ -25,6 +25,7 @@ public class RefreshToken {
     @Indexed
     private UUID accountUuid;
 
+    @Indexed
     private String opaqueToken;
 
     @TimeToLive(unit = TimeUnit.MILLISECONDS)

@@ -1,9 +1,11 @@
 package com.statkovit.authorizationservice.services;
 
 import com.statkovit.authorizationservice.payloads.SignInDTO;
-import com.statkovit.authorizationservice.services.transfer.TokensCreationResult;
+import com.statkovit.authorizationservice.services.transfer.CurrentAccountTokens;
 
 public interface AuthenticationService {
 
-    TokensCreationResult signIn(SignInDTO signInDTO);
+    CurrentAccountTokens signIn(SignInDTO signInDTO);
+
+    CurrentAccountTokens refresh(String refreshToken);
 }

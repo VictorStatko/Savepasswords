@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import static com.statkovit.authorizationservice.rest.impl.AuthenticationRestServiceImpl.HEADER_REFRESH_TOKEN;
+
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private static final String HEADER_REFRESH_TOKEN = "Refresh-Token";
     private final AuthenticationRestService authenticationRestService;
 
     @PostMapping(ServerConstants.API_V1_EXTERNAL_ENDPOINT + "sign-in")
@@ -25,5 +26,6 @@ public class AuthenticationController {
 
     @PostMapping(ServerConstants.API_V1_EXTERNAL_ENDPOINT + "refresh")
     public void refreshToken(@RequestHeader(HEADER_REFRESH_TOKEN) String refreshToken, HttpServletResponse response) {
+        authenticationRestService.refresh(refreshToken, response);
     }
 }

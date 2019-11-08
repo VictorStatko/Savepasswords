@@ -3,10 +3,8 @@ package com.statkovit.authorizationservice.exceptions;
 import com.statkolibraries.exceptions.domain.ErrorDTO;
 import com.statkolibraries.exceptions.exceptions.FeignClientException;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
-import com.statkolibraries.exceptions.handlers.FeignExceptionHandler;
-import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
-import com.statkolibraries.exceptions.handlers.LocalizedExceptionHandler;
-import com.statkolibraries.exceptions.handlers.MethodArgumentNotValidExceptionHandler;
+import com.statkolibraries.exceptions.exceptions.UnauthorizedException;
+import com.statkolibraries.exceptions.handlers.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +19,12 @@ public class ExceptionTranslator {
     public ResponseEntity<ErrorDTO> processLocalizedException(LocalizedException ex) {
         log.error(ex.getMessage(), ex);
         return LocalizedExceptionHandler.processLocalizedException(ex);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorDTO> processUnauthorizedException(UnauthorizedException ex) {
+        log.error(ex.getMessage(), ex);
+        return UnauthorizedExceptionHandler.processUnauthorizedException(ex);
     }
 
     @ExceptionHandler(FeignClientException.class)
