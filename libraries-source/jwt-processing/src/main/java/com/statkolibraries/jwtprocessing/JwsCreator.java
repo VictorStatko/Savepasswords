@@ -15,11 +15,11 @@ import java.util.Date;
 public final class JwsCreator {
 
     private final String privateKeyBase64Encoded;
-    private final long expirationInMs;
+    private final Date expirationDate;
 
-    public JwsCreator(String privateKeyBase64Encoded, long expirationInMs) {
+    public JwsCreator(String privateKeyBase64Encoded, Date expirationDate) {
         this.privateKeyBase64Encoded = privateKeyBase64Encoded;
-        this.expirationInMs = expirationInMs;
+        this.expirationDate = expirationDate;
     }
 
     public String generateToken(TokenData tokenData) {
@@ -30,7 +30,7 @@ public final class JwsCreator {
 
             return Jwts.builder()
                     .setClaims(tokenData.toClaimMap())
-                    .setExpiration(new Date(System.currentTimeMillis() + expirationInMs))
+                    .setExpiration(expirationDate)
                     .setIssuedAt(new Date())
                     .signWith(privateKey)
                     .compact();

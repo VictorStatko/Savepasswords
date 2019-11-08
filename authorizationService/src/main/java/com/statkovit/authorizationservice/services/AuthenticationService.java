@@ -1,12 +1,9 @@
 package com.statkovit.authorizationservice.services;
 
 import com.statkovit.authorizationservice.payloads.SignInDTO;
-
-import javax.servlet.http.HttpServletResponse;
+import com.statkovit.authorizationservice.services.transfer.TokensCreationResult;
 
 public interface AuthenticationService {
 
-    String signIn(SignInDTO signInDTO, HttpServletResponse httpServletResponse);
-
-    void refresh(String refreshToken, HttpServletResponse httpServletResponse);
+    TokensCreationResult signIn(SignInDTO signInDTO);
 }
