@@ -1,10 +1,7 @@
 package com.statkolibraries.exceptions.feign;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.statkolibraries.exceptions.domain.DataErrorDTO;
+import com.statkolibraries.exceptions.domain.ErrorDTO;
 import com.statkolibraries.exceptions.exceptions.FeignClientException;
 import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
 import feign.Response;
@@ -13,40 +10,37 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
 
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class FeignRequestErrorDecoder implements ErrorDecoder {
 
+    private ObjectMapper objectMapper;
+
+    public FeignRequestErrorDecoder(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public Exception decode(String s, Response response) {
-        String message;
-        String description;
-        List<DataErrorDTO> dataErrors = new ArrayList<>();
+        if (Objects.isNull(response.body())) {
+            return new FeignClientException(
+                    "Error during executing feign request (empty response body)", GlobalExceptionHandler.REQUEST_ERROR_KEY, HttpStatus.valueOf(response.status()), null
+            );
+        }
+
         try (Reader reader = response.body().asReader()) {
             String result = IOUtils.toString(reader);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonFactory factory = objectMapper.getFactory();
-            JsonParser jsonParser = factory.createParser(result);
-            JsonNode jsonNode = objectMapper.readTree(jsonParser);
-            message = jsonNode.get("message").asText();
-            description = jsonNode.get("description").asText();
-            JsonNode errorsList = jsonNode.get("dataErrors");
-            for (JsonNode error : errorsList) {
-                String descriptor = error.get("descriptor").asText();
-                String errorMessage = error.get("message").asText();
-                dataErrors.add(new DataErrorDTO(descriptor, errorMessage));
-            }
+            ErrorDTO errorDTO = objectMapper.readValue(result, ErrorDTO.class);
+            return new FeignClientException(
+                    errorDTO.getDescription(), errorDTO.getMessage(), HttpStatus.valueOf(response.status()), errorDTO.getDataErrors()
+            );
         } catch (Exception e) {
             return new FeignClientException(
-                    "Feign response processing error",
-                    GlobalExceptionHandler.BAD_REQUEST_ERROR_KEY__INTERNAL_SERVER_ERROR,
+                    "Feign exception processing error",
+                    GlobalExceptionHandler.REQUEST_ERROR_KEY,
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     null
             );
         }
-        return new FeignClientException(
-                description, message, HttpStatus.valueOf(response.status()), dataErrors
-        );
     }
 }

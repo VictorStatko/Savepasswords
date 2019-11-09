@@ -13,7 +13,7 @@ public class FeignExceptionHandler {
         final ErrorDTO errorDTO = new ErrorDTO(ex.getMessageKey(), ex.getMessage(), status.value());
 
         if (!CollectionUtils.isEmpty(ex.getDataErrors())) {
-            errorDTO.withDataErrors(ex.getDataErrors());
+            errorDTO.setDataErrors(ex.getDataErrors());
         }
 
         return ResponseEntity.status(status).body(errorDTO);
