@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -101,5 +102,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 accountDTO.getUuid(), opaqueRefreshToken, jwtProperties.getRefreshTokenExpiration()
         );
 
+    }
+
+    @Override
+    public Optional<String> exchangeAuthorizationToken(String opaqueAuthToken) {
+        return accessTokenRepository.findByOpaqueToken(opaqueAuthToken).map(AccessToken::getJwtToken);
     }
 }

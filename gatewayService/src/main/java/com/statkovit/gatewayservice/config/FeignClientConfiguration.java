@@ -1,4 +1,4 @@
-package com.statkovit.authorizationservice.configuration;
+package com.statkovit.gatewayservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.exceptions.feign.FeignRequestErrorDecoder;

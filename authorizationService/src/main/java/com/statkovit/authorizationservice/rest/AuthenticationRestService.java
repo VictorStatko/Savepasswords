@@ -9,4 +9,6 @@ public interface AuthenticationRestService {
     void signIn(SignInDTO signInDTO, HttpServletResponse httpServletResponse);
 
     void refresh(String refreshToken, HttpServletResponse httpServletResponse);
+
+    void exchange(String opaqueAccessToken, HttpServletResponse httpServletResponse);
 }

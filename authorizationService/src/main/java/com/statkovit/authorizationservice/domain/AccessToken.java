@@ -27,6 +27,7 @@ public class AccessToken {
 
     private String jwtToken;
 
+    @Indexed
     private String opaqueToken;
 
     @TimeToLive(unit = TimeUnit.MILLISECONDS)

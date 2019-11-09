@@ -12,4 +12,5 @@ public interface AccessTokenRepository extends CrudRepository<AccessToken, Strin
 
     Optional<AccessToken> findByAccountUuid(UUID uuid);
 
+    Optional<AccessToken> findByOpaqueToken(String opaqueToken);
 }

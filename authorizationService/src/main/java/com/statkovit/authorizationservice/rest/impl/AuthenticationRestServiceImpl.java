@@ -10,14 +10,16 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
+import java.util.Optional;
+
+import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationRestServiceImpl implements AuthenticationRestService {
-    private static final String AUTHORIZATION_COOKIE = "Authorization";
     private static final String HEADER_AUTHORIZATION_EXPIRATION = "Authorization-Expired-At";
     public static final String HEADER_REFRESH_TOKEN = "Refresh-Token";
-    private static final String EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
     private final AuthenticationService authenticationService;
     private final CookieService cookieService;
@@ -27,12 +29,12 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
         CurrentAccountTokens result = authenticationService.signIn(signInDTO);
 
         cookieService.addCookies(
-                Collections.singletonMap(AUTHORIZATION_COOKIE, result.getAccessToken()), httpServletResponse
+                Collections.singletonMap(AUTHORIZATION, result.getAccessToken()), httpServletResponse
         );
 
         httpServletResponse.addHeader(HEADER_REFRESH_TOKEN, result.getRefreshToken());
         httpServletResponse.addHeader(HEADER_AUTHORIZATION_EXPIRATION, result.getAccessTokenExpiration());
-        httpServletResponse.addHeader(EXPOSE_HEADERS, String.join(", ", HEADER_REFRESH_TOKEN, HEADER_AUTHORIZATION_EXPIRATION));
+        httpServletResponse.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, String.join(", ", HEADER_REFRESH_TOKEN, HEADER_AUTHORIZATION_EXPIRATION));
     }
 
     @Override
@@ -40,10 +42,16 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
         CurrentAccountTokens result = authenticationService.refresh(refreshToken);
 
         cookieService.addCookies(
-                Collections.singletonMap(AUTHORIZATION_COOKIE, result.getAccessToken()), httpServletResponse
+                Collections.singletonMap(AUTHORIZATION, result.getAccessToken()), httpServletResponse
         );
 
         httpServletResponse.addHeader(HEADER_AUTHORIZATION_EXPIRATION, result.getAccessTokenExpiration());
-        httpServletResponse.addHeader(EXPOSE_HEADERS, HEADER_AUTHORIZATION_EXPIRATION);
+        httpServletResponse.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, HEADER_AUTHORIZATION_EXPIRATION);
+    }
+
+    @Override
+    public void exchange(String opaqueAccessToken, HttpServletResponse httpServletResponse) {
+        Optional<String> exchangedJwtToken = authenticationService.exchangeAuthorizationToken(opaqueAccessToken);
+        exchangedJwtToken.ifPresent(jwtToken -> httpServletResponse.addHeader(AUTHORIZATION, jwtToken));
     }
 }

@@ -16,7 +16,7 @@ import static com.statkovit.authorizationservice.rest.impl.AuthenticationRestSer
 
 @RestController
 @RequiredArgsConstructor
-public class AuthenticationController {
+public class AuthenticationExternalController {
     private final AuthenticationRestService authenticationRestService;
 
     @PostMapping(ServerConstants.API_V1_EXTERNAL_ENDPOINT + "sign-in")
