@@ -114,3 +114,17 @@ services:
       - POSTGRES_CONNECTION_URL=${USER_SERVICE_POSTGRES_CONNECTION_URL}
       - POSTGRES_USER=${USER_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${USER_SERVICE_POSTGRES_PASSWORD}
+
+  permissions-service:
+    ports:
+      - "8890:8890"
+    build:
+      context: ./permissionsService
+      dockerfile: docker/Dockerfile
+      target: run
+    depends_on:
+      configuration-service:
+        condition: service_healthy
+    environment:
+      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
