@@ -35,10 +35,3 @@ services:
       - "5009:5009"
     build:
       target: debug
-
-  permissions-service:
-    ports:
-      - "8890:8890"
-      - "5010:5010"
-    build:
-      target: debug

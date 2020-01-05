@@ -10,20 +10,21 @@
 
     <properties>
         <java.version>12</java.version>
-        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <jwt-processing-library.version>0.0.1</jwt-processing-library.version>
         <exceptions-library.version>0.0.1</exceptions-library.version>
         <utils-library.version>0.0.1</utils-library.version>
         <lombok.version>1.18.10</lombok.version>
         <commons-lang.version>3.9</commons-lang.version>
         <commons-collections.version>4.1</commons-collections.version>
-        <jedis.version>2.10.2</jedis.version>
+        <liquibase.version>3.8.4</liquibase.version>
+        <postgres-driver.version>42.2.9</postgres-driver.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
+        <version>2.2.2.RELEASE</version>
     </parent>
 
     <dependencies>
@@ -44,8 +45,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
 
         <dependency>
@@ -60,6 +71,17 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres-driver.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.statkolibraries</groupId>
             <artifactId>jwt-processing</artifactId>
             <version>${jwt-processing-library.version}</version>
@@ -69,6 +91,12 @@
             <groupId>com.statkolibraries</groupId>
             <artifactId>exceptions</artifactId>
             <version>${exceptions-library.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
 
         <dependency>
@@ -106,17 +134,6 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
         </dependency>
     </dependencies>
 
