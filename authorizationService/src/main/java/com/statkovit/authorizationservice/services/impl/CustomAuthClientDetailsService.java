@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
+import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +17,7 @@ public class CustomAuthClientDetailsService implements ClientDetailsService {
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         return authClientRepository.findByClientId(clientId).orElseThrow(
-                () -> new IllegalArgumentException(String.format("Client with id %s is not found!", clientId))
+                () -> new NoSuchClientException(String.format("Client with id %s is not found!", clientId))
         );
     }
 }

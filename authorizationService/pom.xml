@@ -12,7 +12,7 @@
         <java.version>12</java.version>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <exceptions-library.version>0.0.1</exceptions-library.version>
-        <utils-library.version>0.0.1</utils-library.version>
+        <utils-library.version>0.0.2-beta1</utils-library.version>
         <lombok.version>1.18.10</lombok.version>
         <commons-lang.version>3.9</commons-lang.version>
         <commons-collections.version>4.1</commons-collections.version>

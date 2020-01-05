@@ -1,4 +1,4 @@
-package com.statkovit.authorizationservice.exceptions;
+package com.statkovit.authorizationservice.exceptions.translators;
 
 import com.statkolibraries.exceptions.domain.ErrorDTO;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
