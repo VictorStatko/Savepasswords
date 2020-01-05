@@ -11,7 +11,6 @@
     <properties>
         <java.version>12</java.version>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-        <jwt-processing-library.version>0.0.1</jwt-processing-library.version>
         <exceptions-library.version>0.0.1</exceptions-library.version>
         <utils-library.version>0.0.1</utils-library.version>
         <lombok.version>1.18.10</lombok.version>
@@ -79,12 +78,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres-driver.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.statkolibraries</groupId>
-            <artifactId>jwt-processing</artifactId>
-            <version>${jwt-processing-library.version}</version>
         </dependency>
 
         <dependency>

@@ -1,5 +1,6 @@
 package com.statkovit.authorizationservice.configuration;
 
+import com.statkovit.authorizationservice.constants.ServerConstants;
 import com.statkovit.authorizationservice.services.impl.CustomAuthClientDetailsService;
 import com.statkovit.authorizationservice.services.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     private final PasswordEncoder encoder;
     private final TokenStore tokenStore;
 
+    private static final String TOKEN_ROUTE = ServerConstants.API_ROUTE + "token";
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.withClientDetails(authClientDetailsService);
@@ -33,7 +36,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         endpoints.tokenStore(tokenStore)
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .reuseRefreshTokens(false);
+                .reuseRefreshTokens(false)
+                .pathMapping("/oauth/token", TOKEN_ROUTE);
     }
 
     @Override

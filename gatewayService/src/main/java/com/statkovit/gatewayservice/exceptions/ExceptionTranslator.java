@@ -3,8 +3,6 @@ package com.statkovit.gatewayservice.exceptions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.exceptions.domain.ErrorDTO;
-import com.statkolibraries.exceptions.exceptions.FeignClientException;
-import com.statkolibraries.exceptions.handlers.FeignExceptionHandler;
 import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
@@ -29,12 +27,8 @@ public class ExceptionTranslator implements WebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        ResponseEntity<ErrorDTO> responseEntity;
-        if (ex instanceof FeignClientException) {
-            responseEntity = FeignExceptionHandler.processFeignClientException((FeignClientException) ex);
-        } else {
-            responseEntity = GlobalExceptionHandler.processException((Exception) ex);
-        }
+        ResponseEntity<ErrorDTO> responseEntity = GlobalExceptionHandler.processException((Exception) ex);
+
         byte[] bytes = new byte[0];
 
         if (Objects.nonNull(responseEntity.getBody())) {
