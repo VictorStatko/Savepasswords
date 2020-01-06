@@ -7,13 +7,13 @@ import java.util.List;
 public class ErrorDTO {
     private Date timestamp = new Date();
     private Integer status;
-    private String message;
-    private String description;
+    private String error;
+    private String error_description;
     private List<DataErrorDTO> dataErrors;
 
-    public ErrorDTO(String message, String description, int status) {
-        this.message = message;
-        this.description = description;
+    public ErrorDTO(String error, String error_description, int status) {
+        this.error = error;
+        this.error_description = error_description;
         this.status = status;
     }
 
@@ -38,20 +38,20 @@ public class ErrorDTO {
         this.dataErrors = dataErrors;
     }
 
-    public String getMessage() {
-        return message;
+    public String getError() {
+        return error;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setError(String error) {
+        this.error = error;
     }
 
-    public String getDescription() {
-        return description;
+    public String getErrorDescription() {
+        return error_description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setErrorDescription(String error_description) {
+        this.error_description = error_description;
     }
 
     public Integer getStatus() {

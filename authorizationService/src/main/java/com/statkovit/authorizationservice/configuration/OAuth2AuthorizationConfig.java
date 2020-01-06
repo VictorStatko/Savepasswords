@@ -40,6 +40,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     private final TokenStore tokenStore;
     private final WebResponseExceptionTranslator<OAuth2Exception> exceptionTranslator;
 
+    //Constructor qualifier in lombok is not working for me https://github.com/rzwitserloot/lombok/issues/745
     @Autowired
     @Qualifier("springSecurityFilterChain")
     private Filter springSecurityFilterChain;

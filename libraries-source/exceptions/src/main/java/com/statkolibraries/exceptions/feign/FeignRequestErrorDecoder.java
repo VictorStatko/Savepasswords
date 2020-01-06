@@ -32,7 +32,7 @@ public class FeignRequestErrorDecoder implements ErrorDecoder {
             String result = IOUtils.toString(reader);
             ErrorDTO errorDTO = objectMapper.readValue(result, ErrorDTO.class);
             return new FeignClientException(
-                    errorDTO.getDescription(), errorDTO.getMessage(), HttpStatus.valueOf(response.status()), errorDTO.getDataErrors()
+                    errorDTO.getErrorDescription(), errorDTO.getError(), HttpStatus.valueOf(response.status()), errorDTO.getDataErrors()
             );
         } catch (Exception e) {
             return new FeignClientException(
