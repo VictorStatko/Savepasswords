@@ -11,17 +11,20 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
+        <version>2.2.2.RELEASE</version>
     </parent>
 
     <properties>
         <java.version>12</java.version>
-        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-        <postgres-driver.version>42.2.8</postgres-driver.version>
-        <liquibase.version>3.8.0</liquibase.version>
+        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+        <postgres-driver.version>42.2.9</postgres-driver.version>
+        <liquibase.version>3.8.4</liquibase.version>
         <exceptions-library.version>0.0.2-beta1</exceptions-library.version>
+        <utils-library.version>0.0.2-beta2</utils-library.version>
         <lombok.version>1.18.10</lombok.version>
-        <model-mapper.version>2.3.0</model-mapper.version>
+        <model-mapper.version>2.3.6</model-mapper.version>
+        <commons-collections.version>4.1</commons-collections.version>
+        <commons-lang.version>3.9</commons-lang.version>
     </properties>
 
     <dependencies>
@@ -36,6 +39,18 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
@@ -82,6 +97,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.statkolibraries</groupId>
+            <artifactId>utils</artifactId>
+            <version>${utils-library.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -93,6 +114,19 @@
             <artifactId>modelmapper</artifactId>
             <version>${model-mapper.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+
 
     </dependencies>
 

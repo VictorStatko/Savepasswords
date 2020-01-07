@@ -6,7 +6,7 @@
 
     <groupId>com.statkolibraries</groupId>
     <artifactId>utils</artifactId>
-    <version>0.0.2-beta1</version>
+    <version>0.0.2-beta2</version>
 
     <build>
         <pluginManagement>

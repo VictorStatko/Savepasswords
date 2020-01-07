@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Victor Statko" id="07.01.2020-12:00.vstatko" runAlways="false">
+        <insert tableName="auth_client_detail">
+            <column name="id" valueSequenceNext="auth_client_detail_id_seq"/>
+            <column name="client_id" value="user-service"/>
+            <column name="client_secret" value="$2b$10$huqspMFzmfoJ0xlsUceQJuzWjjb05.9B1/lYWiqEImOsT5p6ACNg6"/>
+            <column name="scope" value="service"/>
+            <column name="authorized_grant_types" value="client_credentials"/>
+            <column name="access_token_validity" value="600"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="Victor Statko" id="07.01.2020-12:30.vstatko" runAlways="false">
+        <dropColumn tableName="account">
+            <column name="name"/>
+        </dropColumn>
+    </changeSet>
+
+</databaseChangeLog>

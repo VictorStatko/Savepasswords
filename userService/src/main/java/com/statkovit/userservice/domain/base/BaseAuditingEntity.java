@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -25,4 +26,7 @@ public abstract class BaseAuditingEntity implements Serializable {
     @LastModifiedDate
     @Column(name = "updated_date", nullable = false)
     private Instant updateDate;
+
+    @Version
+    private Long version;
 }

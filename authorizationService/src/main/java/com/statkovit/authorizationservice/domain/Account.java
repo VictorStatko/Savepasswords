@@ -16,7 +16,7 @@ public class Account extends BaseIndexedEntity {
 
     public static final int MAX_LENGTH__EMAIL = 254;
     public static final int MAX_LENGTH__PASSWORD = 60;
-    public static final int MAX_LENGTH__NAME = 254;
+    public static final int MIN_LENGTH__PASSWORD = 8;
 
     @Column(name = "email", nullable = false, unique = true, length = MAX_LENGTH__EMAIL)
     @Email
@@ -24,9 +24,6 @@ public class Account extends BaseIndexedEntity {
 
     @Column(name = "password", nullable = false, length = MAX_LENGTH__PASSWORD)
     private String password;
-
-    @Column(name = "name", nullable = false, length = MAX_LENGTH__NAME)
-    private String name;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)

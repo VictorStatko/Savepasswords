@@ -1,7 +1,9 @@
 package com.statkovit.userservice.exceptions;
 
 import com.statkolibraries.exceptions.domain.ErrorDTO;
+import com.statkolibraries.exceptions.exceptions.FeignClientException;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
+import com.statkolibraries.exceptions.handlers.FeignExceptionHandler;
 import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
 import com.statkolibraries.exceptions.handlers.LocalizedExceptionHandler;
 import com.statkolibraries.exceptions.handlers.MethodArgumentNotValidExceptionHandler;
@@ -25,6 +27,12 @@ public class ExceptionTranslator {
     public ResponseEntity<ErrorDTO> processMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error(ex.getMessage(), ex);
         return MethodArgumentNotValidExceptionHandler.processValidationError(ex);
+    }
+
+    @ExceptionHandler(FeignClientException.class)
+    public ResponseEntity<ErrorDTO> processFeignClientException(FeignClientException ex) {
+        log.error(ex.getMessage(), ex);
+        return FeignExceptionHandler.processFeignClientException(ex);
     }
 
     @ExceptionHandler(Exception.class)

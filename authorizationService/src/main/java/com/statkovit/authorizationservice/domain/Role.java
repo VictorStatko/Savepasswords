@@ -1,5 +1,6 @@
 package com.statkovit.authorizationservice.domain;
 
+import com.statkovit.authorizationservice.enums.RoleName;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,13 +23,23 @@ public class Role implements GrantedAuthority {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "authority", nullable = false, length = MAX_LENGTH__AUTHORITY)
-    private String authority;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "authority", nullable = false, unique = true, length = MAX_LENGTH__AUTHORITY)
+    private RoleName authority;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "role_permission",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<Permission> permissions = new HashSet<>();
+
+    @Override
+    public String getAuthority() {
+        return authority.name();
+    }
+
+    public RoleName getAuthorityEnum() {
+        return authority;
+    }
 }

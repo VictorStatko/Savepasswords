@@ -32,6 +32,7 @@ import java.util.List;
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     private static final String TOKEN_ROUTE = ServerConstants.API_ROUTE + "token";
+    private static final String CHECK_TOKEN_ROUTE = TOKEN_ROUTE + "/check";
 
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
@@ -59,7 +60,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .userDetailsService(userDetailsService)
                 .exceptionTranslator(exceptionTranslator)
                 .reuseRefreshTokens(false)
-                .pathMapping("/oauth/token", TOKEN_ROUTE);
+                .pathMapping("/oauth/token", TOKEN_ROUTE)
+                .pathMapping("/oauth/check_token", CHECK_TOKEN_ROUTE);
     }
 
     @Override

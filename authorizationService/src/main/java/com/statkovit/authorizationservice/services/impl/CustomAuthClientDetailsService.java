@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class CustomAuthClientDetailsService implements ClientDetailsService {
     private final AuthClientRepository authClientRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         return authClientRepository.findByClientId(clientId).orElseThrow(
                 () -> new NoSuchClientException(String.format("Client with id %s is not found!", clientId))
