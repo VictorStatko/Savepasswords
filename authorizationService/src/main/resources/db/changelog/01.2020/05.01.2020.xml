@@ -122,7 +122,6 @@
     </changeSet>
 
     <changeSet author="Victor Statko" id="15:40.vstatko" runAlways="false">
-        <validCheckSum>8:af61e818e63b6762be15d29d3af480f9</validCheckSum>
         <insert tableName="auth_client_detail">
             <column name="id" valueSequenceNext="auth_client_detail_id_seq"/>
             <column name="client_id" value="browser"/>
@@ -137,7 +136,7 @@
         </insert>
         <insert tableName="account">
             <column name="id" valueSequenceNext="account_id_seq"/>
-            <column name="uuid" valueComputed="09561dbe-c333-449a-b490-dfd2ff9e3f17"/>
+            <column name="uuid" value="09561dbe-c333-449a-b490-dfd2ff9e3f17"/>
             <column name="created_date" value="now()"/>
             <column name="updated_date" value="now()"/>
             <column name="version" value="1"/>
