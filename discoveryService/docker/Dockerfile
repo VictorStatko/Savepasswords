@@ -1,4 +1,4 @@
-FROM openjdk:12 as run
+FROM openjdk:11 as run
 LABEL maintainer="statkovit@gmail.com"
 EXPOSE 8761
 ENV APP_HOME /discovery-service
@@ -9,7 +9,7 @@ WORKDIR $APP_HOME
 COPY /target/*.jar /discovery-service/discovery-service.jar
 ENTRYPOINT ["java", "-jar", "/discovery-service/discovery-service.jar"]
 
-FROM openjdk:12 as debug
+FROM openjdk:11 as debug
 LABEL maintainer="statkovit@gmail.com"
 EXPOSE 8761
 ENV APP_HOME /discovery-service

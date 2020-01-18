@@ -1,14 +1,14 @@
 _Requirements:_  
 Docker-ce 18.09.7  
 
+
 _Before running:_
 1) clone content of file .env.example to new file .env 
 2) change environment variables at .env file (if needed)
-3) docker volume create --name=auth-postgres
-4) docker volume create --name=user-postgres
-5) change data volume mount for auth-redis service (docker-compose.yml)
-6) change data volume mount for zookeeper and kafka services (docker-compose.yml)
-7) mvn clean package for every microservice
+3) change data volume mount for auth-redis, auth-postgres, user-postgres, zookeeper and kafka services(docker-compose.yml)
+4) sudo chown -R 1001:root {zookeeper volume}
+example: sudo chown -R 1001:root /home/victor/development/data/docker/zookeeper1/data
+5) mvn clean package for every microservice
 
 _Running:_  
 **For simple run** use docker-compose.yml   

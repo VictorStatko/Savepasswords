@@ -15,7 +15,7 @@
     </parent>
 
     <properties>
-        <java.version>12</java.version>
+        <java.version>11</java.version>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <postgres-driver.version>42.2.9</postgres-driver.version>
         <liquibase.version>3.8.4</liquibase.version>

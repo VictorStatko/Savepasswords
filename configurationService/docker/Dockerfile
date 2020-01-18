@@ -1,4 +1,4 @@
-FROM openjdk:12 as run
+FROM openjdk:11 as run
 LABEL maintainer="statkovit@gmail.com"
 EXPOSE 8088
 ENV APP_HOME /configuration-service
@@ -9,7 +9,7 @@ WORKDIR $APP_HOME
 COPY /target/*.jar /configuration-service/configuration-service.jar
 ENTRYPOINT ["java", "-jar", "/configuration-service/configuration-service.jar"]
 
-FROM openjdk:12 as debug
+FROM openjdk:11 as debug
 LABEL maintainer="statkovit@gmail.com"
 EXPOSE 8088
 ENV APP_HOME /configuration-service

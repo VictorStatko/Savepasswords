@@ -1,4 +1,5 @@
 version: "2.4"
+
 services:
 
   configuration-service:
@@ -10,7 +11,7 @@ services:
       target: run
     depends_on:
       kafka2:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test: curl http://configuration-service:8088 || echo 1
       interval: 10s
@@ -34,7 +35,7 @@ services:
       configuration-service:
         condition: service_healthy
       kafka2:
-        condition: service_healthy
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
@@ -50,7 +51,7 @@ services:
       configuration-service:
         condition: service_healthy
       kafka2:
-        condition: service_healthy
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
@@ -70,7 +71,7 @@ services:
       auth-postgres:
         condition: service_healthy
       kafka2:
-        condition: service_healthy
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
@@ -93,7 +94,7 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - C:\Users\statk\.docker-data\auth-redis:/data
+      - /home/victor/development/data/docker/auth-redis/data:/data
 
   auth-postgres:
     ports:
@@ -110,7 +111,7 @@ services:
       - POSTGRES_USER=${AUTH_SERVICE_POSTGRES_USER}
       - POSTGRES_DB=${AUTH_SERVICE_POSTGRES_DB}
     volumes:
-      - auth-postgres:/var/lib/postgresql/data
+      - /home/victor/development/data/docker/auth-postgres/data:/var/lib/postgresql/data
 
   user-postgres:
     ports:
@@ -127,7 +128,7 @@ services:
       - POSTGRES_USER=${USER_SERVICE_POSTGRES_USER}
       - POSTGRES_DB=${USER_SERVICE_POSTGRES_DB}
     volumes:
-      - user-postgres:/var/lib/postgresql/data
+      - /home/victor/development/data/docker/user-postgres/data:/var/lib/postgresql/data
 
   user-service:
     ports:
@@ -142,7 +143,7 @@ services:
       user-postgres:
         condition: service_healthy
       kafka2:
-        condition: service_healthy
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
@@ -166,50 +167,34 @@ services:
       - ZOO_SERVERS=zookeeper1:2888:3888
       - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
-      - C:\Users\statk\.docker-data\zookeeper1\data:/bitnami/zookeeper
+      - /home/victor/development/data/docker/zookeeper1/data:/bitnami/zookeeper
 
   kafka1:
-    build: kafka
+    image: confluentinc/cp-kafka:5.4.0
     depends_on:
-      zookeeper1:
-        condition: service_healthy
+      - zookeeper1
     ports:
       - "9092:9092"
-    healthcheck:
-      test: ["CMD-SHELL", "/bin/kafka-healthcheck.sh"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
     environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ADVERTISED_HOST_NAME=host.docker.internal
-      - KAFKA_ADVERTISED_PORT=9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2181
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19092,LISTENER_DOCKER_EXTERNAL://127.0.0.1:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181"
+      KAFKA_BROKER_ID: 1
     volumes:
-      - C:\Users\statk\.docker-data\kafka1\data:/var/lib/kafka/data
+      - /home/victor/development/data/docker/kafka1/data:/var/lib/kafka/data
 
   kafka2:
-    build: kafka
+    image: confluentinc/cp-kafka:5.4.0
     depends_on:
-      kafka1:
-        condition: service_healthy
+      - zookeeper1
     ports:
-      - "9093:9092"
-    healthcheck:
-      test: ["CMD-SHELL", "/bin/kafka-healthcheck.sh"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      - "9093:9093"
     environment:
-      - KAFKA_BROKER_ID=2
-      - KAFKA_ADVERTISED_HOST_NAME=host.docker.internal
-      - KAFKA_ADVERTISED_PORT=9093
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2181
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka2:19093,LISTENER_DOCKER_EXTERNAL://127.0.0.1:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181"
+      KAFKA_BROKER_ID: 2
     volumes:
-      - C:\Users\statk\.docker-data\kafka2\data:/var/lib/kafka/data
-
-volumes:
-  auth-postgres:
-    external: true
-  user-postgres:
-    external: true
+      - /home/victor/development/data/docker/kafka2/data:/var/lib/kafka/data
