@@ -21,10 +21,12 @@
         <liquibase.version>3.8.4</liquibase.version>
         <exceptions-library.version>0.0.2-beta1</exceptions-library.version>
         <utils-library.version>0.0.2-beta2</utils-library.version>
+        <kafka-util-library.version>0.0.1-beta1</kafka-util-library.version>
         <lombok.version>1.18.10</lombok.version>
         <model-mapper.version>2.3.6</model-mapper.version>
         <commons-collections.version>4.1</commons-collections.version>
         <commons-lang.version>3.9</commons-lang.version>
+        <spring-kafka.version>2.4.1.RELEASE</spring-kafka.version>
     </properties>
 
     <dependencies>
@@ -72,6 +74,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres-driver.version}</version>
@@ -100,6 +112,12 @@
             <groupId>com.statkolibraries</groupId>
             <artifactId>utils</artifactId>
             <version>${utils-library.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.statkolibraries</groupId>
+            <artifactId>kafkaUtils</artifactId>
+            <version>${kafka-util-library.version}</version>
         </dependency>
 
         <dependency>

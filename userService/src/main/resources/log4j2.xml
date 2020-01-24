@@ -29,14 +29,12 @@
 
     <Loggers>
         <!-- LOG everything at INFO level -->
-        <Root level="info">
+        <Root level="DEBUG">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
         </Root>
-        <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug" additivity="false">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="RollingFile" />
-        </Logger>
+        <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug"/>
+        <Logger name="org.apache.kafka" level="warn"/>
     </Loggers>
 
 </Configuration>

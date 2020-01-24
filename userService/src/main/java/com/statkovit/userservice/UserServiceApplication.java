@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +19,7 @@ import java.util.TimeZone;
 @EnableFeignClients
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EntityScan(basePackageClasses = {UserServiceApplication.class, Jsr310JpaConverters.class})
+@EnableScheduling
 public class UserServiceApplication {
 
     @PostConstruct
