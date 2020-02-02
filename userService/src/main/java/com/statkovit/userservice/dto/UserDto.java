@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ public class UserDto {
     public static final int MAX_LENGTH__PASSWORD = 60;
     public static final int MIN_LENGTH__PASSWORD = 8;
 
-    private Long id;
+    private UUID uuid;
 
     @NotEmpty
     @Size(max = User.MAX_LENGTH__NAME)
