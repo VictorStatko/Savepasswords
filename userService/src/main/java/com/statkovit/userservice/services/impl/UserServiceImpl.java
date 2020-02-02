@@ -40,10 +40,12 @@ public class UserServiceImpl implements UserService {
             user.setName(name);
             user.setAccountId(accountId);
 
-            OutboxEvent outboxEvent = new OutboxEvent(KafkaTopics.USERS.getTopicName(), "{userCreated: true}");
+            user = userRepository.save(user);
+
+            OutboxEvent outboxEvent = new OutboxEvent(KafkaTopics.USERS.getTopicName(), "{userCreated: true}", user.getUuid().toString());
             outboxEventRepository.save(outboxEvent);
 
-            return userRepository.save(user);
+            return user;
         });
     }
 }

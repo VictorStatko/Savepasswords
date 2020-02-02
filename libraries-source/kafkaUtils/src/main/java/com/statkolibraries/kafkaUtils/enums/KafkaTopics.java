@@ -1,8 +1,7 @@
 package com.statkolibraries.kafkaUtils.enums;
 
 public enum KafkaTopics {
-    USERS("users"),
-    USER_SERVICE_LAST_PROCESSED_EVENTS("user_service_last_processed_events");
+    USERS("users");
 
     private final String topicName;
 

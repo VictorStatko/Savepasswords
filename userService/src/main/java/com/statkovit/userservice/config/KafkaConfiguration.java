@@ -4,10 +4,8 @@ import com.statkolibraries.kafkaUtils.enums.KafkaTopics;
 import com.statkovit.userservice.properties.CustomProperties;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.requests.IsolationLevel;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -21,13 +19,9 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import static org.apache.kafka.common.config.TopicConfig.RETENTION_BYTES_CONFIG;
-import static org.apache.kafka.common.config.TopicConfig.RETENTION_MS_CONFIG;
 
 @Configuration
 @RequiredArgsConstructor
@@ -67,30 +61,6 @@ public class KafkaConfiguration {
                 .build();
     }
 
-    @Bean
-    public NewTopic usersServiceLastProcessedEventsTopic() {
-        return TopicBuilder.name(KafkaTopics.USER_SERVICE_LAST_PROCESSED_EVENTS.getTopicName())
-                .partitions(1)
-                .replicas(2)
-                .config(RETENTION_MS_CONFIG, "-1")
-                .config(RETENTION_BYTES_CONFIG, "1048576")
-                .build();
-    }
-
-
-    @Bean(name = "lastProcessedEventConsumer")
-    Consumer<String, String> lastProcessedEventConsumer(ConsumerFactory<String, String> consumerFactory) {
-        Consumer<String, String> lastProcessedEventConsumer = consumerFactory.createConsumer();
-
-        lastProcessedEventConsumer.assign(
-                Collections.singletonList(
-                        new TopicPartition(KafkaTopics.USER_SERVICE_LAST_PROCESSED_EVENTS.getTopicName(), 0)
-                )
-        );
-
-        return lastProcessedEventConsumer;
-    }
-
     @Bean(name = "kafkaTransactionManager")
     public KafkaTransactionManager transactionManager() {
         return new KafkaTransactionManager<>(producerFactory());
@@ -128,6 +98,16 @@ public class KafkaConfiguration {
                 consumerConfigs(), new StringDeserializer(), new StringDeserializer()
         );
     }
+
+    //add to outbox event unique identifier
+    //Concurrent weakhashmap with events that processing in progress
+    //FilteringMessageListenerAdapter - check if event in list, and check in redis (with already processed events)
+    //if event in redis - discard
+    //if event in processing - thread.sleep (while event in list)
+    //if event not in lists - start process
+    //if during @eventListener exception - use KafkaListenerErrorHandler, remove from weakhashmap
+    // in the end of event listener - publish event for async @transactionalEventListener with fallback = true, to insert event to redis and remove from wealhashmap
+
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerStringContainerFactory() {
