@@ -6,6 +6,9 @@ import {trySignUp} from "ducks/account/actions";
 import {compose} from "redux";
 import {withTranslation} from "react-i18next";
 import {Link} from "react-router-dom";
+import {toast} from 'react-toastify';
+import i18n from "../../../i18n";
+import history from 'utils/history';
 
 class SignUpForm extends Component {
     state = {
@@ -23,6 +26,8 @@ class SignUpForm extends Component {
             email: this.state.email,
             password: this.state.password
         });
+        toast.success(i18n.t('signUp.success'));
+        history.push('/sign-in');
     };
 
     render() {

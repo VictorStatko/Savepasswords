@@ -6,6 +6,7 @@ import history from 'utils/history';
 import App from 'containers/App';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import throttle from 'lodash.throttle';
 
 // eslint-disable-next-line no-unused-vars
 import i18n from "./i18n";
@@ -13,10 +14,18 @@ import i18n from "./i18n";
 import configureStore from './configureStore';
 
 import 'styles/theme.scss';
+import {loadState, saveState} from "./localStorage";
 
 // Create redux store with history
-const initialState = {};
+const initialState = loadState();
 const store = configureStore(initialState, history);
+
+store.subscribe(throttle(() => {
+    saveState({
+        account: store.getState().account
+    });
+}, 1000));
+
 const MOUNT_NODE = document.getElementById('app');
 
 const render = () => {

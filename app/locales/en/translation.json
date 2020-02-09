@@ -7,6 +7,8 @@
 "global.validation.maxLength": "Field length must not exceed {{maxLength}} symbols.",
 "global.validation.minLength": "Field length must be greater than {{minLength}} symbols.",
 "global.validation.notEmpty": "Field must not be empty.",
+"global.authError": "Problems with authorization. Try again later or contact your system administrator.",
+"global.badCredentials": "The sign in information is incorrect. Please recheck entered data.",
 
 "signUp.title": "Sign up",
 "signUp.nameLabel": "Please enter your name for contact",
@@ -15,6 +17,7 @@
 "signUp.validation.email": "Please enter valid email address",
 "signUp.validation.emailAlreadyExists": "An account with this email is already registered in the system.",
 "signUp.alreadyRegisteredLink": "Already signed up? Please sign in",
+"signUp.success": "Sign up was successful. Please sign in.",
 
 "signIn.title": "Sign in",
 "signIn.notRegisteredLink": "Don't have an account yet? Please sign up",

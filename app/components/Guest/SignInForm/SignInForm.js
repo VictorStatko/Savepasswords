@@ -36,7 +36,7 @@ class SignInForm extends Component {
         if (this.validate()) {
             try {
                 await this.props.trySignIn({
-                    email: email,
+                    username: email,
                     password: password
                 });
             } catch (error) {
