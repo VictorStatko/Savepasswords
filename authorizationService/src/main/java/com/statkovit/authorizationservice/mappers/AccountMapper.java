@@ -14,7 +14,7 @@ public class AccountMapper {
     public AccountDto toDto(Account account) {
         ModelMapper modelMapper = new ModelMapper();
 
-        modelMapper.addMappings(new PropertyMap<AccountDto, Account>() {
+        modelMapper.addMappings(new PropertyMap<Account, AccountDto>() {
             @Override
             protected void configure() {
                 skip(destination.getPassword());

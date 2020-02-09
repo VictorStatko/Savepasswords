@@ -9,6 +9,7 @@ import com.statkovit.authorizationservice.exceptions.CustomOAuth2Exception;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 public class CustomOAuth2ExceptionSerializer extends StdSerializer<CustomOAuth2Exception> {
 
@@ -18,11 +19,13 @@ public class CustomOAuth2ExceptionSerializer extends StdSerializer<CustomOAuth2E
 
     @Override
     public void serialize(CustomOAuth2Exception e, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        String message = Objects.equals(e.getMessage(), "Bad credentials") ?
+                "global.badCredentials" : "global.authError";
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("timestamp", DateTimeUtils.dateToISO8601Format(new Date()));
         jsonGenerator.writeNumberField("status", e.getHttpErrorCode());
-        jsonGenerator.writeObjectField("message", "global.authError");
-        jsonGenerator.writeStringField("error", e.getOAuth2ErrorCode());
+        jsonGenerator.writeObjectField("error", message);
+        jsonGenerator.writeStringField("error_internal", e.getOAuth2ErrorCode());
         jsonGenerator.writeStringField("error_description", e.getMessage());
 
         if (e.getAdditionalInformation() != null) {
