@@ -1,0 +1,11 @@
+@import "styles/colors";
+
+.header {
+  overflow: hidden;
+  background-color: $light-gray;
+  padding: 20px 10px;
+}
+
+.right {
+  float: right;
+}

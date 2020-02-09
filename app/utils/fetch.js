@@ -19,7 +19,7 @@ export default async (method, path, data, headers) => {
             return config;
         },
         error => {
-            Promise.reject(error)
+           return  Promise.reject(error)
         });
 
     transport.interceptors.response.use((response) => {
@@ -52,8 +52,10 @@ export default async (method, path, data, headers) => {
                         }
                     })
                     .catch(error => {
-
+//TODO
                     })
+            } else {
+               return Promise.reject(error)
             }
         });
 

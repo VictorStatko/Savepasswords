@@ -8,8 +8,7 @@ import {isEmpty} from "utils/stringUtils";
 import {connect} from "react-redux";
 import {trySignIn} from "ducks/account/actions";
 import {compose} from "redux";
-import {isEmailValid, isStringMaxLengthValid} from "utils/validationUtils";
-import {MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
+import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
 import history from 'utils/history';
 
 class SignInForm extends Component {

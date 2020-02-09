@@ -14,6 +14,7 @@ export function processResponseErrorAsNotification(error) {
 }
 
 export function processResponseErrorAsFormOrNotification(error) {
+    console.log(error);
     if (error.response.status === 500) {
         return processResponseErrorAsNotification(error);
     }

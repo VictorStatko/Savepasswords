@@ -14,7 +14,6 @@
     "prop-types": "latest",
     "query-string": "^6.10.1",
     "react": "^16.10.2",
-    "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.10.2",
     "react-i18next": "^10.13.1",
     "react-redux": "^7.1.1",
