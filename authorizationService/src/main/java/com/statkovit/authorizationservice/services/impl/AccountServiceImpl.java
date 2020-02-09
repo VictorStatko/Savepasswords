@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -22,12 +24,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public Account create(AccountDto accountDto) {
-        accountRepository.getByEmail(accountDto.getEmail()).ifPresent(account -> {
+        if (accountRepository.existsByEmail(accountDto.getEmail())) {
             throw new LocalizedException(
                     String.format("Account with email %s already exists.", accountDto.getEmail()),
                     "exceptions.emailAlreadyExists"
             );
-        });
+        }
 
         final String passwordHash = passwordEncoder.encode(accountDto.getPassword());
 
@@ -38,5 +40,17 @@ public class AccountServiceImpl implements AccountService {
         account.setRole(roleService.getAccountOwnerRole());
 
         return accountRepository.save(account);
+    }
+
+    //TODO replace exceptions.error
+    @Override
+    @Transactional(readOnly = true)
+    public Account getByEmail(String email) {
+        return accountRepository.getByEmail(email).orElseThrow(
+                () -> new LocalizedException(
+                        new EntityNotFoundException("Account with email = " + email + " has not been found."),
+                        "exceptions.error"
+                )
+        );
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,15 +20,15 @@ public class AccountController {
 
     private final AccountsRestService accountsRestService;
 
-
-    @GetMapping(CONTROLLER_ROUTE + "/current")
-    public Principal getUser(Principal principal) {
-        return principal;
-    }
-
     @PostMapping(CONTROLLER_ROUTE)
     public ResponseEntity<AccountDto> createAccount(@Valid @RequestBody AccountDto accountDto) {
         AccountDto dto = accountsRestService.create(accountDto);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping(CONTROLLER_ROUTE + "/current")
+    public ResponseEntity<AccountDto> getCurrentAccount() {
+        AccountDto dto = accountsRestService.getCurrentAccountDataFromAuth();
         return ResponseEntity.ok(dto);
     }
 

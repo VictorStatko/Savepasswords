@@ -5,4 +5,6 @@ import com.statkovit.authorizationservice.payload.AccountDto;
 
 public interface AccountService {
     Account create(AccountDto account);
+
+    Account getByEmail(String email);
 }
