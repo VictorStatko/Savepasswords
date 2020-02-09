@@ -51,6 +51,9 @@ export default async (method, path, data, headers) => {
                             return axios(originalRequest);
                         }
                     })
+                    .catch(error => {
+
+                    })
             }
         });
 

@@ -10,6 +10,7 @@ import {trySignIn} from "ducks/account/actions";
 import {compose} from "redux";
 import {isEmailValid, isStringMaxLengthValid} from "utils/validationUtils";
 import {MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
+import history from 'utils/history';
 
 class SignInForm extends Component {
     state = {
@@ -39,6 +40,7 @@ class SignInForm extends Component {
                     username: email,
                     password: password
                 });
+                history.push('/');
             } catch (error) {
                 if (error.message && error.message === 'showOnForm') {
                     this.setState({

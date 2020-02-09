@@ -7,11 +7,6 @@ import SignInForm from "components/Guest/SignInForm";
 
 class GuestPage extends React.Component {
 
-    state = {
-        nameError: '',
-        emailError: ''
-    };
-
     render() {
         const {t, process} = this.props;
 
