@@ -1,6 +1,5 @@
 package com.statkovit.userservice.dto;
 
-import com.statkovit.userservice.domain.User;
 import com.statkovit.userservice.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +17,6 @@ public class UserDto {
     private UUID uuid;
 
     @NotEmpty
-    @Size(max = User.MAX_LENGTH__NAME)
     private String name;
 
     @NotEmpty

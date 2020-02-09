@@ -31,7 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
-    private static final String TOKEN_ROUTE = ServerConstants.API_ROUTE + "token";
+    private static final String TOKEN_ROUTE = ServerConstants.API_ROUTE + "auth/token";
     private static final String CHECK_TOKEN_ROUTE = TOKEN_ROUTE + "/check";
 
     private final AuthenticationManager authenticationManager;

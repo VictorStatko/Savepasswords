@@ -1,0 +1,12 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Victor Statko" id="09.02.2020-14.00_vstatko" runAlways="false">
+        <dropTable tableName="users"/>
+        <dropSequence sequenceName="users_id_seq"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -13,6 +13,7 @@
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <exceptions-library.version>0.0.2-beta1</exceptions-library.version>
         <utils-library.version>0.0.2-beta2</utils-library.version>
+        <kafka-util-library.version>0.0.1-beta1</kafka-util-library.version>
         <lombok.version>1.18.10</lombok.version>
         <commons-lang.version>3.9</commons-lang.version>
         <commons-collections.version>4.1</commons-collections.version>
@@ -52,6 +53,11 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
         <dependency>
@@ -134,6 +140,13 @@
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>${model-mapper.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.statkolibraries</groupId>
+            <artifactId>kafkaUtils</artifactId>
+            <version>${kafka-util-library.version}</version>
         </dependency>
     </dependencies>
 

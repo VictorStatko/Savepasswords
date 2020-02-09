@@ -1,5 +1,6 @@
 package com.statkovit.userservice.listeners;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkolibraries.kafkaUtils.enums.KafkaActions;
 import com.statkolibraries.kafkaUtils.enums.KafkaTopics;
@@ -9,7 +10,6 @@ import com.statkovit.userservice.events.UserCreatedEvent;
 import com.statkovit.userservice.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
