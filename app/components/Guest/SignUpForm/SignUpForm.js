@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import FormUserDetails from "./FormUserDetails";
-import FormPassword from "./FormPassword";
 import styles from "./SignUpForm.module.scss";
 import {connect} from "react-redux";
 import {trySignUp} from "ducks/account/actions";
@@ -10,24 +9,8 @@ import {Link} from "react-router-dom";
 
 class SignUpForm extends Component {
     state = {
-        step: 1,
-        name: "",
         email: "",
         password: ""
-    };
-
-    nextStep = () => {
-        const {step} = this.state;
-        this.setState({
-            step: step + 1
-        });
-    };
-
-    previousStep = () => {
-        const {step} = this.state;
-        this.setState({
-            step: step - 1
-        });
     };
 
     handleChange = (input, value) => {
@@ -38,44 +21,21 @@ class SignUpForm extends Component {
         e.preventDefault();
         await this.props.trySignUp({
             email: this.state.email,
-            name: this.state.name,
             password: this.state.password
         });
     };
 
-    renderMultiStepForm = (step) => {
-        switch (step) {
-            case 1:
-                return (
-                    <FormUserDetails
-                        nextStep={this.nextStep}
-                        handleChange={this.handleChange}
-                        name={this.state.name}
-                        email={this.state.email}
-                    />
-                );
-            case 2:
-                return (
-                    <FormPassword
-                        previousStep={this.previousStep}
-                        handleChange={(this.handleChange)}
-                        password={this.state.password}
-                    />
-                );
-            default:
-                return null;
-        }
-    };
-
-
     render() {
         const {t} = this.props;
-        const {step} = this.state;
 
         return (
             <React.Fragment>
                 <form onSubmit={this.onSubmit}>
-                    {this.renderMultiStepForm(step)}
+                    <FormUserDetails
+                        handleChange={this.handleChange}
+                        password={this.state.password}
+                        email={this.state.email}
+                    />
                 </form>
                 <div className={styles.changePageLink}>
                     <Link to={'/sign-in'}>{t('signUp.alreadyRegisteredLink')}</Link>

@@ -5,6 +5,7 @@
 "global.requestError": "An error occurred while accessing the server. Please contact your system administrator.",
 "global.serverValidationError": "An error occurred during server validation of form. Please check the entered data.",
 "global.validation.maxLength": "Field length must not exceed {{maxLength}} symbols.",
+"global.validation.minLength": "Field length must be greater than {{minLength}} symbols.",
 "global.validation.notEmpty": "Field must not be empty.",
 
 "signUp.title": "Sign up",
@@ -18,7 +19,7 @@
 "signIn.title": "Sign in",
 "signIn.notRegisteredLink": "Don't have an account yet? Please sign up",
 "signIn.emailLabel": "Please enter your email",
-"signIn.passwordLabel": "Please enter the master password",
+"signIn.passwordLabel": "Please enter your master password",
 "signIn.validation.email": "Please enter valid email address",
 "exceptions.emailAlreadyExists"  : "An account with this email is already registered in the system.",
 "exceptions.accountNotFoundByEmail": "Account with this email is not found in the system.",

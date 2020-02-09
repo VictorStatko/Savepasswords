@@ -5,42 +5,37 @@ import styles from "./SignUpForm.module.scss";
 import PrimaryButton from "components/default/buttons/PrimaryButton";
 import {withTranslation} from "react-i18next";
 import {isEmpty} from "utils/stringUtils";
-import {isEmailValid, isStringMaxLengthValid} from "utils/validationUtils";
+import {
+    isEmailValid,
+    isStringMaxLengthValid,
+    isStringMinLengthValid,
+    MAX_LENGTH_EMAIL,
+    MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD
+} from "utils/validationUtils";
 import {compose} from "redux";
 import {connect} from "react-redux";
-import {checkAccountAlreadyExists} from "ducks/account/actions";
-import {MAX_LENGTH_EMAIL} from "utils/validationUtils";
-import {MAX_LENGTH_USERNAME} from "utils/validationUtils";
 
 class FormUserDetails extends Component {
     state = {
-        nameError: '',
+        passwordError: '',
         emailError: ''
     };
 
-    continue = async e => {
-        e.preventDefault();
+    submit = async e => {
         const {t} = this.props;
 
         const clientValidation = this.validate();
 
-        if (clientValidation) {
-            const accountExists = await this.props.checkAccountAlreadyExists({email: this.props.email});
-            if (accountExists.value) {
-                this.setState({
-                    emailError: t('signUp.validation.emailAlreadyExists')
-                });
-            } else {
-                this.props.nextStep();
-            }
+        if (!clientValidation) {
+            e.preventDefault();
         }
     };
 
     validate = () => {
-        const validName = this.validateName();
+        const validPassword = this.validatePassword();
         const validEmail = this.validateEmail();
 
-        return validName && validEmail;
+        return validPassword && validEmail;
     };
 
     validateEmail = () => {
@@ -67,31 +62,28 @@ class FormUserDetails extends Component {
         return valid;
     };
 
-    validateName = () => {
-        const {t, name} = this.props;
+    validatePassword = () => {
+        const {t, password} = this.props;
         let valid = true;
 
-        if (isEmpty(name)) {
+        if (isEmpty(password)) {
             this.setState({
-                nameError: t('global.validation.notEmpty')
+                passwordError: t('global.validation.notEmpty')
             });
             valid = false;
-        } else if (!isStringMaxLengthValid(name, MAX_LENGTH_USERNAME)) {
+        } else if (!isStringMaxLengthValid(password, MAX_LENGTH_PASSWORD)) {
             this.setState({
-                nameError: t('global.validation.maxLength', {maxLength: MAX_LENGTH_USERNAME})
+                passwordError: t('global.validation.maxLength', {maxLength: MAX_LENGTH_PASSWORD})
+            });
+            valid = false;
+        } else if (!isStringMinLengthValid(password, MIN_LENGTH_PASSWORD)) {
+            this.setState({
+                passwordError: t('global.validation.minLength', {minLength: MIN_LENGTH_PASSWORD})
             });
             valid = false;
         }
 
         return valid;
-    };
-
-    handleNameChange = e => {
-        this.setState({
-            nameError: ''
-        });
-
-        this.props.handleChange('name', e.target.value);
     };
 
     handleEmailChange = e => {
@@ -102,19 +94,28 @@ class FormUserDetails extends Component {
         this.props.handleChange('email', e.target.value);
     };
 
+    handlePasswordChange = e => {
+
+        this.setState({
+            passwordError: ''
+        });
+
+        this.props.handleChange('password', e.target.value);
+    };
+
 
     render() {
-        const {t, name, email} = this.props;
-        const {nameError, emailError} = this.state;
+        const {t, password, email} = this.props;
+        const {passwordError, emailError} = this.state;
 
         return (
             <React.Fragment>
-                <TextInput id="name" label={t('signUp.nameLabel')} className={styles.textInput} value={name}
-                           onChange={this.handleNameChange} error={nameError}/>
                 <TextInput id="email" label={t('signUp.emailLabel')} className={styles.textInput} value={email}
                            onChange={this.handleEmailChange} error={emailError}/>
+                <TextInput id="password" label={t('signUp.passwordLabel')} className={styles.textInput} value={password}
+                           onChange={this.handlePasswordChange} error={passwordError}/>
                 <div className={styles.buttonContainer}>
-                    <PrimaryButton onClick={this.continue} text={t('global.next')}/>
+                    <PrimaryButton type="submit" onClick={this.submit} text={t('global.submit')}/>
                 </div>
             </React.Fragment>
         );
@@ -128,17 +129,13 @@ const mapStateToProps = (state) => {
 };
 
 const withConnect = connect(
-    mapStateToProps,
-    {
-        checkAccountAlreadyExists
-    }
+    mapStateToProps
 );
 
 FormUserDetails.propTypes = {
     email: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    nextStep: PropTypes.func.isRequired
+    password: PropTypes.string.isRequired
 };
 
 export default compose(withTranslation(), withConnect)(FormUserDetails);

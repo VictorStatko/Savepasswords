@@ -2,6 +2,7 @@ import {isNotEmpty} from "./stringUtils";
 
 export const MAX_LENGTH_EMAIL = 254;
 export const MAX_LENGTH_PASSWORD = 60;
+export const MIN_LENGTH_PASSWORD = 8;
 export const MAX_LENGTH_USERNAME = 254;
 
 export function isEmailValid(str) {
@@ -10,4 +11,8 @@ export function isEmailValid(str) {
 
 export function isStringMaxLengthValid(str, maxLength) {
     return str && str.length <= maxLength;
+}
+
+export function isStringMinLengthValid(str, maxLength) {
+    return str && str.length >= maxLength;
 }
