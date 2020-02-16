@@ -1,6 +1,6 @@
 package com.statkovit.authorizationservice.configuration;
 
-import com.statkovit.authorizationservice.constants.ServerConstants;
+import com.statkovit.authorizationservice.controllers.AuthController;
 import com.statkovit.authorizationservice.services.impl.CustomAuthClientDetailsService;
 import com.statkovit.authorizationservice.services.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
-    private static final String TOKEN_ROUTE = ServerConstants.API_ROUTE + "auth/token";
+    public static final String TOKEN_ROUTE = AuthController.AUTH_CONTROLLER_ROUTE + "/token";
     private static final String CHECK_TOKEN_ROUTE = TOKEN_ROUTE + "/check";
 
     private final AuthenticationManager authenticationManager;
@@ -72,6 +72,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .passwordEncoder(encoder)
                 .allowFormAuthenticationForClients();
     }
+
+
 
     //FUCK IT https://www.gitmemory.com/issue/spring-projects/spring-security-oauth/1664/490335489
     @PostConstruct

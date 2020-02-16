@@ -19,11 +19,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/token/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .csrf().disable();
+                .antMatchers(OAuth2AuthorizationConfig.TOKEN_ROUTE).permitAll();
+
     }
 
     @Override
