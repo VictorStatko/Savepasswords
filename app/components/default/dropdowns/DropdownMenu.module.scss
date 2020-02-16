@@ -1,0 +1,31 @@
+@import "styles/colors";
+
+.toggleButton {
+  cursor: pointer;
+  margin-left: 0.6rem;
+  margin-right: 0.6rem;
+  width: 20px;
+}
+
+.dropdown {
+  display: inline-block;
+}
+
+.dropdownContent {
+  margin-top: 20px;
+  position: absolute;
+  background-color: $super-light-gray;
+  min-width: 150px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  right: 0;
+}
+
+.dropdownContent span {
+  cursor: pointer;
+  padding: 0.8em 0.8rem;
+  display: block;
+}
+
+.dropdownContent span:hover {
+  background-color: #f1f1f1
+}

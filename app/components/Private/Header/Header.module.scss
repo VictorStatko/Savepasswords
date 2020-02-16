@@ -3,9 +3,33 @@
 .header {
   overflow: hidden;
   background-color: $light-gray;
-  padding: 20px 10px;
+  padding: 1.0rem 0.5rem;
 }
 
 .right {
+  margin-top: 0.8rem;
   float: right;
+}
+
+.logo {
+  height: 50px;
+  margin-left: 1rem;
+  float: left;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 575px) {
+  .logo {
+  display: none;
+  }
+}
+
+.dropdownIconWrapper {
+  float: right;
+}
+
+.dropdownIcon {
+  margin-right: 0.5rem;
+  width: 10px;
+  height: 10px;
 }

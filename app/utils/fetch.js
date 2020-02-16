@@ -28,32 +28,36 @@ export default async (method, path, data, headers) => {
         function (error) {
             const originalRequest = error.config;
             if (error.response.status === 401) {
+                const refreshToken = localStorageService.getAccessToken();
+                if (refreshToken){
+                    return axios.post(`${BACKEND_URL}${'auth/token'}`,
+                        queryString.stringify({
+                            "refresh_token": refreshToken,
+                            "grant_type": "refresh_token",
+                            "client_id": "webclient"
+                        }), {
+                            headers: {"Content-Type": "application/x-www-form-urlencoded"}
+                        })
+                        .then(res => {
+                            if (res.status === 200) {
+                                localStorageService.setToken(
+                                    {
+                                        access_token: res.data.access_token,
+                                        refresh_token: res.data.refresh_token
+                                    }
+                                );
 
-                return axios.post(`${BACKEND_URL}${'auth/token'}`,
-                    queryString.stringify({
-                        "refresh_token": localStorageService.getRefreshToken(),
-                        "grant_type": "refresh_token",
-                        "client_id": "webclient"
-                    }), {
-                        headers: {"Content-Type": "application/x-www-form-urlencoded"}
-                    })
-                    .then(res => {
-                        if (res.status === 200) {
-                            localStorageService.setToken(
-                                {
-                                    access_token: res.data.access_token,
-                                    refresh_token: res.data.refresh_token
-                                }
-                            );
+                                originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
 
-                            originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
-
-                            return axios(originalRequest);
-                        }
-                    })
-                    .catch(error => {
+                                return axios(originalRequest);
+                            }
+                        })
+                        .catch(error => {
 //TODO
-                    })
+                        })
+                } else {
+                    return Promise.reject(error)
+                }
             } else {
                return Promise.reject(error)
             }

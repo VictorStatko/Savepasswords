@@ -34,8 +34,13 @@ export const trySignUp = (payload) => async dispatch => {
 };
 
 export const signOut = () => async dispatch => {
-    localStorageService.clearToken();
-    dispatch(userLoggedOut());
+    try {
+        await fetch(POST, "auth/logout");
+        localStorageService.clearToken();
+        dispatch(userLoggedOut());
+    } catch (error) {
+        throw processResponseErrorAsNotification(error);
+    }
 };
 
 export const trySignIn = (payload) => async dispatch => {
