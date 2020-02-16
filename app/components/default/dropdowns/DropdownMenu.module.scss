@@ -4,7 +4,7 @@
   cursor: pointer;
   margin-left: 0.6rem;
   margin-right: 0.6rem;
-  width: 20px;
+  height: 15px;
 }
 
 .dropdown {
@@ -27,5 +27,5 @@
 }
 
 .dropdownContent span:hover {
-  background-color: #f1f1f1
+  background-color: $light-gray
 }

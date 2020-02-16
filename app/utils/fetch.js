@@ -28,7 +28,7 @@ export default async (method, path, data, headers) => {
         function (error) {
             const originalRequest = error.config;
             if (error.response.status === 401) {
-                const refreshToken = localStorageService.getAccessToken();
+                const refreshToken = localStorageService.getRefreshToken();
                 if (refreshToken){
                     return axios.post(`${BACKEND_URL}${'auth/token'}`,
                         queryString.stringify({

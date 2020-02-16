@@ -7,23 +7,15 @@
 }
 
 .right {
-  margin-top: 0.8rem;
   float: right;
 }
 
-.logo {
-  height: 50px;
+.menu {
   margin-left: 1rem;
   float: left;
   cursor: pointer;
+  display: inline-block;
 }
-
-@media screen and (max-width: 575px) {
-  .logo {
-  display: none;
-  }
-}
-
 .dropdownIconWrapper {
   float: right;
 }

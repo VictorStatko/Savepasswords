@@ -38,7 +38,7 @@ class DropdownMenu extends Component {
         }
         return (
             <div className={styles.dropdown}>
-                <Icon name='menu' styles={styles.toggleButton} onClick={this.showMenu}/>
+                <Icon name='menu-points' styles={styles.toggleButton} onClick={this.showMenu}/>
                 {content}
             </div>
         );

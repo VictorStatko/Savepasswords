@@ -4,11 +4,10 @@ import {connect} from "react-redux";
 import {compose} from "redux";
 import {signOut} from "ducks/account/actions";
 import {withTranslation} from "react-i18next";
-import DropdownMenu from "components/default/dropdowns/DropdownMenu";
+import DropdownMenu from "components/default/dropdowns";
 import Icon from "components/default/icons";
-import logo from 'images/logo-without-text.png';
-import history from "utils/history";
 import {ellipsisByCharactersCount} from "utils/stringUtils";
+import Sidebar from "components/default/sidebars";
 
 class Header extends React.Component {
 
@@ -22,6 +21,7 @@ class Header extends React.Component {
 
     render() {
         const {account, t} = this.props;
+
         const dropdownOptions = [{
             key: 'logout',
             name:
@@ -32,7 +32,7 @@ class Header extends React.Component {
 
         return (
             <header className={styles.header}>
-                <img src={logo} className={styles.logo} alt="logo" onClick={history.push('/')}/>
+                <div className={styles.menu}><Sidebar/></div>
                 <div className={styles.right}>
                     {ellipsisByCharactersCount(account.email, 30)}
                     <span className={styles.dropdownIconWrapper}>
