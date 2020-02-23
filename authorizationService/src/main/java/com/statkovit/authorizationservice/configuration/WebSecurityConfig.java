@@ -21,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(OAuth2AuthorizationConfig.TOKEN_ROUTE).permitAll();
+                .antMatchers("/oauth/token").permitAll();
 
     }
 
