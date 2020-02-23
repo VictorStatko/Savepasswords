@@ -9,8 +9,20 @@ class Sidebar extends React.Component {
         showSidebar: false,
     };
 
-    toggleSidebar = () => {
+    componentDidMount() {
+        document.onclick = function (event) {
+            if (event.pageX > 250){
+                document.getElementById('nav').classList.remove(styles.opened);
+            }
+        }
+    }
 
+    componentWillUnmount() {
+        document.onclick = null;
+    }
+
+    toggleSidebar = () => {
+        document.getElementById('nav').classList.toggle(styles.opened);
         this.setState({showSidebar: !this.state.showSidebar});
     };
 
@@ -19,14 +31,14 @@ class Sidebar extends React.Component {
         return (
             <React.Fragment>
                 <Icon name='menu' styles={styles.toggleButton} onClick={this.toggleSidebar}/>
-                {this.state.showSidebar ?  <div className={styles.sidebar}>
+                <div id='nav' className={styles.sidebar}>
                     <img src={logo} className={styles.logo} onClick={history.push('/')}/>
                     <span className={styles.closebtn} onClick={this.toggleSidebar}>&times;</span>
                     <a href="#">About</a>
                     <a href="#">Services</a>
                     <a href="#">Clients</a>
                     <a href="#">Contact</a>
-                </div> : null }
+                </div>
             </React.Fragment>
         );
     }

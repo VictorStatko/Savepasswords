@@ -4,6 +4,14 @@
   width: 20px;
 }
 
+.toggleButton:hover {
+  fill: $red;
+}
+
+.toggleButton:active {
+  fill: $dark-red;
+}
+
 .sidebar {
   height: 100%;
   width: 250px;
@@ -14,6 +22,12 @@
   background-color: $super-light-gray;
   overflow-x: hidden;
   padding-top: 5rem;
+  transition: margin 0.5s;
+  margin: 0 0 0 -250px;
+}
+
+.sidebar.opened {
+  margin-left: 0;
 }
 
 .sidebar a {
