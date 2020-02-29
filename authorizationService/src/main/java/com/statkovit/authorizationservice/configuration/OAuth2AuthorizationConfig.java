@@ -30,7 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
-    private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final CustomAuthClientDetailsService authClientDetailsService;
     private final PasswordEncoder encoder;
@@ -41,6 +40,10 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     @Qualifier("springSecurityFilterChain")
     private Filter springSecurityFilterChain;
+
+    @Autowired
+    @Qualifier("authenticationManagerBean")
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
