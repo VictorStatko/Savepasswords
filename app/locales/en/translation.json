@@ -8,6 +8,7 @@
 "global.validation.minLength": "Field length must be greater than {{minLength}} symbols.",
 "global.validation.notEmpty": "Field must not be empty.",
 "global.authError": "Problems with authorization. Try again later or contact your system administrator.",
+"global.auth.sessionExpired": "Your session is expired. Please sign in again.",
 "global.badCredentials": "The sign in information is incorrect. Please recheck entered data.",
 
 "signUp.title": "Sign up",

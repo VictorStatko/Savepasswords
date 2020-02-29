@@ -18,7 +18,7 @@ import {loadState, saveState} from "./localStorage";
 
 // Create redux store with history
 const initialState = loadState();
-const store = configureStore(initialState, history);
+export const store = configureStore(initialState, history);
 
 store.subscribe(throttle(() => {
     saveState({

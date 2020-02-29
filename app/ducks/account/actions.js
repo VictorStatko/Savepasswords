@@ -26,7 +26,7 @@ export const userDataFetched = data => ({
 
 export const trySignUp = (payload) => async dispatch => {
     try {
-        await fetch(POST, "accounts", payload, {});
+        await fetch(POST, "auth/accounts", payload, {});
     } catch (error) {
         throw processResponseErrorAsNotification(error);
     }
@@ -55,7 +55,7 @@ export const trySignIn = (payload) => async dispatch => {
             }
         );
         dispatch(userLoggedIn());
-        const userDataResponse = await fetch(GET, "accounts/current");
+        const userDataResponse = await fetch(GET, "auth/accounts/current");
         dispatch(userDataFetched(userDataResponse.data));
     } catch (error) {
         localStorageService.clearToken();

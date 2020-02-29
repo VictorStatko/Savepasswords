@@ -2,6 +2,10 @@ import axios from "axios";
 import {BACKEND_URL} from "./appConstants";
 import {LocalStorageService} from "localStorage";
 import queryString from "query-string";
+import {toast} from "react-toastify";
+import i18n from "../i18n";
+import {store} from "app";
+import {userLoggedOut} from "ducks/account/actions";
 
 const localStorageService = LocalStorageService.getService();
 
@@ -19,7 +23,7 @@ export default async (method, path, data, headers) => {
             return config;
         },
         error => {
-           return  Promise.reject(error)
+            return Promise.reject(error.response)
         });
 
     transport.interceptors.response.use((response) => {
@@ -27,9 +31,9 @@ export default async (method, path, data, headers) => {
         },
         function (error) {
             const originalRequest = error.config;
-            if (error.response.status === 401) {
+            if (error.response && error.response.status === 401) {
                 const refreshToken = localStorageService.getRefreshToken();
-                if (refreshToken){
+                if (refreshToken) {
                     return axios.post(`${BACKEND_URL}${'auth/token'}`,
                         queryString.stringify({
                             "refresh_token": refreshToken,
@@ -52,14 +56,18 @@ export default async (method, path, data, headers) => {
                                 return axios(originalRequest);
                             }
                         })
-                        .catch(error => {
-//TODO
+                        .catch(() => {
+                            toast.error(i18n.t('global.auth.sessionExpired'));
+                            localStorageService.clearToken();
+                            store.dispatch(userLoggedOut());
                         })
                 } else {
-                    return Promise.reject(error)
+                    toast.error(i18n.t('global.auth.sessionExpired'));
+                    localStorageService.clearToken();
+                    store.dispatch(userLoggedOut());
                 }
             } else {
-               return Promise.reject(error)
+                return Promise.reject(error.response)
             }
         });
 
