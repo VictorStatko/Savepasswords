@@ -12,17 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+@SuppressWarnings("deprecation")
 @RestController
 @RequiredArgsConstructor
 @Log4j2
 public class AuthController {
 
-    public static final String AUTH_CONTROLLER_ROUTE = ServerConstants.API_ROUTE + "auth";
+    public static final String AUTH_CONTROLLER_ROUTE = ServerConstants.AUTH_API_ROUTE;
 
     private final AuthorizationServerTokenServices authorizationServerTokenServices;
     private final ConsumerTokenServices consumerTokenServices;
 
-    @PostMapping(AUTH_CONTROLLER_ROUTE + "/logout")
+    @PostMapping(AUTH_CONTROLLER_ROUTE + "logout")
     public void logout(Principal principal) {
         OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
         OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(oAuth2Authentication);

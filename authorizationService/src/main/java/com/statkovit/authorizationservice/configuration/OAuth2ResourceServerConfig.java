@@ -14,7 +14,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/api/v1/accounts").permitAll()
+                .antMatchers("/api/v1/auth/accounts").permitAll()
                 .anyRequest()
                 .authenticated();
     }

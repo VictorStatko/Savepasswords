@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private static final String CONTROLLER_ROUTE = ServerConstants.API_ROUTE + "accounts";
+    private static final String CONTROLLER_ROUTE = ServerConstants.AUTH_API_ROUTE + "accounts";
 
     private final AccountsRestService accountsRestService;
 
