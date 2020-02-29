@@ -4,6 +4,7 @@ import com.statkovit.authorizationservice.domain.Account;
 import com.statkovit.authorizationservice.domain.Role;
 import com.statkovit.authorizationservice.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Service
+@Primary
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 

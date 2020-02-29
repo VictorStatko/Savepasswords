@@ -2,6 +2,7 @@ package com.statkovit.authorizationservice.services.impl;
 
 import com.statkovit.authorizationservice.repositories.AuthClientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Primary
 @RequiredArgsConstructor
 public class CustomAuthClientDetailsService implements ClientDetailsService {
 

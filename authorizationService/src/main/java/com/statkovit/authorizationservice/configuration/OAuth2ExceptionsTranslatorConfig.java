@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.common.exceptions.UnauthorizedClientException;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 
+@SuppressWarnings("deprecation")
 /**
  * Translates OAuth2Exception response into common application exception response like ErrorDto.
  */
