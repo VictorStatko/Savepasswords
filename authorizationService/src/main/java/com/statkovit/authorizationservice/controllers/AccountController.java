@@ -2,6 +2,7 @@ package com.statkovit.authorizationservice.controllers;
 
 import com.statkovit.authorizationservice.constants.ServerConstants;
 import com.statkovit.authorizationservice.payload.AccountDto;
+import com.statkovit.authorizationservice.payload.ExtendedAccountDto;
 import com.statkovit.authorizationservice.rest.AccountsRestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class AccountController {
     }
 
     @GetMapping(CONTROLLER_ROUTE + "/current")
-    public ResponseEntity<AccountDto> getCurrentAccount() {
-        AccountDto dto = accountsRestService.getCurrentAccountDataFromAuth();
+    public ResponseEntity<ExtendedAccountDto> getCurrentAccount() {
+        ExtendedAccountDto dto = accountsRestService.getCurrentAccountDataFromAuth();
         return ResponseEntity.ok(dto);
     }
 

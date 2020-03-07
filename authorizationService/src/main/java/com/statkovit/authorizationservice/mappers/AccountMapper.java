@@ -2,6 +2,7 @@ package com.statkovit.authorizationservice.mappers;
 
 import com.statkovit.authorizationservice.domain.Account;
 import com.statkovit.authorizationservice.payload.AccountDto;
+import com.statkovit.authorizationservice.payload.ExtendedAccountDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -22,5 +23,18 @@ public class AccountMapper {
         });
 
         return modelMapper.map(account, AccountDto.class);
+    }
+
+    public ExtendedAccountDto toExtendedDto(Account account) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.addMappings(new PropertyMap<Account, ExtendedAccountDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPassword());
+            }
+        });
+
+        return modelMapper.map(account, ExtendedAccountDto.class);
     }
 }

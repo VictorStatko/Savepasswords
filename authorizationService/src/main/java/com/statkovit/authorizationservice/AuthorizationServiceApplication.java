@@ -14,7 +14,6 @@ import java.util.TimeZone;
 @EnableEurekaClient
 @EnableFeignClients
 @EnableResourceServer
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AuthorizationServiceApplication {
 
     @PostConstruct

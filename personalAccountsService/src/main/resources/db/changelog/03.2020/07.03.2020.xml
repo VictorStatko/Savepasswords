@@ -1,0 +1,35 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Victor Statko" id="18:00.vstatko" runAlways="false">
+        <createTable tableName="personal_account">
+            <column name="id" type="BIGSERIAL">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_date" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="varchar(2047)"/>
+            <column name="name" type="varchar(254)"/>
+            <column name="username" type="text"/>
+            <column name="password" type="text"/>
+            <column name="description" type="text"/>
+            <column name="account_entity_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createSequence sequenceName="personal_account_id_seq" startValue="1"/>
+    </changeSet>
+</databaseChangeLog>

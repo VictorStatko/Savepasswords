@@ -3,6 +3,7 @@ package com.statkovit.authorizationservice.rest.impl;
 import com.statkovit.authorizationservice.domain.Account;
 import com.statkovit.authorizationservice.mappers.AccountMapper;
 import com.statkovit.authorizationservice.payload.AccountDto;
+import com.statkovit.authorizationservice.payload.ExtendedAccountDto;
 import com.statkovit.authorizationservice.rest.AccountsRestService;
 import com.statkovit.authorizationservice.services.AccountService;
 import com.statkovit.authorizationservice.utils.AuthenticationFacade;
@@ -23,10 +24,10 @@ public class AccountsRestServiceImpl implements AccountsRestService {
     }
 
     @Override
-    public AccountDto getCurrentAccountDataFromAuth() {
+    public ExtendedAccountDto getCurrentAccountDataFromAuth() {
         Account account = accountService.getByEmail(
                 authenticationFacade.getAuthentication().getName()
         );
-        return accountMapper.toDto(account);
+        return accountMapper.toExtendedDto(account);
     }
 }
