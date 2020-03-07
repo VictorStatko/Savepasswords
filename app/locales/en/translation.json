@@ -29,5 +29,6 @@
 "exceptions.accountNotFoundByEmail": "Account with this email is not found in the system.",
 "exceptions.invalidPassword": "Incorrect password entered.",
 
-"profile.dropdownItem.signOut": "Sign out"
+"profile.dropdownItem.signOut": "Sign out",
+"sidebar.item.accounts": "Accounts"
 }

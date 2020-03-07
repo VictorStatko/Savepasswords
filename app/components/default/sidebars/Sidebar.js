@@ -3,6 +3,7 @@ import Icon from "../icons";
 import styles from "./Sidebar.module.scss";
 import logo from "images/logo-without-text.png";
 import history from "utils/history";
+import {withTranslation} from "react-i18next";
 
 class Sidebar extends React.Component {
     state = {
@@ -27,17 +28,15 @@ class Sidebar extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
 
         return (
             <React.Fragment>
                 <Icon name='menu' styles={styles.toggleButton} onClick={this.toggleSidebar}/>
                 <div id='nav' className={styles.sidebar}>
-                    <img src={logo} className={styles.logo} onClick={history.push('/')}/>
+                    <img src={logo} className={styles.logo} onClick={() => history.push('/accounts')}/>
                     <span className={styles.closebtn} onClick={this.toggleSidebar}>&times;</span>
-                    <a href="#">About</a>
-                    <a href="#">Services</a>
-                    <a href="#">Clients</a>
-                    <a href="#">Contact</a>
+                    <a onClick={() => history.push('/accounts')}>{t('sidebar.item.accounts')}</a>
                 </div>
             </React.Fragment>
         );
@@ -45,4 +44,4 @@ class Sidebar extends React.Component {
 
 }
 
-export default Sidebar;
+export default withTranslation()(Sidebar);

@@ -39,7 +39,7 @@ class SignInForm extends Component {
                     username: email,
                     password: password
                 });
-                history.push('/');
+                history.push('/accounts');
             } catch (error) {
                 if (error.message && error.message === 'showOnForm') {
                     this.setState({

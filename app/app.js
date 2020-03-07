@@ -7,6 +7,7 @@ import App from 'containers/App';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import throttle from 'lodash.throttle';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // eslint-disable-next-line no-unused-vars
 import i18n from "./i18n";
@@ -33,17 +34,6 @@ const render = () => {
         <Provider store={store}>
             <ConnectedRouter history={history}>
                 <App/>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar
-                    newestOnTop
-                    closeOnClick
-                    rtl={false}
-                    pauseOnVisibilityChange
-                    draggable
-                    pauseOnHover
-                />
             </ConnectedRouter>
         </Provider>,
         MOUNT_NODE

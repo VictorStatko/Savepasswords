@@ -14,7 +14,7 @@ const GuestRoute = ({
             isSignedIn ? (
                 <Redirect
                     to={{
-                        pathname: "/",
+                        pathname: "/accounts",
                         state
                     }}
                 />
