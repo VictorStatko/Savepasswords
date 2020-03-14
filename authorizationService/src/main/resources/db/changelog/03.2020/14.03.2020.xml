@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Victor Statko" id="14.03.2020-15:00.vstatko" runAlways="false">
+        <update tableName="auth_client_detail">
+            <column name="client_secret" value="$argon2id$v=19$m=4096,t=3,p=1$EWCrLe20c2QzEgtIWiWe5Q$uIabdSBHjZNwjbBKWg/tBIRPGrzLk0eCaShhLE8t8FI"/>
+            <where>client_id='user-service'</where>
+        </update>
+
+        <update tableName="auth_client_detail">
+            <column name="client_secret" value="$argon2id$v=19$m=4096,t=3,p=1$A9b3GA9Tnu1NokOqVNP5vA$9eqc4MFZfIyQjg931KYOdf8pURY4tKaGQVcVfVg/ucc"/>
+            <where>client_id='personal-accounts-service'</where>
+        </update>
+    </changeSet>
+
+    <changeSet author="Victor Statko" id="14.03.2020-19:00.vstatko" runAlways="false">
+        <modifyDataType columnName="password" newDataType="text" tableName="account"/>
+
+        <addColumn tableName="account">
+            <column name="client_password_salt" type="text"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

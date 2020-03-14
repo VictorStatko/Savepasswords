@@ -24,6 +24,7 @@ public class AccountDto {
     private String email;
 
     @NotEmpty
-    @Size(min = Account.MIN_LENGTH__PASSWORD, max = Account.MAX_LENGTH__PASSWORD)
     private String password;
+
+    private String clientPasswordSalt;
 }

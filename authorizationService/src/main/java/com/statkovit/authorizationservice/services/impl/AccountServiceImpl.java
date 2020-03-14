@@ -36,6 +36,7 @@ public class AccountServiceImpl implements AccountService {
         final Account account = new Account();
 
         account.setPassword(passwordHash);
+        account.setClientPasswordSalt(accountDto.getClientPasswordSalt());
         account.setEmail(accountDto.getEmail());
         account.setRole(roleService.getAccountOwnerRole());
 
