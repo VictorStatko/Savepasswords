@@ -7,8 +7,10 @@ import {compose} from "redux";
 import {withTranslation} from "react-i18next";
 import {Link} from "react-router-dom";
 import {toast} from 'react-toastify';
-import i18n from "../../../i18n";
+import i18n from "i18n";
 import history from 'utils/history';
+import {generateSalt} from "utils/encryptionUtils";
+import argon2 from "argon2-browser";
 
 class SignUpForm extends Component {
     state = {
@@ -22,10 +24,27 @@ class SignUpForm extends Component {
 
     onSubmit = async e => {
         e.preventDefault();
+        const salt = generateSalt(16);
+        let hash;
+        try {
+            hash = await argon2.hash(
+                {
+                    pass: this.state.password,
+                    salt: salt
+                }
+            );
+        } catch (e) {
+            console.error(e);
+            toast.error(i18n.t('exceptions.clientEncryptionError'));
+            return;
+        }
+
         await this.props.trySignUp({
             email: this.state.email,
-            password: this.state.password
+            password: hash.encoded,
+            clientPasswordSalt: salt
         });
+
         toast.success(i18n.t('signUp.success'));
         history.push('/sign-in');
     };

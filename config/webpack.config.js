@@ -491,6 +491,17 @@ module.exports = function(webpackEnv) {
                 'sass-loader'
               ),
             },
+            {
+              test: /\.wasm$/,
+              // Tells WebPack that this module should be included as
+              // base64-encoded binary file and not as code
+              loader: ['base64-loader'],
+              // Disables WebPack's opinion where WebAssembly should be,
+              // makes it think that it's not WebAssembly
+              //
+              // Error: WebAssembly module is included in initial chunk.
+              type: 'javascript/auto'
+            },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.
