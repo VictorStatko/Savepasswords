@@ -9,6 +9,8 @@ import com.statkovit.authorizationservice.repositories.AccountRepository;
 import com.statkovit.authorizationservice.services.AccountService;
 import com.statkovit.authorizationservice.services.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -74,5 +76,20 @@ public class AccountServiceImpl implements AccountService {
                         "exceptions.accountNotFoundByEmail"
                 )
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Pair<String, String> getAccountKeypair(String email) {
+        final Account account = getByEmail(email);
+
+        TextEncryptor privateKeyEncryptor = Encryptors.text(
+                new String(Base64.getDecoder().decode(customProperties.getAes().getKey())),
+                account.getPrivateKeySalt()
+        );
+
+        final String decryptedPrivateKey = privateKeyEncryptor.decrypt(account.getPrivateKey());
+
+        return ImmutablePair.of(decryptedPrivateKey, account.getPublicKey());
     }
 }
