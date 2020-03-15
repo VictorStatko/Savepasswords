@@ -19,6 +19,9 @@ public class AccountMapper {
             @Override
             protected void configure() {
                 skip(destination.getPassword());
+                skip(destination.getPrivateKey());
+                skip(destination.getPublicKey());
+                skip(destination.getClientPasswordSalt());
             }
         });
 
@@ -32,6 +35,9 @@ public class AccountMapper {
             @Override
             protected void configure() {
                 skip(destination.getPassword());
+                skip(destination.getPrivateKey());
+                skip(destination.getPublicKey());
+                skip(destination.getClientPasswordSalt());
             }
         });
 

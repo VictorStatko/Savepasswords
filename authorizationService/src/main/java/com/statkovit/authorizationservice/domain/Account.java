@@ -15,6 +15,7 @@ import javax.persistence.*;
 public class Account extends BaseIndexedEntity {
 
     public static final int MAX_LENGTH__EMAIL = 254;
+    public static final int MAX_LENGTH__PRIVATE_KEY_SALT = 32;
 
     @Column(name = "email", nullable = false, unique = true, length = MAX_LENGTH__EMAIL)
     @Email
@@ -29,4 +30,13 @@ public class Account extends BaseIndexedEntity {
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    @Column(name = "private_key", nullable = false)
+    private String privateKey;
+
+    @Column(name = "private_key_salt", nullable = false, length = MAX_LENGTH__PRIVATE_KEY_SALT)
+    private String privateKeySalt;
+
+    @Column(name = "public_key", nullable = false)
+    private String publicKey;
 }

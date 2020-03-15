@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="Victor Statko" id="15.03.2020-13:00.vstatko" runAlways="false">
+        <addColumn tableName="account">
+            <column name="private_key" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="private_key_salt" type="varchar(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="public_key" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Victor Statko" id="15.03.2020-14:00.vstatko" runAlways="false">
+        <modifyDataType columnName="private_key_salt" newDataType="varchar(32)" tableName="account"/>
+    </changeSet>
+</databaseChangeLog>

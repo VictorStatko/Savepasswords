@@ -27,4 +27,10 @@ public class AccountDto {
     private String password;
 
     private String clientPasswordSalt;
+
+    @NotEmpty
+    private String privateKey;
+
+    @NotEmpty
+    private String publicKey;
 }
