@@ -1,17 +1,25 @@
 import React from 'react';
 import {Col, Row} from "react-bootstrap";
 import styles from "./PersonalAccounts.module.scss";
-import PrimaryButton from "components/default/buttons/PrimaryButton";
+import ButtonRow from "components/Private/PersonalAccounts/ButtonRow";
+import {withTranslation} from "react-i18next";
 
 class PersonalAccounts extends React.Component {
 
     render() {
+        const {t} = this.props;
+
         return (
             <React.Fragment>
                 <Row className={styles.headerRow}>
-                    <Col md={6}><h1 className={styles.header}>Accounts</h1></Col>
-                    <Col md={6} className="d-flex justify-content-center">  <PrimaryButton text="qwerty"/></Col>
+                    <Col><h1 className={styles.header}>{t('personalAccounts.header')}</h1></Col>
                 </Row>
+                <Row>
+                    <Col className="d-flex justify-content-center justify-content-md-end">
+                        <ButtonRow/>
+                    </Col>
+                </Row>
+
                 <hr/>
             </React.Fragment>
         );
@@ -19,4 +27,4 @@ class PersonalAccounts extends React.Component {
 
 }
 
-export default PersonalAccounts;
+export default withTranslation()(PersonalAccounts);

@@ -29,6 +29,17 @@
 "exceptions.accountNotFoundByEmail": "Account with this email is not found in the system.",
 "exceptions.clientEncryptionError": "Error during client encryption. Please try with another data or contact system administrator.",
 
+
 "profile.dropdownItem.signOut": "Sign out",
-"sidebar.item.accounts": "Accounts"
+"sidebar.item.accounts": "Accounts",
+
+"personalAccounts.header": "Accounts",
+"personalAccounts.modal.header.new": "Add new account",
+"personalAccounts.modal.header.edit": "Edit account",
+"personalAccounts.modal.form.url": "URL",
+"personalAccounts.modal.form.name": "Name",
+"personalAccounts.modal.form.username": "Username",
+"personalAccounts.modal.form.password": "Password",
+"personalAccounts.modal.form.description": "Description"
+
 }

@@ -7,12 +7,12 @@ class PrivatePage extends React.Component {
     render() {
         const {component} = this.props;
         return (
-            <div>
+            <React.Fragment>
                 <Header/>
                 <Container className={styles.container}>
                     {component}
                 </Container>
-            </div>
+            </React.Fragment>
         );
     }
 
