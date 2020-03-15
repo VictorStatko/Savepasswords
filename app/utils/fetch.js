@@ -6,8 +6,10 @@ import {toast} from "react-toastify";
 import i18n from "../i18n";
 import {store} from "app";
 import {userLoggedOut} from "ducks/account/actions";
+import {IndexedDBService} from "indexedDB";
 
 const localStorageService = LocalStorageService.getService();
+const indexedDBService = IndexedDBService.getService();
 
 export default async (method, path, data, headers) => {
     const transport = axios.create({
@@ -29,41 +31,43 @@ export default async (method, path, data, headers) => {
     transport.interceptors.response.use((response) => {
             return response
         },
-        function (error) {
+        async function (error) {
             const originalRequest = error.config;
             if (error.response && error.response.status === 401) {
                 const refreshToken = localStorageService.getRefreshToken();
                 if (refreshToken) {
-                    return axios.post(`${BACKEND_URL}${'auth/token'}`,
-                        queryString.stringify({
-                            "refresh_token": refreshToken,
-                            "grant_type": "refresh_token",
-                            "client_id": "webclient"
-                        }), {
-                            headers: {"Content-Type": "application/x-www-form-urlencoded"}
-                        })
-                        .then(res => {
-                            if (res.status === 200) {
-                                localStorageService.setToken(
-                                    {
-                                        access_token: res.data.access_token,
-                                        refresh_token: res.data.refresh_token
-                                    }
-                                );
+                    try {
+                        const res = await axios.post(`${BACKEND_URL}${'auth/token'}`,
+                            queryString.stringify({
+                                "refresh_token": refreshToken,
+                                "grant_type": "refresh_token",
+                                "client_id": "webclient"
+                            }), {
+                                headers: {"Content-Type": "application/x-www-form-urlencoded"}
+                            });
 
-                                originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
+                        if (res.status === 200) {
+                            localStorageService.setToken(
+                                {
+                                    access_token: res.data.access_token,
+                                    refresh_token: res.data.refresh_token
+                                }
+                            );
 
-                                return axios(originalRequest);
-                            }
-                        })
-                        .catch(() => {
-                            toast.error(i18n.t('global.auth.sessionExpired'));
-                            localStorageService.clearToken();
-                            store.dispatch(userLoggedOut());
-                        })
+                            originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
+
+                            return axios(originalRequest);
+                        }
+                    } catch (e) {
+                        toast.error(i18n.t('global.auth.sessionExpired'));
+                        localStorageService.clearToken();
+                        await indexedDBService.clearKeys();
+                        store.dispatch(userLoggedOut());
+                    }
                 } else {
                     toast.error(i18n.t('global.auth.sessionExpired'));
                     localStorageService.clearToken();
+                    await indexedDBService.clearKeys();
                     store.dispatch(userLoggedOut());
                 }
             } else {

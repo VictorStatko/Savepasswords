@@ -6,11 +6,10 @@ import styles from "./SignInForm.module.scss";
 import PrimaryButton from "components/default/buttons/PrimaryButton";
 import {isEmpty} from "utils/stringUtils";
 import {connect} from "react-redux";
-import {fetchClientEncryptionSalt, trySignIn} from "ducks/account/actions";
+import {trySignIn} from "ducks/account/actions";
 import {compose} from "redux";
 import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
 import history from 'utils/history';
-import argon2 from "argon2-browser";
 
 class SignInForm extends Component {
     state = {
@@ -39,20 +38,9 @@ class SignInForm extends Component {
         }
 
         try {
-            const clientSalt = await this.props.fetchClientEncryptionSalt(email);
-
-            console.log(clientSalt);
-
-            const passwordHash = await argon2.hash(
-                {
-                    pass: password,
-                    salt: clientSalt
-                }
-            );
-
             await this.props.trySignIn({
                 username: email,
-                password: passwordHash.encoded
+                password: password
             });
 
             history.push('/accounts');
@@ -151,8 +139,7 @@ const mapStateToProps = (state) => {
 const withConnect = connect(
     mapStateToProps,
     {
-        trySignIn: trySignIn,
-        fetchClientEncryptionSalt: fetchClientEncryptionSalt
+        trySignIn: trySignIn
     }
 );
 
