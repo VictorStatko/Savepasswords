@@ -34,6 +34,17 @@ const render = () => {
         <Provider store={store}>
             <ConnectedRouter history={history}>
                 <App/>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar
+                    newestOnTop
+                    closeOnClick
+                    rtl={false}
+                    pauseOnVisibilityChange
+                    draggable
+                    pauseOnHover
+                />
             </ConnectedRouter>
         </Provider>,
         MOUNT_NODE

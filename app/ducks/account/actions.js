@@ -26,7 +26,7 @@ export const userDataFetched = data => ({
 
 export const trySignUp = (payload) => async dispatch => {
     try {
-        await fetch(POST, "auth/accounts", payload, {});
+        await fetch(POST, "auth/accounts", payload);
     } catch (error) {
         throw processResponseErrorAsNotification(error);
     }
@@ -42,6 +42,16 @@ export const signOut = () => async dispatch => {
         throw processResponseErrorAsNotification(error);
     }
 };
+
+export const fetchClientEncryptionSalt = (email) => async dispatch => {
+    try {
+        const response = await fetch(GET, `auth/accounts/client-encryption-salt?email=${email}`);
+        return response.data.value;
+    } catch (error) {
+        throw processResponseErrorAsFormOrNotification(error);
+    }
+};
+
 
 export const trySignIn = (payload) => async dispatch => {
     try {

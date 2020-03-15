@@ -6,6 +6,10 @@ export function isNotEmpty(str) {
     return (str && 0 !== str.length);
 }
 
+export function reverseString(str) {
+    return str.split("").reverse().join("");
+}
+
 export function ellipsisByCharactersCount(str, charactersCount) {
     if (!str || !charactersCount) {
         return "";

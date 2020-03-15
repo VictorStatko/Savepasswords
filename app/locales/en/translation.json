@@ -27,7 +27,6 @@
 "signIn.validation.email": "Please enter valid email address",
 "exceptions.emailAlreadyExists"  : "An account with this email is already registered in the system.",
 "exceptions.accountNotFoundByEmail": "Account with this email is not found in the system.",
-"exceptions.invalidPassword": "Incorrect password entered.",
 "exceptions.clientEncryptionError": "Error during client encryption. Please try with another data or contact system administrator.",
 
 "profile.dropdownItem.signOut": "Sign out",
