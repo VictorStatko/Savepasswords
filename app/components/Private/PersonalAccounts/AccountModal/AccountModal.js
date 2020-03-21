@@ -55,6 +55,8 @@ class AccountModal extends React.Component {
             toast.success(t('personalAccounts.creationSuccess'));
             this.props.close();
         } catch (error) {
+            await setStateAsync(this, {loading: false});
+
             if (error.message && error.message === 'showOnForm') {
                 this.setState({
                     serverError: error.messageTranslation
@@ -62,8 +64,6 @@ class AccountModal extends React.Component {
             } else {
                 console.error(error);
             }
-        } finally {
-            await setStateAsync(this, {loading: false});
         }
     };
 
@@ -144,7 +144,7 @@ class AccountModal extends React.Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <ConfirmButton content={t('global.submit')}/>
+                        <ConfirmButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
                         <DeclineButton content={t('global.close')} onClick={this.props.close}/>
                     </Modal.Footer>
                 </form>

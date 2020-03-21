@@ -1,6 +1,7 @@
 import * as PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Button.module.scss';
+import Spinner from "components/default/spinner";
 
 export const Button = ({content, onClick, type, disabled, customStyle}) => {
     return (
@@ -26,7 +27,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
     disabled: false,
-    type: "submit"
+    type: "button"
 };
 
 
@@ -51,16 +52,16 @@ DeclineButton.propTypes = {
 
 DeclineButton.defaultProps = {
     disabled: false,
-    type: "submit"
+    type: "button"
 };
 
-export const ConfirmButton = ({content, onClick, type, disabled, customStyle}) => {
+export const ConfirmButton = ({content, onClick, type, disabled, customStyle, loading}) => {
     return (
         <Button type={type}
                 disabled={disabled}
                 onClick={onClick}
                 customStyle={`${styles.confirmButton} ${customStyle}`}
-                content={content}/>
+                content={<React.Fragment>{loading ? <Spinner/> : null} {content}</React.Fragment>}/>
     );
 };
 
@@ -70,10 +71,12 @@ ConfirmButton.propTypes = {
     content: PropTypes.oneOfType(
         [PropTypes.string.isRequired, PropTypes.object.isRequired]
     ),
+    loading: PropTypes.bool,
     type: PropTypes.string
 };
 
 ConfirmButton.defaultProps = {
     disabled: false,
-    type: "submit"
+    type: "button",
+    loading: false
 };
