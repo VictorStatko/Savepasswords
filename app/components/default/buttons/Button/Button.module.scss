@@ -67,3 +67,22 @@
     background-color:  $green-half-opacity;
   }
 }
+
+.primaryButton {
+  background-color:  $light-blue;
+  color: $white;
+  min-width: 100px;
+
+  &:hover {
+    background-color: $blue;
+  }
+}
+
+.primaryButton:disabled,
+.primaryButton[disabled]{
+  background-color:  $light-blue-half-opacity;
+
+  &:hover {
+    background-color:  $light-blue-half-opacity;
+  }
+}

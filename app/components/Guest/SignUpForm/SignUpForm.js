@@ -9,11 +9,13 @@ import {Link} from "react-router-dom";
 import {toast} from 'react-toastify';
 import i18n from "i18n";
 import history from "utils/history";
+import {setStateAsync} from "utils/stateUtils";
 
 class SignUpForm extends Component {
     state = {
         email: "",
-        password: ""
+        password: "",
+        loading: false
     };
 
     handleChange = (input, value) => {
@@ -23,10 +25,15 @@ class SignUpForm extends Component {
     onSubmit = async e => {
         e.preventDefault();
 
-        await this.props.trySignUp({
-            email: this.state.email,
-            password: this.state.password,
-        });
+        await setStateAsync(this, {loading: true});
+        try {
+            await this.props.trySignUp({
+                email: this.state.email,
+                password: this.state.password,
+            });
+        } finally {
+            await setStateAsync(this, {loading: false});
+        }
 
         toast.success(i18n.t('signUp.success'));
         history.push('/sign-in');
@@ -42,6 +49,7 @@ class SignUpForm extends Component {
                         handleChange={this.handleChange}
                         password={this.state.password}
                         email={this.state.email}
+                        loading={this.state.loading}
                     />
                 </form>
                 <div className={styles.changePageLink}>

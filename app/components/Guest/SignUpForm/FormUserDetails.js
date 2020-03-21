@@ -2,7 +2,6 @@ import * as PropTypes from 'prop-types'
 import React, {Component} from 'react';
 import TextInput from "components/default/inputs/TextInput";
 import styles from "./SignUpForm.module.scss";
-import PrimaryButton from "components/default/buttons/PrimaryButton";
 import {withTranslation} from "react-i18next";
 import {isEmpty} from "utils/stringUtils";
 import {
@@ -14,6 +13,7 @@ import {
 } from "utils/validationUtils";
 import {compose} from "redux";
 import {connect} from "react-redux";
+import {PrimaryButton} from "components/default/buttons/Button/Button";
 
 class FormUserDetails extends Component {
     state = {
@@ -105,7 +105,7 @@ class FormUserDetails extends Component {
 
 
     render() {
-        const {t, password, email} = this.props;
+        const {t, password, email, loading} = this.props;
         const {passwordError, emailError} = this.state;
 
         return (
@@ -115,7 +115,7 @@ class FormUserDetails extends Component {
                 <TextInput id="password" label={t('signUp.passwordLabel')} className={styles.textInput} value={password}
                            onChange={this.handlePasswordChange} error={passwordError}/>
                 <div className={styles.buttonContainer}>
-                    <PrimaryButton type="submit" onClick={this.submit} text={t('global.submit')}/>
+                    <PrimaryButton type="submit" disabled={loading} loading={loading} onClick={this.submit} content={t('global.submit')}/>
                 </div>
             </React.Fragment>
         );
@@ -135,7 +135,8 @@ const withConnect = connect(
 FormUserDetails.propTypes = {
     email: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
-    password: PropTypes.string.isRequired
+    password: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired
 };
 
 export default compose(withTranslation(), withConnect)(FormUserDetails);

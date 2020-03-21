@@ -3,13 +3,14 @@ import {Link} from "react-router-dom";
 import {withTranslation} from "react-i18next";
 import TextInput from "components/default/inputs/TextInput";
 import styles from "./SignInForm.module.scss";
-import PrimaryButton from "components/default/buttons/PrimaryButton";
 import {isEmpty} from "utils/stringUtils";
 import {connect} from "react-redux";
 import {accountOperations} from "ducks/account";
 import {compose} from "redux";
 import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
 import history from 'utils/history';
+import {PrimaryButton} from "components/default/buttons/Button/Button";
+import {setStateAsync} from "utils/stateUtils";
 
 class SignInForm extends Component {
     state = {
@@ -17,7 +18,8 @@ class SignInForm extends Component {
         password: '',
         emailError: '',
         passwordError: '',
-        serverError: ''
+        serverError: '',
+        loading: false
     };
 
     handleChange = (input, value) => {
@@ -38,6 +40,8 @@ class SignInForm extends Component {
         }
 
         try {
+            await setStateAsync(this, {loading: true});
+
             await this.props.trySignIn({
                 username: email,
                 password: password
@@ -52,6 +56,8 @@ class SignInForm extends Component {
             } else {
                 console.error(error);
             }
+        } finally {
+            await setStateAsync(this, {loading: false});
         }
     };
 
@@ -120,7 +126,7 @@ class SignInForm extends Component {
                            onChange={e => this.handleChange('password', e.target.value)} error={passwordError}/>
                 <div className={styles.serverError}>{serverError}</div>
                 <div className={styles.buttonContainer}>
-                    <PrimaryButton onClick={this.continue} text={t('global.submit')}/>
+                    <PrimaryButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
                 </div>
                 <div className={styles.changePageLink}>
                     <Link to={'/sign-up'}>{t('signIn.notRegisteredLink')}</Link>
