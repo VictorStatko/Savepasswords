@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-03-21_14-00" author="vstatko">
+        <sql endDelimiter=";">
+            ALTER TABLE personal_account
+            ADD CONSTRAINT personal_account_name_url_at_least_one_exists CHECK (
+                (name IS NOT NULL) OR (url IS NOT NULL)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -4,18 +4,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.ScriptAssert;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ScriptAssert(lang = "javascript", script = "_this.url != null || _this.name != null")
 public class PersonalAccountDto {
 
-    @Max(PersonalAccount.MAX_LENGTH__URL)
+    private UUID uuid;
+
+    @Size(max = PersonalAccount.MAX_LENGTH__URL)
     private String url;
 
-    @Max(PersonalAccount.MAX_LENGTH__NAME)
+    @Size(max = PersonalAccount.MAX_LENGTH__NAME)
     private String name;
 
     private String username;
