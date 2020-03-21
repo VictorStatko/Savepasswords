@@ -9,6 +9,7 @@ input {
   border-radius: 8px;
   padding: 0.6rem 1.2rem;
   margin-top: 0.2rem !important;
+  min-height: 45px;
 }
 
 input:focus {
@@ -28,6 +29,10 @@ input:read-only {
 
 input:read-only:focus {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+input[type="password"] {
+  font:small-caption;
 }
 
 input.error {

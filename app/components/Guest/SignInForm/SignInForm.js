@@ -6,7 +6,7 @@ import styles from "./SignInForm.module.scss";
 import PrimaryButton from "components/default/buttons/PrimaryButton";
 import {isEmpty} from "utils/stringUtils";
 import {connect} from "react-redux";
-import {trySignIn} from "ducks/account/actions";
+import {accountOperations} from "ducks/account";
 import {compose} from "redux";
 import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
 import history from 'utils/history';
@@ -139,7 +139,7 @@ const mapStateToProps = (state) => {
 const withConnect = connect(
     mapStateToProps,
     {
-        trySignIn: trySignIn
+        trySignIn: accountOperations.trySignIn
     }
 );
 

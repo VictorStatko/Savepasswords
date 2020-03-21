@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import FormUserDetails from "./FormUserDetails";
 import styles from "./SignUpForm.module.scss";
 import {connect} from "react-redux";
-import {trySignUp} from "ducks/account/actions";
+import {accountOperations} from "ducks/account";
 import {compose} from "redux";
 import {withTranslation} from "react-i18next";
 import {Link} from "react-router-dom";
@@ -63,7 +63,7 @@ const mapStateToProps = (state) => {
 const withConnect = connect(
     mapStateToProps,
     {
-        trySignUp: trySignUp
+        trySignUp: accountOperations.trySignUp
     }
 );
 

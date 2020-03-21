@@ -19,3 +19,23 @@
     outline:none;
   }
 }
+
+.declineButton {
+  background-color:  $red;
+  color: $white;
+  min-width: 70px;
+
+  &:hover {
+    background-color: $dark-red;
+  }
+}
+
+.confirmButton {
+  background-color:  $green;
+  color: $white;
+  min-width: 70px;
+
+  &:hover {
+    background-color: $dark-green;
+  }
+}

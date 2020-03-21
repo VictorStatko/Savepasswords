@@ -35,7 +35,7 @@ const render = () => {
             <ConnectedRouter history={history}>
                 <App/>
                 <ToastContainer
-                    position="top-right"
+                    position="bottom-right"
                     autoClose={5000}
                     hideProgressBar
                     newestOnTop

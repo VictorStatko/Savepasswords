@@ -6,14 +6,14 @@ import {isEmpty} from "utils/stringUtils";
 class TextInput extends Component {
 
     render() {
-        const {readOnly, label, placeholder, id, focused, className, value, error, onChange} = this.props;
+        const {readOnly, label, placeholder, id, focused, className, value, error, onChange, secret} = this.props;
 
         return (
             <div className={className}>
                 {isEmpty(label) ? null : <span className={styles.labelText}>{label}</span>}
                 <input
                     id={id}
-                    type="text"
+                    type={ secret ? 'password' : 'text' }
                     value={value}
                     placeholder={placeholder}
                     className={isEmpty(error) ? null : styles.error}
@@ -40,7 +40,8 @@ TextInput.propTypes = {
     readOnly: PropTypes.bool,
     value: PropTypes.string,
     className: PropTypes.string,
-    onChange:PropTypes.func.isRequired
+    onChange:PropTypes.func.isRequired,
+    secret: PropTypes.bool,
 };
 
 TextInput.defaultProps = {
@@ -50,5 +51,6 @@ TextInput.defaultProps = {
     value: "",
     label: "",
     placeholder: "",
-    className: null
+    className: null,
+    secret: false
 };

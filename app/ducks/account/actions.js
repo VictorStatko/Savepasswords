@@ -21,7 +21,7 @@ import i18n from "i18n";
 const localStorageService = LocalStorageService.getService();
 const indexedDBService = IndexedDBService.getService();
 
-export const userLoggedIn = () => ({
+const userLoggedIn = () => ({
     type: types.SIGN_IN
 });
 
@@ -29,11 +29,11 @@ export const userLoggedOut = () => ({
     type: types.SIGN_OUT
 });
 
-export const userLogInFail = () => ({
+const userLogInFail = () => ({
     type: types.SIGN_IN_FAIL
 });
 
-export const userDataFetched = data => ({
+const userDataFetched = data => ({
     type: types.DATA_FETCH,
     data
 });

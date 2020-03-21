@@ -1,9 +1,9 @@
 import React from 'react';
 import {withTranslation} from "react-i18next";
-import SecondaryButton from "components/default/buttons/SecondaryButton";
 import Icon from "components/default/icons";
 import styles from "./ButtonRow.module.scss";
 import AccountModal from "../AccountModal";
+import {Button} from "components/default/buttons/Button/Button";
 
 class ButtonRow extends React.Component {
     state = {
@@ -22,9 +22,9 @@ class ButtonRow extends React.Component {
         return (
             <React.Fragment>
                 <div>
-                    <SecondaryButton content={<Icon name='add' styles={styles.buttonIcon}/>}
-                                     customStyle={styles.button} onClick={this.handleShow}/>
-                    <AccountModal show={this.state.show} onHide={this.handleClose} new/>
+                    <Button content={<Icon name='add' styles={styles.buttonIcon}/>}
+                            customStyle={styles.button} onClick={this.handleShow}/>
+                    {this.state.show ? <AccountModal close={this.handleClose} newAccount/> : null}
                 </div>
             </React.Fragment>
         );

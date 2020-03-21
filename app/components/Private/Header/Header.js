@@ -2,7 +2,7 @@ import React from 'react';
 import styles from "./Header.module.scss";
 import {connect} from "react-redux";
 import {compose} from "redux";
-import {signOut} from "ducks/account/actions";
+import {accountOperations} from "ducks/account";
 import {withTranslation} from "react-i18next";
 import DropdownMenu from "components/default/dropdowns";
 import Icon from "components/default/icons";
@@ -52,7 +52,7 @@ const mapStateToProps = (state) => {
 };
 
 const withConnect = connect(mapStateToProps, {
-    signOut: signOut
+    signOut: accountOperations.signOut
 });
 
 export default compose(withTranslation(), withConnect)(Header);
