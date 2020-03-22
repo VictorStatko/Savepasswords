@@ -53,7 +53,7 @@ class SignUpForm extends Component {
                     />
                 </form>
                 <div className={styles.changePageLink}>
-                    <Link to={'/sign-in'}>{t('signUp.alreadyRegisteredLink')}</Link>
+                    <Link to={'/sign-in'}>{t('signUp.alreadyRegisteredLink.part1')}<br/>{t('signUp.alreadyRegisteredLink.part2')}</Link>
                 </div>
             </React.Fragment>
         )

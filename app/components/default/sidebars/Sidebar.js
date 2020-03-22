@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from "../icons";
 import styles from "./Sidebar.module.scss";
-import logo from "images/logo-without-text.png";
+import logo from "images/logo.png";
 import history from "utils/history";
 import {withTranslation} from "react-i18next";
 

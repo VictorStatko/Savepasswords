@@ -129,7 +129,7 @@ class SignInForm extends Component {
                     <PrimaryButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
                 </div>
                 <div className={styles.changePageLink}>
-                    <Link to={'/sign-up'}>{t('signIn.notRegisteredLink')}</Link>
+                    <Link to={'/sign-up'}>{t('signIn.notRegisteredLink.part1')}<br/>{t('signIn.notRegisteredLink.part2')}</Link>
                 </div>
             </form>
         );

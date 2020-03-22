@@ -11,6 +11,7 @@
 "global.authError": "Problems with authorization. Try again later or contact your system administrator.",
 "global.auth.sessionExpired": "Your session is expired. Please sign in again.",
 "global.badCredentials": "The sign in information is incorrect. Please recheck entered data.",
+"global.appName": "SYP Password Manager",
 
 "signUp.title": "Sign up",
 "signUp.nameLabel": "Please enter your name for contact",
@@ -18,11 +19,13 @@
 "signUp.passwordLabel": "Please enter your master password",
 "signUp.validation.email": "Please enter valid email address",
 "signUp.validation.emailAlreadyExists": "An account with this email is already registered in the system.",
-"signUp.alreadyRegisteredLink": "Already signed up? Please sign in",
+"signUp.alreadyRegisteredLink.part1": "Already signed up?",
+"signUp.alreadyRegisteredLink.part2": "Please sign in",
 "signUp.success": "Sign up was successful. Please sign in.",
 
 "signIn.title": "Sign in",
-"signIn.notRegisteredLink": "Don't have an account yet? Please sign up",
+"signIn.notRegisteredLink.part1": "Don't have an account yet?",
+"signIn.notRegisteredLink.part2": "Please sign up",
 "signIn.emailLabel": "Please enter your email",
 "signIn.passwordLabel": "Please enter your master password",
 "signIn.validation.email": "Please enter valid email address",
