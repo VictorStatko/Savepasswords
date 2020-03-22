@@ -18,14 +18,12 @@ import javax.persistence.Table;
 @ScriptAssert(lang = "javascript", script = "_this.url != null || _this.name != null")
 public class PersonalAccount extends BaseIndexedEntity {
 
-    public static final int MAX_LENGTH__URL = 2047;
-    public static final int MAX_LENGTH__NAME = 254;
-    public static final int MAX_LENGTH__USERNAME = 254;
+    public static final int MAX_LENGTH__FIELDS_ENCRYPTION_SALT = 32;
 
-    @Column(name = "url", length = MAX_LENGTH__URL)
+    @Column(name = "url")
     private String url;
 
-    @Column(name = "name", length = MAX_LENGTH__NAME)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "username")
@@ -39,4 +37,7 @@ public class PersonalAccount extends BaseIndexedEntity {
 
     @Column(name = "accountEntityId", nullable = false)
     private Long accountEntityId;
+
+    @Column(name = "fields_encryption_salt", nullable = false, length = MAX_LENGTH__FIELDS_ENCRYPTION_SALT)
+    private String fieldsEncryptionSalt;
 }

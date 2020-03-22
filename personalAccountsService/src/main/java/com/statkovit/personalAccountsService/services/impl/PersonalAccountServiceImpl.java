@@ -5,6 +5,7 @@ import com.statkovit.personalAccountsService.mappers.PersonalAccountMapper;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
+import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,8 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
     @Override
     public PersonalAccount create(PersonalAccountDto personalAccountDto) {
         PersonalAccount account = personalAccountMapper.toEntity(personalAccountDto);
+
+        account.setAccountEntityId(SecurityUtils.getCurrentAccountEntityId());
 
         return personalAccountRepository.save(account);
     }
