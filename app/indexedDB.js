@@ -28,9 +28,21 @@ export const IndexedDBService = (function () {
         });
     }
 
+    async function _loadPublicKey() {
+        const keyRecord = await indexedDB.publicKeys.get(0);
+        return keyRecord.key;
+    }
+
+    async function _loadPrivateKey() {
+        const keyRecord = await indexedDB.privateKeys.get(0);
+        return keyRecord.key;
+    }
+
     return {
         getService: _getService,
         insertKeys: _insertKeys,
-        clearKeys: _clearKeys
+        clearKeys: _clearKeys,
+        loadPublicKey: _loadPublicKey,
+        loadPrivateKey: _loadPrivateKey
     }
 })();

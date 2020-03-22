@@ -47,11 +47,12 @@ class AccountModal extends React.Component {
         }
 
         const {t} = this.props;
+        const {account} = this.state;
 
         await setStateAsync(this, {loading: true});
 
         try {
-            await this.props.createPersonalAccount(this.state.account);
+            await this.props.createPersonalAccount(Object.assign({}, account));
             toast.success(t('personalAccounts.creationSuccess'));
             this.props.close();
         } catch (error) {

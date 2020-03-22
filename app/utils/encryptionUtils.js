@@ -89,6 +89,15 @@ function decodeAb(base64) {
     return arrayBuffer;
 }
 
+function arrayBufferToString (arrayBuffer) {
+    if (typeof arrayBuffer !== 'object') {
+        throw new TypeError('Expected input to be an ArrayBuffer Object')
+    }
+
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(arrayBuffer)
+}
+
 function stringToArrayBuffer(str) {
     if (typeof str !== 'string') {
         throw new TypeError('Expected input to be a String');
@@ -716,3 +725,54 @@ export async function pemStringToPublicCryptoKey(pem, options) {
         options.usages
     );
 }
+
+export async function rsaEncrypt(publicKey, data) {
+    if (Object.prototype.toString.call(publicKey) !== '[object CryptoKey]' && publicKey.type !== 'public') {
+        throw new TypeError('Expected input of publicKey to be a CryptoKey of type public')
+    }
+
+    if (typeof data !== 'string') {
+        throw new TypeError('Expected input of data to be an String')
+    }
+
+    const arrayBuffer = stringToArrayBuffer(data);
+
+    const encrypted = await cryptoApi.encrypt(
+        {
+            name: 'RSA-OAEP'
+        },
+        publicKey,
+        arrayBuffer
+    );
+
+    return arrayBufferToBase64(encrypted);
+}
+
+export async function rsaDecrypt (privateKey, encryptedData) {
+    if (Object.prototype.toString.call(privateKey) !== '[object CryptoKey]' && privateKey.type !== 'private') {
+        throw new TypeError('Expected input of privateKey to be a CryptoKey of type private')
+    }
+
+    if (typeof encryptedData !== 'string') {
+        throw new TypeError('Expected input of encryptedData to be a String')
+    }
+
+    const decrypted = await cryptoApi.decrypt(
+        {
+            name: 'RSA-OAEP'
+        },
+        privateKey,
+        base64ToArrayBuffer(encryptedData)
+    );
+
+    return arrayBufferToString(decrypted);
+}
+
+/* const data = 'qwertyui';
+        console.log(data);
+        const publicKey = await indexedDBService.loadPublicKey();
+        const encrypted = await rsaEncrypt(publicKey.key, data);
+        console.log(encrypted);
+        const privateKey = await indexedDBService.loadPrivateKey();
+        const decrypted = await rsaDecrypt(privateKey.key, encrypted);
+        console.log(decrypted);*/

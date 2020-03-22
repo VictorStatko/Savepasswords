@@ -70,7 +70,7 @@ export default async (method, path, data, headers) => {
 
                         originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
 
-                        return axios(originalRequest);
+                        return transport(originalRequest);
                     }
                 } catch (e) {
                     toast.error(i18n.t('global.auth.sessionExpired'));
