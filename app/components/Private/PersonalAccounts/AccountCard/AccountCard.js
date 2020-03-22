@@ -26,11 +26,13 @@ class AccountCard extends React.Component {
 
     render() {
 
-        const {url, name} = this.props.account;
+        const {name} = this.props.account;
+        let {url} = this.props.account;
+        url = isEmpty(url) ? null : removeProtocols(url);
 
         const imageSrc = isEmpty(url) ? noImage : `//logo.clearbit.com/${url}`;
         const nameDiv = isEmpty(name) ? null : <div className={styles.urlName}>{name}</div>;
-        const urlDiv = isEmpty(url) ? null : <div className={styles.urlName}>{removeProtocols(url)}</div>;
+        const urlDiv = isEmpty(url) ? null : <div className={styles.urlName}>{url}</div>;
 
         const hrefClass = isEmpty(url) ? styles.imageHrefNotActive : styles.imageHrefActive;
         return (
