@@ -20,18 +20,12 @@ public class PersonalAccountsEncryptor {
 
         account.setFieldsEncryptionSalt(salt);
 
-        account.setDescription(aesUtils.encrypt(account.getDescription(), salt));
-        account.setName(aesUtils.encrypt(account.getName(), salt));
         account.setPassword(aesUtils.encrypt(account.getPassword(), salt));
         account.setUsername(aesUtils.encrypt(account.getUsername(), salt));
-        account.setUrl(aesUtils.encrypt(account.getUrl(), salt));
     }
 
     public void decryptFields(String salt, PersonalAccountDto dto) {
-        dto.setDescription(aesUtils.decrypt(dto.getDescription(), salt));
-        dto.setName(aesUtils.decrypt(dto.getName(), salt));
         dto.setPassword(aesUtils.decrypt(dto.getPassword(), salt));
-        dto.setUrl(aesUtils.decrypt(dto.getUrl(), salt));
         dto.setUsername(aesUtils.decrypt(dto.getUsername(), salt));
     }
 }

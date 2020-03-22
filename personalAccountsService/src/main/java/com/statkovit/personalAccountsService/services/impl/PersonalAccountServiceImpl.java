@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PersonalAccountServiceImpl implements PersonalAccountService {
@@ -25,5 +27,13 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
         account.setAccountEntityId(SecurityUtils.getCurrentAccountEntityId());
 
         return personalAccountRepository.save(account);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonalAccount> getList() {
+        Long accountEntityId = SecurityUtils.getCurrentAccountEntityId();
+
+        return personalAccountRepository.findAllByAccountEntityId(accountEntityId);
     }
 }
