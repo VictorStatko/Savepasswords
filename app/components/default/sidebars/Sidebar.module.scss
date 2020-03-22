@@ -35,8 +35,15 @@
   text-decoration: none;
   font-size: 1.2rem;
   color: black;
-  display: block;
+  display: flex;
+  align-items: center;
   transition: 0.3s;
+
+  & .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.7rem;
+  }
 }
 
 .sidebar a:hover {

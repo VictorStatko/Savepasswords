@@ -7,6 +7,7 @@ import {ReactComponent as CloseIcon} from 'images/icons/close.svg';
 import {ReactComponent as DeleteIcon} from 'images/icons/delete.svg';
 import {ReactComponent as KeyIcon} from 'images/icons/key.svg';
 import {ReactComponent as InfoIcon} from 'images/icons/info.svg';
+import {ReactComponent as PasswordIcon} from 'images/icons/password.svg';
 import * as PropTypes from "prop-types";
 
 const Icon = ({name, styles, onClick}) => {
@@ -27,6 +28,8 @@ const Icon = ({name, styles, onClick}) => {
             return (<KeyIcon className={styles} onClick={onClick}/>);
         case 'info':
             return (<InfoIcon className={styles} onClick={onClick}/>);
+        case 'password':
+            return (<PasswordIcon className={styles} onClick={onClick}/>);
         default:
             return null;
     }
