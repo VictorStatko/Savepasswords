@@ -1,7 +1,10 @@
 .headerRow {
- margin-top: 1rem;
+  margin-top: 1rem;
 }
 
-.header {
- text-align: center;
+.blockWithoutData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70%;
 }

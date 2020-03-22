@@ -19,3 +19,14 @@
 @-webkit-keyframes spin {
   to { -webkit-transform: rotate(360deg); }
 }
+
+.pageSpinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & .pageLoading {
+    width: 100px;
+    height: 100px;
+  }
+}

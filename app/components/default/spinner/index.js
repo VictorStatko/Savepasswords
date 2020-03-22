@@ -1,1 +1,2 @@
-export {default} from './Spinner';
+export {PageSpinner as PageSpinner} from './Spinner';
+export {Spinner as Spinner} from './Spinner';

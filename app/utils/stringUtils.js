@@ -20,3 +20,7 @@ export function ellipsisByCharactersCount(str, charactersCount) {
         str;
 
 }
+
+export function removeProtocols(str) {
+    return str.replace(/(^\w+:|^)\/\//, '');
+}

@@ -30,6 +30,14 @@
 "exceptions.accountNotFoundByEmail": "Account with this email is not found in the system.",
 "exceptions.clientEncryptionError": "Error during client encryption. Please try with another data or contact system administrator.",
 
+"noData.nothing": "Nothing to see here",
+"noData.description": "There are no records to show you right now. There may be no entries or your filters may be to tightly defined.",
+"serverError.oops": "OOPS!",
+"serverError.wrong": "Something went wrong.",
+"serverError.description": "Sorry for the inconvenience, we're working on it.",
+
+ "notFound.error": "Error 404",
+ "notFound.description": "Woops. Looks like this page doesn't exist.",
 
 "profile.dropdownItem.signOut": "Sign out",
 "sidebar.item.accounts": "Accounts",

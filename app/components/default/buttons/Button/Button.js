@@ -1,7 +1,7 @@
 import * as PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Button.module.scss';
-import Spinner from "components/default/spinner";
+import {Spinner} from "components/default/spinner";
 
 export const Button = ({content, onClick, type, disabled, customStyle}) => {
     return (
