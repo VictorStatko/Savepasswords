@@ -49,6 +49,8 @@ class SignInForm extends Component {
 
             history.push('/accounts');
         } catch (error) {
+            await setStateAsync(this, {loading: false});
+
             if (error.message && error.message === 'showOnForm') {
                 this.setState({
                     serverError: error.messageTranslation
@@ -56,8 +58,6 @@ class SignInForm extends Component {
             } else {
                 console.error(error);
             }
-        } finally {
-            await setStateAsync(this, {loading: false});
         }
     };
 
@@ -122,7 +122,7 @@ class SignInForm extends Component {
             <form onSubmit={this.onSubmit}>
                 <TextInput id="email" label={t('signIn.emailLabel')} className={styles.textInput} value={email}
                            onChange={e => this.handleChange('email', e.target.value)} error={emailError}/>
-                <TextInput id="password" label={t('signIn.passwordLabel')} className={styles.textInput} value={password}
+                <TextInput id="password" secret label={t('signIn.passwordLabel')} className={styles.textInput} value={password}
                            onChange={e => this.handleChange('password', e.target.value)} error={passwordError}/>
                 <div className={styles.serverError}>{serverError}</div>
                 <div className={styles.buttonContainer}>
