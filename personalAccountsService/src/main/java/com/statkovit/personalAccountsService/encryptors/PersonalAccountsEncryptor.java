@@ -4,6 +4,7 @@ import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.utils.AesUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,12 +21,34 @@ public class PersonalAccountsEncryptor {
 
         account.setFieldsEncryptionSalt(salt);
 
-        account.setPassword(aesUtils.encrypt(account.getPassword(), salt));
-        account.setUsername(aesUtils.encrypt(account.getUsername(), salt));
+        account.setPassword(
+                Optional.ofNullable(account.getPassword())
+                        .filter(StringUtils::isNotBlank)
+                        .map(password -> aesUtils.encrypt(password, salt))
+                        .orElse(null)
+        );
+
+        account.setUsername(
+                Optional.ofNullable(account.getUsername())
+                        .filter(StringUtils::isNotBlank)
+                        .map(username -> aesUtils.encrypt(username, salt))
+                        .orElse(null)
+        );
     }
 
     public void decryptFields(String salt, PersonalAccountDto dto) {
-        dto.setPassword(aesUtils.decrypt(dto.getPassword(), salt));
-        dto.setUsername(aesUtils.decrypt(dto.getUsername(), salt));
+        dto.setUsername(
+                Optional.ofNullable(dto.getUsername())
+                        .filter(StringUtils::isNotBlank)
+                        .map(username -> aesUtils.decrypt(username, salt))
+                        .orElse(null)
+        );
+
+        dto.setPassword(
+                Optional.ofNullable(dto.getPassword())
+                        .filter(StringUtils::isNotBlank)
+                        .map(password -> aesUtils.decrypt(password, salt))
+                        .orElse(null)
+        );
     }
 }
