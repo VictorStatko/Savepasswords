@@ -105,17 +105,20 @@ class FormUserDetails extends Component {
 
 
     render() {
-        const {t, password, email, loading} = this.props;
+        const {t, password, email, loading, serverError} = this.props;
         const {passwordError, emailError} = this.state;
 
         return (
             <React.Fragment>
                 <TextInput id="email" label={t('signUp.emailLabel')} className={styles.textInput} value={email}
                            onChange={this.handleEmailChange} error={emailError}/>
-                <TextInput id="password" secret label={t('signUp.passwordLabel')} className={styles.textInput} value={password}
+                <TextInput id="password" secret label={t('signUp.passwordLabel')} className={styles.textInput}
+                           value={password}
                            onChange={this.handlePasswordChange} error={passwordError}/>
+                {isEmpty(serverError) ? null : <div className={styles.serverError}>{serverError}</div>}
                 <div className={styles.buttonContainer}>
-                    <PrimaryButton type="submit" disabled={loading} loading={loading} onClick={this.submit} content={t('global.submit')}/>
+                    <PrimaryButton type="submit" disabled={loading} loading={loading} onClick={this.submit}
+                                   content={t('global.submit')}/>
                 </div>
             </React.Fragment>
         );

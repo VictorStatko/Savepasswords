@@ -4,6 +4,7 @@
 "global.close": "Close",
 "global.back": "Back",
 "global.requestError": "An error occurred while accessing the server. Please contact your system administrator.",
+"global.internalError": "An internal error occurred. Please contact your system administrator.",
 "global.serverValidationError": "An error occurred during server validation of form. Please check the entered data.",
 "global.validation.maxLength": "Field length must not exceed {{maxLength}} symbols.",
 "global.validation.minLength": "Field length must be greater than {{minLength}} symbols.",

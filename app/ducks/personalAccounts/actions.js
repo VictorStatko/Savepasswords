@@ -1,7 +1,7 @@
 import * as types from "./types";
 import fetch from "utils/fetch";
 import {GET, POST} from "utils/appConstants";
-import {processResponseErrorAsFormOrNotification, processResponseErrorAsNotification} from "utils/httpUtils";
+import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import {isNotEmpty} from "utils/stringUtils";
 import {rsaEncrypt} from "utils/encryptionUtils";
 import {IndexedDBService} from "indexedDB";
@@ -34,7 +34,7 @@ export const createPersonalAccount = (account) => async dispatch => {
         const createResponse = await fetch(POST, "personal-accounts-management/accounts", account);
         dispatch(personalAccountUpdated(createResponse.data));
     } catch (error) {
-        throw processResponseErrorAsFormOrNotification(error);
+        throw processErrorAsFormOrNotification(error);
     }
 };
 
@@ -43,6 +43,6 @@ export const fetchPersonalAccounts = () => async dispatch => {
         const fetchResponse = await fetch(GET, "personal-accounts-management/accounts");
         dispatch(personalAccountsFetched(fetchResponse.data));
     } catch (error) {
-        throw processResponseErrorAsNotification(error);
+        throw processErrorAsNotification(error);
     }
 };

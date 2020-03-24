@@ -15,11 +15,16 @@ class SignUpForm extends Component {
     state = {
         email: "",
         password: "",
+        serverError: '',
         loading: false
     };
 
     handleChange = (input, value) => {
-        this.setState({[input]: value});
+        this.setState({
+                [input]: value,
+                serverError: ''
+            }
+        );
     };
 
     onSubmit = async e => {
@@ -31,6 +36,16 @@ class SignUpForm extends Component {
                 email: this.state.email,
                 password: this.state.password,
             });
+        } catch (error) {
+            if (error.message && error.message === 'showOnForm') {
+                this.setState({
+                    serverError: error.messageTranslation
+                });
+            } else {
+                console.error(error);
+            }
+
+            throw e;
         } finally {
             await setStateAsync(this, {loading: false});
         }
@@ -50,10 +65,13 @@ class SignUpForm extends Component {
                         password={this.state.password}
                         email={this.state.email}
                         loading={this.state.loading}
+                        serverError={this.state.serverError}
                     />
                 </form>
                 <div className={styles.changePageLink}>
-                    <Link to={'/sign-in'}>{t('signUp.alreadyRegisteredLink.part1')}<br/>{t('signUp.alreadyRegisteredLink.part2')}</Link>
+                    <Link
+                        to={'/sign-in'}>{t('signUp.alreadyRegisteredLink.part1')}<br/>{t('signUp.alreadyRegisteredLink.part2')}
+                    </Link>
                 </div>
             </React.Fragment>
         )

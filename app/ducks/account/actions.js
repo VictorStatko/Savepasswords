@@ -1,6 +1,6 @@
 import {GET, POST} from "utils/appConstants";
 import fetch from "utils/fetch";
-import {processResponseErrorAsFormOrNotification, processResponseErrorAsNotification} from "utils/httpUtils";
+import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import queryString from "query-string";
 import * as types from "./types";
 import {LocalStorageService} from "localStorage";
@@ -74,7 +74,7 @@ export const trySignUp = (payload) => async dispatch => {
     try {
         await fetch(POST, "auth/accounts", payload);
     } catch (error) {
-        throw processResponseErrorAsNotification(error);
+        throw processErrorAsFormOrNotification(error);
     }
 
 };
@@ -86,7 +86,7 @@ export const signOut = () => async dispatch => {
         await indexedDBService.clearKeys();
         dispatch(userLoggedOut());
     } catch (error) {
-        throw processResponseErrorAsNotification(error);
+        throw processErrorAsNotification(error);
     }
 };
 
@@ -147,6 +147,6 @@ export const trySignIn = (payload) => async dispatch => {
         localStorageService.clearToken();
         await indexedDBService.clearKeys();
         dispatch(userLogInFail());
-        throw processResponseErrorAsFormOrNotification(error);
+        throw processErrorAsFormOrNotification(error);
     }
 };
