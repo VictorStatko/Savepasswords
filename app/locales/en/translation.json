@@ -55,5 +55,11 @@
 "personalAccounts.modal.form.password": "Password",
 "personalAccounts.modal.form.description": "Description",
 "personalAccounts.modal.form.validation.nameUrl": "At least one of the fields (url, name) must not be empty",
-"personalAccounts.creationSuccess": "Account was saved successfully"
+"personalAccounts.creationSuccess": "Account was saved successfully",
+"personalAccounts.removeConfirmation.header": "Account removing confirmation",
+"personalAccounts.removeConfirmation.question": "Are you sure you want to remove all data about the following account?",
+"personalAccounts.removeConfirmation.note": "Please note that data cannot be restored.",
+"personalAccounts.removeConfirmation.accountName": "Account name:",
+"personalAccounts.removeConfirmation.accountUrl": "Account URL:"
+
 }

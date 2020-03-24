@@ -129,16 +129,16 @@ class AccountModal extends React.Component {
         const {newAccount, t} = this.props;
 
         return (
-            <Modal show centered size="lg" animation={false} backdrop='static'>
+            <Modal show centered size="lg" backdrop='static'>
                 <form onSubmit={this.onSubmit}>
                     <Modal.Header>
-                        <Modal.Title className={styles.modalTitle}>
+                        <Modal.Title>
                             {newAccount ? t('personalAccounts.modal.header.new') : t('personalAccounts.modal.header.edit')}
                         </Modal.Title>
-                        <Button content={<Icon name='close' styles={styles.closeIcon}/>} onClick={this.props.close}/>
+                        <Button content={<Icon name='close' styles={styles.modalIcon}/>} onClick={this.props.close}/>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className={styles.modalBody}>
+                        <div>
                             <AccountForm account={this.state.account} urlError={this.state.urlError}
                                          nameError={this.state.nameError} serverError={this.state.serverError}
                                          handleChange={this.handleChange}/>

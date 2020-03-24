@@ -16,7 +16,9 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   padding: 0;
   border: 0;
   font: inherit;
-  font-size: 1rem;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+  line-height: 1.4444;
   vertical-align: baseline;
   background-color: transparent;
   overflow-wrap: break-word;
@@ -31,7 +33,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 }
 
 body {
-  font-family: 'Titillium Web', Helvetica, Arial, sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -39,31 +41,40 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 1.5rem;
-}
-
-h2 {
   font-size: 1.4rem;
 }
 
-h3 {
+h2 {
   font-size: 1.3rem;
 }
 
-h4 {
+h3 {
   font-size: 1.2rem;
 }
 
-h5 {
+h4 {
   font-size: 1.1rem;
+}
+
+h5 {
+  font-size: 1.0rem;
 }
 
 
 h6 {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .modal-backdrop
 {
   opacity:0.2 !important;
+}
+
+.modal-title {
+  font-weight: 600 !important;
+  font-size: 1.3rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
 }
