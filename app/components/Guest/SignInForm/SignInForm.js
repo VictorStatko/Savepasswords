@@ -51,7 +51,7 @@ class SignInForm extends Component {
         } catch (error) {
             await setStateAsync(this, {loading: false});
 
-            if (error.message && error.message === 'showOnForm') {
+            if (error && error.message && error.message === 'showOnForm') {
                 this.setState({
                     serverError: error.messageTranslation
                 });

@@ -37,7 +37,7 @@ class SignUpForm extends Component {
                 password: this.state.password,
             });
         } catch (error) {
-            if (error.message && error.message === 'showOnForm') {
+            if (error && error.message && error.message === 'showOnForm') {
                 this.setState({
                     serverError: error.messageTranslation
                 });

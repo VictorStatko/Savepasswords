@@ -43,7 +43,7 @@ class AccountRemovingConfirmation extends React.Component {
                 <Modal.Footer>
                     <ConfirmButton type="submit" disabled={false} content={t('global.submit')}
                                    loading={false}/>
-                    <DeclineButton content={t('global.close')} onClick={this.props.close}/>
+                    <DeclineButton content={t('global.cancel')} onClick={this.props.close}/>
                 </Modal.Footer>
             </Modal>
         );

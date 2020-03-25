@@ -16,9 +16,9 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   padding: 0;
   border: 0;
   font: inherit;
-  font-size: 16px;
-  letter-spacing: 0.2px;
-  line-height: 1.4444;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+  line-height: 1.428;
   vertical-align: baseline;
   background-color: transparent;
   overflow-wrap: break-word;
@@ -33,11 +33,12 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 }
 
 body {
-  font-family: 'Raleway', sans-serif;
+  font-family: Roboto,Arial,sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+  font-weight: bold;
+  letter-spacing: 0.6px;
 }
 
 h1 {
@@ -71,8 +72,9 @@ h6 {
 }
 
 .modal-title {
-  font-weight: 600 !important;
-  font-size: 1.3rem;
+  font-weight: bold !important;
+  font-size: 1.2rem;
+  letter-spacing: 0.6px;
 }
 
 .modal-body {

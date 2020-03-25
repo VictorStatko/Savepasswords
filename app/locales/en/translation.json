@@ -2,6 +2,7 @@
 "global.next": "Next",
 "global.submit": "Submit",
 "global.close": "Close",
+"global.cancel": "Cancel",
 "global.back": "Back",
 "global.requestError": "An error occurred while accessing the server. Please contact your system administrator.",
 "global.internalError": "An internal error occurred. Please contact your system administrator.",

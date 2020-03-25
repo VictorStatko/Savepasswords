@@ -19,7 +19,7 @@ export function processErrorAsFormOrNotification(error) {
     }
 
     let message = '';
-    if (error.data && error.data.error) {
+    if (error && error.data && error.data.error) {
         message = i18n.t(error.data.error, '');
     }
     if (message !== '') {
