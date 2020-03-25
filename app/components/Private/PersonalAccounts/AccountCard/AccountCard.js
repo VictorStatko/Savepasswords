@@ -7,6 +7,9 @@ import {Button} from "components/default/buttons/Button/Button";
 import Icon from "components/default/icons";
 import {isEmpty, removeProtocols} from "utils/stringUtils";
 import AccountRemovingConfirmation from "components/Private/PersonalAccounts/AccountRemovingConfirmation";
+import {connect} from "react-redux";
+import {personalAccountsOperations} from "ducks/personalAccounts";
+import {compose} from "redux";
 
 class AccountCard extends React.Component {
     state = {
@@ -15,6 +18,10 @@ class AccountCard extends React.Component {
 
     handleDeleteModalToggle = () => {
         this.setState({deleteModal: !this.state.deleteModal});
+    };
+
+    handleDeleteConfirm = async () => {
+        await this.props.removePersonalAccount(this.props.account.uuid);
     };
 
     preventDragHandler = (e) => {
@@ -65,11 +72,21 @@ class AccountCard extends React.Component {
                     {nameDiv}
                     {urlDiv}
                 </div>
-                {this.state.deleteModal ? <AccountRemovingConfirmation close={this.handleDeleteModalToggle} url={url} name={name}/> : null}
+                {this.state.deleteModal ?
+                    <AccountRemovingConfirmation close={this.handleDeleteModalToggle}
+                                                 delete={this.handleDeleteConfirm}
+                                                 url={url}
+                                                 name={name}/>
+                    : null
+                }
             </React.Fragment>
         );
     }
 
 }
 
-export default withTranslation()(AccountCard);
+const withConnect = connect(null, {
+    removePersonalAccount: personalAccountsOperations.removePersonalAccount
+});
+
+export default compose(withTranslation(), withConnect)(AccountCard);

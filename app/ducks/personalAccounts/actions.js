@@ -1,6 +1,6 @@
 import * as types from "./types";
 import fetch from "utils/fetch";
-import {GET, POST} from "utils/appConstants";
+import {DELETE, GET, POST} from "utils/appConstants";
 import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import {isNotEmpty} from "utils/stringUtils";
 import {rsaEncrypt} from "utils/encryptionUtils";
@@ -11,6 +11,11 @@ const indexedDBService = IndexedDBService.getService();
 const personalAccountUpdated = account => ({
     type: types.PERSONAL_ACCOUNT_UPDATED,
     account
+});
+
+const personalAccountRemoved = accountUuid => ({
+    type: types.PERSONAL_ACCOUNT_REMOVED,
+    accountUuid
 });
 
 const personalAccountsFetched = accounts => ({
@@ -35,6 +40,15 @@ export const createPersonalAccount = (account) => async dispatch => {
         dispatch(personalAccountUpdated(createResponse.data));
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
+    }
+};
+
+export const removePersonalAccount = (accountUuid) => async dispatch => {
+    try {
+        await fetch(DELETE, `personal-accounts-management/accounts/${accountUuid}`);
+        dispatch(personalAccountRemoved(accountUuid));
+    } catch (error) {
+        throw processErrorAsNotification(error);
     }
 };
 

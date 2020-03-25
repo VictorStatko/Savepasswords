@@ -61,6 +61,6 @@
 "personalAccounts.removeConfirmation.question": "Are you sure you want to remove all data about the following account?",
 "personalAccounts.removeConfirmation.note": "Please note that data cannot be restored.",
 "personalAccounts.removeConfirmation.accountName": "Account name:",
-"personalAccounts.removeConfirmation.accountUrl": "Account URL:"
-
+"personalAccounts.removeConfirmation.accountUrl": "Account URL:",
+"exceptions.personalAccountNotFoundByUuid": "Personal account with requested uuid is not found in the system."
 }

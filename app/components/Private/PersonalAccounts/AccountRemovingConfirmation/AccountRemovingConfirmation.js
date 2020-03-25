@@ -5,12 +5,29 @@ import styles from "./AccountRemovingConfirmation.module.scss";
 import Icon from "components/default/icons";
 import {Button, ConfirmButton, DeclineButton} from "components/default/buttons/Button/Button";
 import {isEmpty} from "utils/stringUtils";
+import {connect} from "react-redux";
+import {personalAccountsOperations} from "ducks/personalAccounts";
+import {compose} from "redux";
+import {setStateAsync} from "utils/stateUtils";
 
 class AccountRemovingConfirmation extends React.Component {
+    state = {
+        loading: false
+    };
+
+    handleDeleteConfirm = async () => {
+        await setStateAsync(this, {loading: true});
+        try {
+            await this.props.delete();
+        } catch (error) {
+            await setStateAsync(this, {loading: false});
+        }
+    };
 
     render() {
         const {t} = this.props;
         const {url, name} = this.props;
+        const {loading} = this.state;
 
         return (
             <Modal show centered size="lg" backdrop='static'>
@@ -41,8 +58,8 @@ class AccountRemovingConfirmation extends React.Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <ConfirmButton type="submit" disabled={false} content={t('global.submit')}
-                                   loading={false}/>
+                    <ConfirmButton type="submit" disabled={loading} onClick={this.handleDeleteConfirm}
+                                   content={t('global.submit')} loading={loading}/>
                     <DeclineButton content={t('global.cancel')} onClick={this.props.close}/>
                 </Modal.Footer>
             </Modal>
@@ -51,4 +68,9 @@ class AccountRemovingConfirmation extends React.Component {
 
 }
 
-export default withTranslation()(AccountRemovingConfirmation);
+const withConnect = connect(null, {
+    removePersonalAccount: personalAccountsOperations.removePersonalAccount
+});
+
+export default compose(withTranslation(), withConnect)(AccountRemovingConfirmation);
+
