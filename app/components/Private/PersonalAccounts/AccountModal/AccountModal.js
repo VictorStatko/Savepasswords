@@ -9,17 +9,42 @@ import {setStateAsync} from "utils/stateUtils";
 import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
 import {compose} from "redux";
-import {isEmpty} from "utils/stringUtils";
+import {isEmpty, isNotEmpty} from "utils/stringUtils";
 import {isStringMaxLengthValid} from "utils/validationUtils";
 import {toast} from "react-toastify";
+import {IndexedDBService} from "indexedDB";
+import {rsaDecrypt} from "utils/encryptionUtils";
 
 const MAX_LENGTH_URL = 2047;
 const MAX_LENGTH_NAME = 254;
 
+const indexedDBService = IndexedDBService.getService();
+
 class AccountModal extends React.Component {
     state = {
-        account: {},
-        loading: false
+        loading: false,
+        newAccount: !this.props.account,
+        infoAccount: !!this.props.account,
+        editAccount: false,
+        account: {}
+    };
+
+    componentDidMount = async () => {
+        let account = {...this.props.account};
+
+        if (this.props.account) {
+            const privateKey = await indexedDBService.loadPrivateKey();
+            if (isNotEmpty(account.username)) {
+                account.username = await rsaDecrypt(privateKey, account.username);
+            }
+            if (isNotEmpty(account.password)) {
+                account.password = await rsaDecrypt(privateKey, account.password);
+            }
+        } else {
+            account = {};
+        }
+
+        this.setState({account: account});
     };
 
     handleChange = (input, value) => {
@@ -46,14 +71,45 @@ class AccountModal extends React.Component {
             return;
         }
 
+        if (this.state.newAccount) {
+            await this.onCreate();
+        } else if (this.state.editAccount) {
+            await this.onUpdate();
+        }
+    };
+
+    onCreate = async () => {
         const {t} = this.props;
         const {account} = this.state;
 
         await setStateAsync(this, {loading: true});
 
         try {
-            await this.props.createPersonalAccount(Object.assign({}, account));
+            await this.props.createPersonalAccount({...account});
             toast.success(t('personalAccounts.creationSuccess'));
+            this.props.close();
+        } catch (error) {
+            await setStateAsync(this, {loading: false});
+
+            if (error && error.message && error.message === 'showOnForm') {
+                this.setState({
+                    serverError: error.messageTranslation
+                });
+            } else {
+                console.error(error);
+            }
+        }
+    };
+
+    onUpdate = async () => {
+        const {t} = this.props;
+        const {account} = this.state;
+
+        await setStateAsync(this, {loading: true});
+
+        try {
+            await this.props.updatePersonalAccount({...account});
+            toast.success(t('personalAccounts.updateSuccess'));
             this.props.close();
         } catch (error) {
             await setStateAsync(this, {loading: false});
@@ -125,28 +181,53 @@ class AccountModal extends React.Component {
         return valid;
     };
 
+    renderTitle = () => {
+        const {t} = this.props;
+
+        if (this.state.newAccount) {
+            return t('personalAccounts.modal.header.new');
+        } else if (this.state.editAccount) {
+            return t('personalAccounts.modal.header.edit');
+        } else {
+            return t('personalAccounts.modal.header.info');
+        }
+    };
+
+    onEditButtonClick = () => {
+        this.setState({
+            infoAccount: false,
+            editAccount: true,
+        });
+    };
+
     render() {
-        const {newAccount, t} = this.props;
+        const {t, close} = this.props;
+        const {account, urlError, nameError, serverError, infoAccount, newAccount, editAccount, loading} = this.state;
 
         return (
             <Modal show centered size="lg" backdrop='static'>
                 <form onSubmit={this.onSubmit}>
                     <Modal.Header>
                         <Modal.Title>
-                            {newAccount ? t('personalAccounts.modal.header.new') : t('personalAccounts.modal.header.edit')}
+                            {this.renderTitle()}
                         </Modal.Title>
-                        <Button content={<Icon name='close' styles={styles.modalIcon}/>} onClick={this.props.close}/>
+                        <Button content={<Icon name='close' styles={styles.modalIcon}/>} onClick={close}/>
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            <AccountForm account={this.state.account} urlError={this.state.urlError}
-                                         nameError={this.state.nameError} serverError={this.state.serverError}
-                                         handleChange={this.handleChange}/>
+                            <AccountForm account={account} urlError={urlError}
+                                         nameError={nameError} serverError={serverError}
+                                         handleChange={this.handleChange} disabled={infoAccount}/>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <PrimaryButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
-                        <DeclineButton content={t('global.close')} onClick={this.props.close}/>
+                        {newAccount || editAccount ?
+                            <PrimaryButton type="submit" disabled={loading} content={t('global.save')}
+                                           loading={loading}/>
+                            : null}
+                        {infoAccount ?
+                            <PrimaryButton content={t('global.edit')} onClick={this.onEditButtonClick}/> : null}
+                        <DeclineButton content={t('global.cancel')} onClick={close}/>
                     </Modal.Footer>
                 </form>
             </Modal>
@@ -156,7 +237,8 @@ class AccountModal extends React.Component {
 }
 
 const withConnect = connect(null, {
-    createPersonalAccount: personalAccountsOperations.createPersonalAccount
+    createPersonalAccount: personalAccountsOperations.createPersonalAccount,
+    updatePersonalAccount: personalAccountsOperations.updatePersonalAccount
 });
 
 export default compose(withTranslation(), withConnect)(AccountModal);

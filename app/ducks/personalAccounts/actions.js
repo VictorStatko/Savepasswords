@@ -1,6 +1,6 @@
 import * as types from "./types";
 import fetch from "utils/fetch";
-import {DELETE, GET, POST} from "utils/appConstants";
+import {DELETE, GET, POST, PUT} from "utils/appConstants";
 import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import {isNotEmpty} from "utils/stringUtils";
 import {rsaEncrypt} from "utils/encryptionUtils";
@@ -38,6 +38,25 @@ export const createPersonalAccount = (account) => async dispatch => {
 
         const createResponse = await fetch(POST, "personal-accounts-management/accounts", account);
         dispatch(personalAccountUpdated(createResponse.data));
+    } catch (error) {
+        throw processErrorAsFormOrNotification(error);
+    }
+};
+
+export const updatePersonalAccount = (account) => async dispatch => {
+    try {
+        const publicKey = await indexedDBService.loadPublicKey();
+
+        if (isNotEmpty(account.password)) {
+            account.password = await rsaEncrypt(publicKey, account.password);
+        }
+
+        if (isNotEmpty(account.username)) {
+            account.username = await rsaEncrypt(publicKey, account.username);
+        }
+
+        const updateResponse = await fetch(PUT, `personal-accounts-management/accounts/${account.uuid}`, account);
+        dispatch(personalAccountUpdated(updateResponse.data));
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
     }

@@ -2,18 +2,30 @@ import * as PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styles from './TextInput.module.scss';
 import {isEmpty} from "utils/stringUtils";
+import Icon from "components/default/icons";
 
 class TextInput extends Component {
 
+    state = {
+        showSecret: true
+    };
+
+    toggleSecret = () => {
+        this.setState({
+            showSecret: !this.state.showSecret
+        });
+    };
+
     render() {
         const {readOnly, label, placeholder, id, focused, className, value, error, onChange, secret} = this.props;
-
+        const {showSecret} = this.state;
         return (
             <div className={className}>
                 {isEmpty(label) ? null : <span className={styles.labelText}>{label}</span>}
+                {secret && !isEmpty(value)? <Icon name='eye' styles={styles.eyeIcon} onClick={this.toggleSecret}/> : null}
                 <input
                     id={id}
-                    type={ secret ? 'password' : 'text' }
+                    type={secret && showSecret ? 'password' : 'text'}
                     value={value}
                     placeholder={placeholder}
                     className={isEmpty(error) ? null : styles.error}
@@ -40,7 +52,7 @@ TextInput.propTypes = {
     readOnly: PropTypes.bool,
     value: PropTypes.string,
     className: PropTypes.string,
-    onChange:PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     secret: PropTypes.bool,
 };
 

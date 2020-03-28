@@ -24,7 +24,7 @@ class ButtonRow extends React.Component {
                 <div>
                     <Button content={<Icon name='add' styles={styles.buttonIcon}/>}
                             customStyle={styles.button} onClick={this.handleShow}/>
-                    {this.state.show ? <AccountModal close={this.handleClose} newAccount/> : null}
+                    {this.state.show ? <AccountModal close={this.handleClose}/> : null}
                 </div>
             </React.Fragment>
         );

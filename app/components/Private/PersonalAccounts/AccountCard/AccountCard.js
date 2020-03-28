@@ -10,10 +10,15 @@ import AccountRemovingConfirmation from "components/Private/PersonalAccounts/Acc
 import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
 import {compose} from "redux";
+import AccountModal from "../AccountModal";
 
 class AccountCard extends React.Component {
     state = {
-        deleteModal: false
+        show: false
+    };
+
+    handleDataModalToggle = () => {
+        this.setState({dataModal: !this.state.dataModal});
     };
 
     handleDeleteModalToggle = () => {
@@ -40,6 +45,7 @@ class AccountCard extends React.Component {
     };
 
     render() {
+        const {deleteModal, dataModal} = this.state;
 
         const {name} = this.props.account;
         let {url} = this.props.account;
@@ -62,7 +68,8 @@ class AccountCard extends React.Component {
                         </Col>
                         <Col xs={8} className="d-flex justify-content-end">
                             <Button customStyle={styles.button}
-                                    content={<Icon name='key' styles={styles.buttonIcon}/>}/>
+                                    content={<Icon name='key' styles={styles.buttonIcon}/>}
+                                    onClick={this.handleDataModalToggle}/>
                             <Button customStyle={styles.button}
                                     content={<Icon name='delete' styles={styles.buttonIcon}/>}
                                     onClick={this.handleDeleteModalToggle}/>
@@ -72,11 +79,15 @@ class AccountCard extends React.Component {
                     {nameDiv}
                     {urlDiv}
                 </div>
-                {this.state.deleteModal ?
+                {deleteModal ?
                     <AccountRemovingConfirmation close={this.handleDeleteModalToggle}
                                                  delete={this.handleDeleteConfirm}
                                                  url={url}
                                                  name={name}/>
+                    : null
+                }
+                {dataModal ?
+                    <AccountModal close={this.handleDataModalToggle} account={this.props.account}/>
                     : null
                 }
             </React.Fragment>

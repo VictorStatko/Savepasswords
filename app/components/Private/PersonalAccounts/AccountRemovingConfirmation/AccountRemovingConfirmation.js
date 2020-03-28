@@ -9,6 +9,7 @@ import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
 import {compose} from "redux";
 import {setStateAsync} from "utils/stateUtils";
+import {toast} from "react-toastify";
 
 class AccountRemovingConfirmation extends React.Component {
     state = {
@@ -16,9 +17,12 @@ class AccountRemovingConfirmation extends React.Component {
     };
 
     handleDeleteConfirm = async () => {
+        const {t} = this.props;
+
         await setStateAsync(this, {loading: true});
         try {
             await this.props.delete();
+            toast.success(t('personalAccounts.removeSuccess'));
         } catch (error) {
             await setStateAsync(this, {loading: false});
         }

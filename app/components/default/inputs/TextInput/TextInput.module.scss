@@ -23,8 +23,8 @@ input:active {
 }
 
 input:read-only {
-  background-color: $light-gray;
-  cursor: default;
+  background-color: $super-light-gray;
+  cursor: text;
 }
 
 input:read-only:focus {
@@ -40,6 +40,20 @@ input.error {
   background: url(~images/icons/error.svg) no-repeat top 50% right 1rem;
   background-size: 25px 25px;
   padding-right: 4rem;
+}
+
+.eyeIcon {
+  height: 20px;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:hover{
+    fill: $dark-gray;
+  }
 }
 
 .errorText {

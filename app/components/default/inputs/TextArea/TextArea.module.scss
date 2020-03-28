@@ -22,8 +22,8 @@ textarea:active {
 }
 
 textarea:read-only {
-  background-color: $light-gray;
-  cursor: default;
+  background-color: $super-light-gray;
+  cursor: text;
 }
 
 textarea:read-only:focus {
