@@ -33,41 +33,7 @@
 }
 
 .declineButton {
-  background-color: $red;
-  color: $white;
   min-width: 100px;
-
-  &:hover {
-    background-color: $dark-red;
-  }
-}
-
-.declineButton:disabled,
-.declineButton[disabled]{
-  background-color:  $red-half-opacity;
-
-  &:hover {
-    background-color:  $red-half-opacity;
-  }
-}
-
-.confirmButton {
-  background-color:  $green;
-  color: $white;
-  min-width: 100px;
-
-  &:hover {
-    background-color: $dark-green;
-  }
-}
-
-.confirmButton:disabled,
-.confirmButton[disabled]{
-  background-color:  $green-half-opacity;
-
-  &:hover {
-    background-color:  $green-half-opacity;
-  }
 }
 
 .primaryButton {

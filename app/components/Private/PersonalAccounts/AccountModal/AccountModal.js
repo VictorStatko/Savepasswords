@@ -4,7 +4,7 @@ import {Modal} from "react-bootstrap";
 import Icon from "components/default/icons";
 import styles from "./AccountModal.module.scss";
 import AccountForm from "../AccountForm";
-import {Button, ConfirmButton, DeclineButton} from "components/default/buttons/Button/Button";
+import {Button, DeclineButton, PrimaryButton} from "components/default/buttons/Button/Button";
 import {setStateAsync} from "utils/stateUtils";
 import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
@@ -145,7 +145,7 @@ class AccountModal extends React.Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <ConfirmButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
+                        <PrimaryButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
                         <DeclineButton content={t('global.close')} onClick={this.props.close}/>
                     </Modal.Footer>
                 </form>

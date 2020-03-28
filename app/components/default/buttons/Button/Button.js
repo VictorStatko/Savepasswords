@@ -59,34 +59,6 @@ DeclineButton.defaultProps = {
     customStyle: null
 };
 
-export const ConfirmButton = ({content, onClick, type, disabled, customStyle, loading}) => {
-    return (
-        <Button type={type}
-                disabled={disabled}
-                onClick={onClick}
-                customStyle={`${styles.confirmButton} ${customStyle}`}
-                content={<React.Fragment>{loading ? <Spinner/> : null} {content}</React.Fragment>}/>
-    );
-};
-
-ConfirmButton.propTypes = {
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    content: PropTypes.oneOfType(
-        [PropTypes.string.isRequired, PropTypes.object.isRequired]
-    ),
-    loading: PropTypes.bool,
-    type: PropTypes.string,
-    customStyle:PropTypes.string
-};
-
-ConfirmButton.defaultProps = {
-    disabled: false,
-    type: "button",
-    loading: false,
-    customStyle: null
-};
-
 export const PrimaryButton = ({content, onClick, type, disabled, customStyle, loading}) => {
     return (
         <Button type={type}

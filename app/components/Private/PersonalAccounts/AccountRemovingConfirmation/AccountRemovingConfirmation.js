@@ -3,7 +3,7 @@ import {withTranslation} from "react-i18next";
 import {Modal} from "react-bootstrap";
 import styles from "./AccountRemovingConfirmation.module.scss";
 import Icon from "components/default/icons";
-import {Button, ConfirmButton, DeclineButton} from "components/default/buttons/Button/Button";
+import {Button, DeclineButton, PrimaryButton} from "components/default/buttons/Button/Button";
 import {isEmpty} from "utils/stringUtils";
 import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
@@ -58,7 +58,7 @@ class AccountRemovingConfirmation extends React.Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <ConfirmButton type="submit" disabled={loading} onClick={this.handleDeleteConfirm}
+                    <PrimaryButton type="submit" disabled={loading} onClick={this.handleDeleteConfirm}
                                    content={t('global.submit')} loading={loading}/>
                     <DeclineButton content={t('global.cancel')} onClick={this.props.close}/>
                 </Modal.Footer>
