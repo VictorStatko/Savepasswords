@@ -16,6 +16,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PersonalAccountMapper {
     private final PersonalAccountsEncryptor personalAccountsEncryptor;
+    private final SecurityUtils securityUtils;
 
     public PersonalAccount toEntity(PersonalAccountDto personalAccountDto, PersonalAccount personalAccount) {
         final boolean newMode = Objects.isNull(personalAccount.getUuid());
@@ -33,7 +34,7 @@ public class PersonalAccountMapper {
         personalAccountsEncryptor.encryptFields(personalAccount);
 
         if (newMode) {
-            personalAccount.setAccountEntityId(SecurityUtils.getCurrentAccountEntityId());
+            personalAccount.setAccountEntityId(securityUtils.getCurrentAccountEntityId());
         }
 
         return personalAccount;

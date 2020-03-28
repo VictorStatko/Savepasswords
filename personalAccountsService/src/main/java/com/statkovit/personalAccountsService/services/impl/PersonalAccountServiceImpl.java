@@ -18,6 +18,7 @@ import java.util.UUID;
 public class PersonalAccountServiceImpl implements PersonalAccountService {
 
     private final PersonalAccountRepository personalAccountRepository;
+    private final SecurityUtils securityUtils;
 
     @Transactional
     @Override
@@ -28,7 +29,7 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
     @Transactional(readOnly = true)
     @Override
     public List<PersonalAccount> getList() {
-        Long accountEntityId = SecurityUtils.getCurrentAccountEntityId();
+        Long accountEntityId = securityUtils.getCurrentAccountEntityId();
 
         return personalAccountRepository.findAllByAccountEntityId(accountEntityId);
     }
@@ -43,7 +44,7 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
     @Transactional(readOnly = true)
     @Override
     public PersonalAccount findOneByUuid(UUID accountUuid) {
-        Long accountEntityId = SecurityUtils.getCurrentAccountEntityId();
+        Long accountEntityId = securityUtils.getCurrentAccountEntityId();
 
         return personalAccountRepository.findByUuidAndAccountEntityId(accountUuid, accountEntityId).orElseThrow(
                 () -> new LocalizedException(
