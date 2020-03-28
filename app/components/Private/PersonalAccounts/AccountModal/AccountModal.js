@@ -227,7 +227,7 @@ class AccountModal extends React.Component {
                             : null}
                         {infoAccount ?
                             <PrimaryButton content={t('global.edit')} onClick={this.onEditButtonClick}/> : null}
-                        <DeclineButton content={t('global.cancel')} onClick={close}/>
+                        <DeclineButton content={infoAccount ? t('global.close') : t('global.cancel')} onClick={close}/>
                     </Modal.Footer>
                 </form>
             </Modal>
