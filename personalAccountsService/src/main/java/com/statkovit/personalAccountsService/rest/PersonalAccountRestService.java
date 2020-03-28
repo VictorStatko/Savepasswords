@@ -9,6 +9,8 @@ public interface PersonalAccountRestService {
 
     PersonalAccountDto create(PersonalAccountDto personalAccountDto);
 
+    PersonalAccountDto update(UUID accountUuid, PersonalAccountDto personalAccountDto);
+
     void delete(UUID accountUuid);
 
     List<PersonalAccountDto> getList();

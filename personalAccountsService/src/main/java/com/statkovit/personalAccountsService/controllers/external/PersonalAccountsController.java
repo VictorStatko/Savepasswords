@@ -27,6 +27,13 @@ public class PersonalAccountsController {
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping(CONTROLLER_ROUTE + "/{uuid}")
+    public ResponseEntity<PersonalAccountDto> updatePersonalAccount(@PathVariable UUID uuid, @Valid @RequestBody PersonalAccountDto dto) {
+        dto = personalAccountRestService.update(uuid, dto);
+
+        return ResponseEntity.ok(dto);
+    }
+
     @DeleteMapping(CONTROLLER_ROUTE + "/{uuid}")
     public ResponseEntity<PersonalAccountDto> deletePersonalAccount(@PathVariable UUID uuid) {
         personalAccountRestService.delete(uuid);

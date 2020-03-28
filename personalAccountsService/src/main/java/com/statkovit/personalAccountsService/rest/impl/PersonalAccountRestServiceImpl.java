@@ -21,9 +21,20 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
 
     @Override
     public PersonalAccountDto create(PersonalAccountDto personalAccountDto) {
-        PersonalAccount account = personalAccountService.create(personalAccountDto);
+        PersonalAccount accountForSave = personalAccountMapper.toEntity(personalAccountDto, new PersonalAccount());
 
-        return personalAccountMapper.toDto(account);
+        accountForSave = personalAccountService.save(accountForSave);
+
+        return personalAccountMapper.toDto(accountForSave);
+    }
+
+    @Override
+    public PersonalAccountDto update(UUID accountUuid, PersonalAccountDto personalAccountDto) {
+        PersonalAccount accountForUpdate = personalAccountService.findOneByUuid(accountUuid);
+        PersonalAccount accountAfterUpdate = personalAccountMapper.toEntity(personalAccountDto, accountForUpdate);
+
+        accountAfterUpdate = personalAccountService.save(accountAfterUpdate);
+        return personalAccountMapper.toDto(accountAfterUpdate);
     }
 
     @Override
