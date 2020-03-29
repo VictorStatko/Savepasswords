@@ -18,6 +18,8 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
+import static unit.helper.domain.PersonalAccountDomainHelper.account;
+import static unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountRestServiceImplTest {
@@ -31,13 +33,15 @@ class PersonalAccountRestServiceImplTest {
     @InjectMocks
     private PersonalAccountRestServiceImpl personalAccountRestServiceImpl;
 
+    private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+
     @Test
     void createShouldReturnDtoOfSavedAccount() {
-        final PersonalAccountDto dtoBeforeSave = new PersonalAccountDto();
-        final PersonalAccount accountBeforeSave = new PersonalAccount();
+        final PersonalAccountDto dtoBeforeSave = accountDTO();
+        final PersonalAccount accountBeforeSave = account();
 
-        final PersonalAccountDto dtoAfterSave = new PersonalAccountDto();
-        final PersonalAccount accountAfterSave = new PersonalAccount();
+        final PersonalAccountDto dtoAfterSave = accountDTO();
+        final PersonalAccount accountAfterSave = account();
 
         when(personalAccountMapper.toEntity(same(dtoBeforeSave), any(PersonalAccount.class)))
                 .thenReturn(accountBeforeSave);
@@ -47,17 +51,16 @@ class PersonalAccountRestServiceImplTest {
         PersonalAccountDto resultDto = personalAccountRestServiceImpl.create(dtoBeforeSave);
 
         Assertions.assertSame(dtoAfterSave, resultDto);
-
     }
 
     @Test
     void updateShouldReturnDtoOfSavedAccount() {
-        final UUID accountUuid = UUID.randomUUID();
-        final PersonalAccountDto dtoBeforeUpdate = createDTOMock(null);
-        final PersonalAccount accountForUpdate = createAccountMock(accountUuid);
+        final UUID accountUuid = UUID_1;
+        final PersonalAccountDto dtoBeforeUpdate = accountDTO();
+        final PersonalAccount accountForUpdate = account(accountUuid);
 
-        final PersonalAccountDto dtoAfterUpdate = createDTOMock(accountUuid);
-        final PersonalAccount accountAfterUpdate = createAccountMock(accountUuid);
+        final PersonalAccountDto dtoAfterUpdate = accountDTO(accountUuid);
+        final PersonalAccount accountAfterUpdate = account(accountUuid);
 
         when(personalAccountService.findOneByUuid(accountUuid)).thenReturn(accountForUpdate);
         when(personalAccountService.save(accountAfterUpdate)).thenReturn(accountAfterUpdate);
@@ -72,10 +75,10 @@ class PersonalAccountRestServiceImplTest {
 
     @Test
     void getListShouldReturnListOfDtos() {
-        PersonalAccount firstAccount = new PersonalAccount();
-        PersonalAccountDto firstAccountDto = new PersonalAccountDto();
-        PersonalAccount secondAccount = new PersonalAccount();
-        PersonalAccountDto secondAccountDto = new PersonalAccountDto();
+        PersonalAccount firstAccount = account();
+        PersonalAccountDto firstAccountDto = accountDTO();
+        PersonalAccount secondAccount = account();
+        PersonalAccountDto secondAccountDto = accountDTO();
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
@@ -101,22 +104,10 @@ class PersonalAccountRestServiceImplTest {
 
     @Test
     void deleteShouldCallServiceMethodExactlyOnce() {
-        final UUID accountUUID = UUID.randomUUID();
+        final UUID accountUUID = UUID_1;
 
         personalAccountRestServiceImpl.delete(accountUUID);
 
         verify(personalAccountService, times(1)).delete(accountUUID);
-    }
-
-    private PersonalAccountDto createDTOMock(UUID uuid) {
-        PersonalAccountDto dtoMock = new PersonalAccountDto();
-        dtoMock.setUuid(uuid);
-        return dtoMock;
-    }
-
-    private PersonalAccount createAccountMock(UUID uuid) {
-        PersonalAccount accountMock = new PersonalAccount();
-        accountMock.setUuid(uuid);
-        return accountMock;
     }
 }

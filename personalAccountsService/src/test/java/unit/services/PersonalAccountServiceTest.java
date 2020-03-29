@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static unit.helper.domain.PersonalAccountDomainHelper.account;
 
 @SuppressWarnings("UnnecessaryLocalVariable")
 @ExtendWith(MockitoExtension.class)
@@ -158,23 +159,5 @@ public class PersonalAccountServiceTest {
         );
 
         assertTrue(exception.getCause() instanceof EntityNotFoundException);
-    }
-
-
-    private PersonalAccount account() {
-        return new PersonalAccount();
-    }
-
-    private PersonalAccount account(UUID uuid, Long entityId) {
-        PersonalAccount accountMock = new PersonalAccount();
-        accountMock.setUuid(uuid);
-        accountMock.setAccountEntityId(entityId);
-        return accountMock;
-    }
-
-    private PersonalAccount account(Long entityId) {
-        PersonalAccount accountMock = new PersonalAccount();
-        accountMock.setAccountEntityId(entityId);
-        return accountMock;
     }
 }

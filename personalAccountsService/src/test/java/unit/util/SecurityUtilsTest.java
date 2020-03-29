@@ -11,8 +11,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-import java.util.Random;
-
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,9 +27,11 @@ public class SecurityUtilsTest {
 
     private SecurityUtils securityUtils = new SecurityUtils();
 
+    private static final Long ID_1 = 1L;
+
     @Test
     void getCurrentAccountEntityShouldReturnIdFromUserAuthentication() {
-        final Long userId = getRandomLong();
+        final Long userId = ID_1;
 
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication()).thenReturn(oAuth2Authentication);
@@ -42,10 +42,5 @@ public class SecurityUtilsTest {
 
         Assertions.assertEquals(userId, accountEntityId);
 
-    }
-
-    private Long getRandomLong() {
-        Random random = new Random();
-        return random.nextLong();
     }
 }
