@@ -31,16 +31,14 @@ public class SecurityUtilsTest {
 
     @Test
     void getCurrentAccountEntityShouldReturnIdFromUserAuthentication() {
-        final Long userId = ID_1;
-
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication()).thenReturn(oAuth2Authentication);
         when(oAuth2Authentication.getUserAuthentication()).thenReturn(userAuthentication);
-        when(userAuthentication.getPrincipal()).thenReturn(userId);
+        when(userAuthentication.getPrincipal()).thenReturn(ID_1);
 
         Long accountEntityId = securityUtils.getCurrentAccountEntityId();
 
-        Assertions.assertEquals(userId, accountEntityId);
+        Assertions.assertEquals(ID_1, accountEntityId);
 
     }
 }

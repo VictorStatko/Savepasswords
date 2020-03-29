@@ -23,9 +23,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static unit.helper.domain.PersonalAccountDomainHelper.account;
 
-@SuppressWarnings("UnnecessaryLocalVariable")
 @ExtendWith(MockitoExtension.class)
-public class PersonalAccountServiceTest {
+class PersonalAccountServiceTest {
 
     @Mock
     private PersonalAccountRepository personalAccountRepository;
@@ -43,8 +42,8 @@ public class PersonalAccountServiceTest {
     private static final Long ID_3 = 3L;
 
     @Test
-    void saveShouldReturnEntityWithIdAndUuid() {
-        final PersonalAccount accountMock = account();
+    void saveShouldCallRepositoryMethod() {
+        final PersonalAccount accountMock = account(UUID_1);
 
         personalAccountService.save(accountMock);
 
@@ -52,30 +51,23 @@ public class PersonalAccountServiceTest {
     }
 
     @Test
-    void deleteShouldCallRepositoryMethodExactlyOnce() {
-        final Long acccountEntityId = ID_1;
-        final UUID accountUUID = UUID_1;
+    void deleteShouldCallRepositoryDeleteMethod() {
+        final PersonalAccount accountMock = account(UUID_1, ID_1);
 
-        final PersonalAccount accountMock = account(accountUUID, acccountEntityId);
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(acccountEntityId);
-
-        when(personalAccountRepository.findByUuidAndAccountEntityId(accountUUID, acccountEntityId))
+        when(personalAccountRepository.findByUuidAndAccountEntityId(UUID_1, ID_1))
                 .thenReturn(Optional.of(accountMock));
 
-        personalAccountService.delete(accountUUID);
+        personalAccountService.delete(UUID_1);
 
         verify(personalAccountRepository, times(1)).delete(accountMock);
     }
 
     @Test
     void getListShouldReturnAccountsOfCurrentEntityId() {
-        final Long firstAccountEntityId = ID_1;
-        final Long secondAccountEntityId = ID_2;
-        final Long thirdAccountEntityId = ID_3;
-
-        PersonalAccount firstAccount = account(firstAccountEntityId);
-        PersonalAccount secondAccount = account(secondAccountEntityId);
+        PersonalAccount firstAccount = account(UUID_1, ID_1);
+        PersonalAccount secondAccount = account(UUID_2, ID_2);
 
         List<PersonalAccount> allAccounts = List.of(firstAccount, secondAccount);
 
@@ -85,19 +77,19 @@ public class PersonalAccountServiceTest {
                     return allAccounts.stream().filter(account -> accountEntityId.equals(account.getAccountEntityId())).collect(Collectors.toList());
                 });
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(secondAccountEntityId);
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
 
         List<PersonalAccount> result = personalAccountService.getList();
         assertEquals(1, result.size());
-        assertSame(secondAccount, result.get(0));
+        assertEquals(firstAccount, result.get(0));
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(firstAccountEntityId);
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_2);
 
         result = personalAccountService.getList();
         assertEquals(1, result.size());
-        assertSame(firstAccount, result.get(0));
+        assertSame(secondAccount, result.get(0));
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(thirdAccountEntityId);
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_3);
 
         result = personalAccountService.getList();
         assertEquals(0, result.size());
@@ -105,17 +97,12 @@ public class PersonalAccountServiceTest {
 
     @Test
     void findOneByUuidShouldReturnAccountIfCorrectData() {
-        final UUID firstAccountUUID = UUID_1;
-        final Long firstAccountEntityId = ID_1;
-        final UUID secondAccountUUID = UUID_2;
-        final Long secondAccountEntityId = ID_2;
-
-        PersonalAccount firstAccount = account(firstAccountUUID, firstAccountEntityId);
-        PersonalAccount secondAccount = account(secondAccountUUID, secondAccountEntityId);
+        PersonalAccount firstAccount = account(UUID_1, ID_1);
+        PersonalAccount secondAccount = account(UUID_2, ID_2);
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(secondAccountEntityId);
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_2);
 
         when(personalAccountRepository.findByUuidAndAccountEntityId(any(UUID.class), anyLong()))
                 .then(invocation -> {
@@ -127,22 +114,19 @@ public class PersonalAccountServiceTest {
                     ).findFirst();
                 });
 
-        personalAccountService.findOneByUuid(secondAccountUUID);
+        final PersonalAccount result = personalAccountService.findOneByUuid(UUID_2);
+        assertNotNull(result);
+        assertEquals(result.getUuid(), UUID_2);
     }
 
     @Test
     void findOneByUuidShouldThrowLocalizedExceptionIfIncorrectData() {
-        final UUID firstAccountUUID = UUID_1;
-        final Long firstAccountEntityId = ID_1;
-        final UUID secondAccountUUID = UUID_2;
-        final Long secondAccountEntityId = ID_2;
-
-        PersonalAccount firstAccount = account(firstAccountUUID, firstAccountEntityId);
-        PersonalAccount secondAccount = account(secondAccountUUID, secondAccountEntityId);
+        PersonalAccount firstAccount = account(UUID_1, ID_1);
+        PersonalAccount secondAccount = account(UUID_2, ID_2);
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(secondAccountEntityId);
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_2);
 
         when(personalAccountRepository.findByUuidAndAccountEntityId(any(UUID.class), anyLong()))
                 .then(invocation -> {
@@ -155,7 +139,7 @@ public class PersonalAccountServiceTest {
                 });
 
         Exception exception = assertThrows(LocalizedException.class, () ->
-                personalAccountService.findOneByUuid(firstAccountUUID)
+                personalAccountService.findOneByUuid(UUID_1)
         );
 
         assertTrue(exception.getCause() instanceof EntityNotFoundException);

@@ -1,8 +1,8 @@
 package com.statkovit.personalAccountsService.rest.impl;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
-import com.statkovit.personalAccountsService.mappers.PersonalAccountMapper;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
+import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import lombok.RequiredArgsConstructor;
@@ -17,24 +17,25 @@ import java.util.stream.Collectors;
 public class PersonalAccountRestServiceImpl implements PersonalAccountRestService {
 
     private final PersonalAccountService personalAccountService;
-    private final PersonalAccountMapper personalAccountMapper;
+    private final PersonalAccountConverter personalAccountConverter;
 
     @Override
     public PersonalAccountDto create(PersonalAccountDto personalAccountDto) {
-        PersonalAccount accountForSave = personalAccountMapper.toEntity(personalAccountDto, new PersonalAccount());
+        PersonalAccount accountForSave = new PersonalAccount();
+        personalAccountConverter.toEntity(personalAccountDto, accountForSave);
 
         accountForSave = personalAccountService.save(accountForSave);
 
-        return personalAccountMapper.toDto(accountForSave);
+        return personalAccountConverter.toDto(accountForSave);
     }
 
     @Override
     public PersonalAccountDto update(UUID accountUuid, PersonalAccountDto personalAccountDto) {
         PersonalAccount accountForUpdate = personalAccountService.findOneByUuid(accountUuid);
-        PersonalAccount accountAfterUpdate = personalAccountMapper.toEntity(personalAccountDto, accountForUpdate);
+        personalAccountConverter.toEntity(personalAccountDto, accountForUpdate);
 
-        accountAfterUpdate = personalAccountService.save(accountAfterUpdate);
-        return personalAccountMapper.toDto(accountAfterUpdate);
+        accountForUpdate = personalAccountService.save(accountForUpdate);
+        return personalAccountConverter.toDto(accountForUpdate);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
         List<PersonalAccount> accounts = personalAccountService.getList();
 
         return accounts.stream()
-                .map(personalAccountMapper::toDto)
+                .map(personalAccountConverter::toDto)
                 .collect(Collectors.toList());
     }
 
