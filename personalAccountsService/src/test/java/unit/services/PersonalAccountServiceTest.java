@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("UnnecessaryLocalVariable")
 @ExtendWith(MockitoExtension.class)
 public class PersonalAccountServiceTest {
 
@@ -35,15 +35,15 @@ public class PersonalAccountServiceTest {
     @InjectMocks
     private PersonalAccountServiceImpl personalAccountService;
 
+    private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private static final Long ID_1 = 1L;
+    private static final Long ID_2 = 2L;
+    private static final Long ID_3 = 3L;
+
     @Test
     void saveShouldReturnEntityWithIdAndUuid() {
-        final Long acccountEntityId = getRandomLong();
-        final Long acccountId = getRandomLong();
-        final UUID accountUUID = UUID.randomUUID();
-
-        final PersonalAccount accountMock = createAccountMock(acccountId, accountUUID, acccountEntityId);
-
-        when(personalAccountRepository.save(accountMock)).thenReturn(accountMock);
+        final PersonalAccount accountMock = account();
 
         personalAccountService.save(accountMock);
 
@@ -52,10 +52,10 @@ public class PersonalAccountServiceTest {
 
     @Test
     void deleteShouldCallRepositoryMethodExactlyOnce() {
-        final Long acccountEntityId = getRandomLong();
-        final UUID accountUUID = UUID.randomUUID();
+        final Long acccountEntityId = ID_1;
+        final UUID accountUUID = UUID_1;
 
-        final PersonalAccount accountMock = createAccountMock(null, accountUUID, acccountEntityId);
+        final PersonalAccount accountMock = account(accountUUID, acccountEntityId);
 
         when(securityUtils.getCurrentAccountEntityId()).thenReturn(acccountEntityId);
 
@@ -69,14 +69,12 @@ public class PersonalAccountServiceTest {
 
     @Test
     void getListShouldReturnAccountsOfCurrentEntityId() {
-        final UUID firstAccountUUID = UUID.randomUUID();
-        final Long firstAccountEntityId = getRandomLong();
-        final UUID secondAccountUUID = UUID.randomUUID();
-        final Long secondAccountEntityId = getRandomLong();
-        final Long thirdAccountEntityId = getRandomLong();
+        final Long firstAccountEntityId = ID_1;
+        final Long secondAccountEntityId = ID_2;
+        final Long thirdAccountEntityId = ID_3;
 
-        PersonalAccount firstAccount = createAccountMock(null, firstAccountUUID, firstAccountEntityId);
-        PersonalAccount secondAccount = createAccountMock(null, secondAccountUUID, secondAccountEntityId);
+        PersonalAccount firstAccount = account(firstAccountEntityId);
+        PersonalAccount secondAccount = account(secondAccountEntityId);
 
         List<PersonalAccount> allAccounts = List.of(firstAccount, secondAccount);
 
@@ -90,13 +88,13 @@ public class PersonalAccountServiceTest {
 
         List<PersonalAccount> result = personalAccountService.getList();
         assertEquals(1, result.size());
-        assertEquals(secondAccountUUID, result.get(0).getUuid());
+        assertSame(secondAccount, result.get(0));
 
         when(securityUtils.getCurrentAccountEntityId()).thenReturn(firstAccountEntityId);
 
         result = personalAccountService.getList();
         assertEquals(1, result.size());
-        assertEquals(firstAccountUUID, result.get(0).getUuid());
+        assertSame(firstAccount, result.get(0));
 
         when(securityUtils.getCurrentAccountEntityId()).thenReturn(thirdAccountEntityId);
 
@@ -106,13 +104,13 @@ public class PersonalAccountServiceTest {
 
     @Test
     void findOneByUuidShouldReturnAccountIfCorrectData() {
-        final UUID firstAccountUUID = UUID.randomUUID();
-        final Long firstAccountEntityId = getRandomLong();
-        final UUID secondAccountUUID = UUID.randomUUID();
-        final Long secondAccountEntityId = getRandomLong();
+        final UUID firstAccountUUID = UUID_1;
+        final Long firstAccountEntityId = ID_1;
+        final UUID secondAccountUUID = UUID_2;
+        final Long secondAccountEntityId = ID_2;
 
-        PersonalAccount firstAccount = createAccountMock(null, firstAccountUUID, firstAccountEntityId);
-        PersonalAccount secondAccount = createAccountMock(null, secondAccountUUID, secondAccountEntityId);
+        PersonalAccount firstAccount = account(firstAccountUUID, firstAccountEntityId);
+        PersonalAccount secondAccount = account(secondAccountUUID, secondAccountEntityId);
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
@@ -133,13 +131,13 @@ public class PersonalAccountServiceTest {
 
     @Test
     void findOneByUuidShouldThrowLocalizedExceptionIfIncorrectData() {
-        final UUID firstAccountUUID = UUID.randomUUID();
-        final Long firstAccountEntityId = getRandomLong();
-        final UUID secondAccountUUID = UUID.randomUUID();
-        final Long secondAccountEntityId = getRandomLong();
+        final UUID firstAccountUUID = UUID_1;
+        final Long firstAccountEntityId = ID_1;
+        final UUID secondAccountUUID = UUID_2;
+        final Long secondAccountEntityId = ID_2;
 
-        PersonalAccount firstAccount = createAccountMock(null, firstAccountUUID, firstAccountEntityId);
-        PersonalAccount secondAccount = createAccountMock(null, secondAccountUUID, secondAccountEntityId);
+        PersonalAccount firstAccount = account(firstAccountUUID, firstAccountEntityId);
+        PersonalAccount secondAccount = account(secondAccountUUID, secondAccountEntityId);
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
@@ -162,16 +160,21 @@ public class PersonalAccountServiceTest {
         assertTrue(exception.getCause() instanceof EntityNotFoundException);
     }
 
-    private PersonalAccount createAccountMock(Long id, UUID uuid, Long entityId) {
+
+    private PersonalAccount account() {
+        return new PersonalAccount();
+    }
+
+    private PersonalAccount account(UUID uuid, Long entityId) {
         PersonalAccount accountMock = new PersonalAccount();
-        accountMock.setId(id);
         accountMock.setUuid(uuid);
         accountMock.setAccountEntityId(entityId);
         return accountMock;
     }
 
-    private Long getRandomLong() {
-        Random random = new Random();
-        return random.nextLong();
+    private PersonalAccount account(Long entityId) {
+        PersonalAccount accountMock = new PersonalAccount();
+        accountMock.setAccountEntityId(entityId);
+        return accountMock;
     }
 }
