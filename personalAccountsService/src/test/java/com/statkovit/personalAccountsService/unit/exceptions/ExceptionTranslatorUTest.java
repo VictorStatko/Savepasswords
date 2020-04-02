@@ -1,4 +1,4 @@
-package unit.exceptions;
+package com.statkovit.personalAccountsService.unit.exceptions;
 
 import com.statkolibraries.exceptions.domain.ErrorDTO;
 import com.statkolibraries.exceptions.exceptions.FeignClientException;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-class ExceptionTranslatorTest {
+class ExceptionTranslatorUTest {
 
     @InjectMocks
     private ExceptionTranslator exceptionTranslator;

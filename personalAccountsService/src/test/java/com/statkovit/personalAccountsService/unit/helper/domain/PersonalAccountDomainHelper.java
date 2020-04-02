@@ -1,4 +1,4 @@
-package unit.helper.domain;
+package com.statkovit.personalAccountsService.unit.helper.domain;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;

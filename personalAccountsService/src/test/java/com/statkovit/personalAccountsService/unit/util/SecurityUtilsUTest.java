@@ -1,4 +1,4 @@
-package unit.util;
+package com.statkovit.personalAccountsService.unit.util;
 
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SecurityUtilsTest {
+public class SecurityUtilsUTest {
 
     @Mock
     private SecurityContext securityContext;

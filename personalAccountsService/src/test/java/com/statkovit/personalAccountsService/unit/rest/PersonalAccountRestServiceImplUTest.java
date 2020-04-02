@@ -1,4 +1,4 @@
-package unit.rest;
+package com.statkovit.personalAccountsService.unit.rest;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
@@ -18,11 +18,11 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
-import static unit.helper.domain.PersonalAccountDomainHelper.account;
-import static unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountRestServiceImplTest {
+class PersonalAccountRestServiceImplUTest {
 
     @Mock
     private PersonalAccountService personalAccountService;

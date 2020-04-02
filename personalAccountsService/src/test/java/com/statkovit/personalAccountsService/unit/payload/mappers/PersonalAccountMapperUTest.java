@@ -1,4 +1,4 @@
-package unit.payload.mappers;
+package com.statkovit.personalAccountsService.unit.payload.mappers;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
@@ -11,11 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static unit.helper.domain.PersonalAccountDomainHelper.account;
-import static unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountMapperTest {
+class PersonalAccountMapperUTest {
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final String PASSWORD = "password";

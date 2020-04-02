@@ -1,4 +1,4 @@
-package unit.util;
+package com.statkovit.personalAccountsService.unit.util;
 
 import com.statkovit.personalAccountsService.properties.CustomProperties;
 import com.statkovit.personalAccountsService.properties.CustomProperties.Aes;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AesUtilsTest {
+class AesUtilsUTest {
 
     @Mock
     CustomProperties customProperties;

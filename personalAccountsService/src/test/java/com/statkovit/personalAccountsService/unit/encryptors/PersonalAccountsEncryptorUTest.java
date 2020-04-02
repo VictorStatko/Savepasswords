@@ -1,25 +1,23 @@
-package unit.encryptors;
+package com.statkovit.personalAccountsService.unit.encryptors;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.encryptors.PersonalAccountsEncryptor;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.utils.AesUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
-import static unit.helper.domain.PersonalAccountDomainHelper.account;
-import static unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountsEncryptorTest {
+class PersonalAccountsEncryptorUTest {
 
     @Mock
     private AesUtils aesUtils;

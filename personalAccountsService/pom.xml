@@ -25,6 +25,7 @@
         <model-mapper.version>2.3.6</model-mapper.version>
         <commons-collections.version>4.1</commons-collections.version>
         <commons-lang.version>3.9</commons-lang.version>
+        <test-containers-sb.version>1.43</test-containers-sb.version>
     </properties>
 
     <dependencies>
@@ -119,6 +120,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.playtika.testcontainers</groupId>
+            <artifactId>embedded-postgresql</artifactId>
+            <version>${test-containers-sb.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.statkolibraries</groupId>
             <artifactId>exceptions</artifactId>
             <version>${exceptions-library.version}</version>
@@ -177,7 +184,38 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>unit-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*UTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/*ITest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,4 +1,4 @@
-package unit.services;
+package com.statkovit.personalAccountsService.unit.services;
 
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static unit.helper.domain.PersonalAccountDomainHelper.account;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountServiceTest {
+class PersonalAccountServiceUTest {
 
     @Mock
     private PersonalAccountRepository personalAccountRepository;

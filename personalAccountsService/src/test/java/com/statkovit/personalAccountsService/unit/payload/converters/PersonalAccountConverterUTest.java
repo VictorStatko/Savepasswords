@@ -1,4 +1,4 @@
-package unit.payload.converters;
+package com.statkovit.personalAccountsService.unit.payload.converters;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.encryptors.PersonalAccountsEncryptor;
@@ -18,11 +18,11 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static unit.helper.domain.PersonalAccountDomainHelper.account;
-import static unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
+import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountConverterTest {
+class PersonalAccountConverterUTest {
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final Long ID_1 = 1L;
