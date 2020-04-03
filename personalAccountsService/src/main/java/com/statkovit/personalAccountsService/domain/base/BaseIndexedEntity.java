@@ -1,7 +1,9 @@
 package com.statkovit.personalAccountsService.domain.base;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
 public abstract class BaseIndexedEntity extends BaseAuditingEntity {
 
     @Id

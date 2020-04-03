@@ -2,7 +2,9 @@ package com.statkovit.personalAccountsService.domain;
 
 import com.statkovit.personalAccountsService.domain.base.BaseIndexedEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.persistence.Column;
@@ -15,6 +17,8 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "default_gen", sequenceName = "personal_account_id_seq", allocationSize = 1)
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
 @ScriptAssert(lang = "javascript", script = "_this.url != null || _this.name != null")
 public class PersonalAccount extends BaseIndexedEntity {
 

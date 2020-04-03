@@ -16,10 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.account;
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.accountDto;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountConverterUTest {
@@ -42,7 +42,7 @@ class PersonalAccountConverterUTest {
     @Test
     void toEntityConverterShouldSetAccountEntityIdForNewAccount() {
         final PersonalAccount accountForUpdate = account();
-        final PersonalAccountDto dtoForUpdate = accountDTO();
+        final PersonalAccountDto dtoForUpdate = accountDto();
 
         Mockito.when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
 
@@ -53,8 +53,11 @@ class PersonalAccountConverterUTest {
 
     @Test
     void toEntityConverterShouldNotUpdateAccountEntityIdForOldAccount() {
-        final PersonalAccount accountForUpdate = account(UUID_1, ID_1);
-        final PersonalAccountDto dtoForUpdate = accountDTO(UUID_1);
+        final PersonalAccount accountForUpdate = PersonalAccount.builder()
+                .uuid(UUID_1).accountEntityId(ID_1).build();
+
+        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+                .uuid(UUID_1).build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
@@ -63,8 +66,11 @@ class PersonalAccountConverterUTest {
 
     @Test
     void toEntityConverterShouldCallEntityMapper() {
-        final PersonalAccount accountForUpdate = account(UUID_1);
-        final PersonalAccountDto dtoForUpdate = accountDTO(UUID_1);
+        final PersonalAccount accountForUpdate = PersonalAccount.builder()
+                .uuid(UUID_1).build();
+
+        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+                .uuid(UUID_1).build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
@@ -74,8 +80,11 @@ class PersonalAccountConverterUTest {
 
     @Test
     void toEntityConverterShouldEncryptFields() {
-        final PersonalAccount accountForUpdate = account(UUID_1);
-        final PersonalAccountDto dtoForUpdate = accountDTO(UUID_1);
+        final PersonalAccount accountForUpdate = PersonalAccount.builder()
+                .uuid(UUID_1).build();
+
+        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+                .uuid(UUID_1).build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
@@ -84,8 +93,11 @@ class PersonalAccountConverterUTest {
 
     @Test
     void toDtoConverterShouldReturnEntityFromEntityMapper() {
-        final PersonalAccount accountForMapping = account(UUID_1);
-        final PersonalAccountDto dtoAfterMapping = accountDTO(UUID_1);
+        final PersonalAccount accountForMapping = PersonalAccount.builder()
+                .uuid(UUID_1).build();
+
+        final PersonalAccountDto dtoAfterMapping = PersonalAccountDto.builder()
+                .uuid(UUID_1).build();
 
         Mockito.when(personalAccountMapper.toDto(accountForMapping)).thenReturn(dtoAfterMapping);
 
@@ -96,10 +108,11 @@ class PersonalAccountConverterUTest {
 
     @Test
     void toDtoConverterShouldDecryptFieldsUsingAccountSalt() {
-        final PersonalAccount accountForMapping = account(UUID_1);
-        accountForMapping.setFieldsEncryptionSalt("random");
+        final PersonalAccount accountForMapping = PersonalAccount.builder()
+                .uuid(UUID_1).fieldsEncryptionSalt("random").build();
 
-        final PersonalAccountDto dtoAfterMapping = accountDTO(UUID_1);
+        final PersonalAccountDto dtoAfterMapping = PersonalAccountDto.builder()
+                .uuid(UUID_1).build();
 
         Mockito.when(personalAccountMapper.toDto(accountForMapping)).thenReturn(dtoAfterMapping);
 

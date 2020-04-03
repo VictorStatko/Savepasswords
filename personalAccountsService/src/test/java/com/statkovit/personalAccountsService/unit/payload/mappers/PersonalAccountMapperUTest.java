@@ -10,9 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.account;
 import static org.junit.jupiter.api.Assertions.*;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountMapperUTest {
@@ -33,13 +32,14 @@ class PersonalAccountMapperUTest {
 
     @Test
     void shouldMapDtoToEntity() {
-        PersonalAccountDto dto = accountDTO();
-        dto.setUuid(UUID_1);
-        dto.setPassword(PASSWORD);
-        dto.setUsername(USERNAME);
-        dto.setUrl(URL);
-        dto.setName(NAME);
-        dto.setDescription(DESCRIPTION);
+        PersonalAccountDto dto = PersonalAccountDto.builder()
+                .uuid(UUID_1)
+                .password(PASSWORD)
+                .username(USERNAME)
+                .url(URL)
+                .name(NAME)
+                .description(DESCRIPTION)
+                .build();
 
         PersonalAccount account = account();
         personalAccountMapper.toEntity(dto, account);
@@ -56,13 +56,14 @@ class PersonalAccountMapperUTest {
 
     @Test
     void shouldMapEntityToDTO() {
-        PersonalAccount account = account();
-        account.setUuid(UUID_1);
-        account.setPassword(PASSWORD);
-        account.setUsername(USERNAME);
-        account.setUrl(URL);
-        account.setName(NAME);
-        account.setDescription(DESCRIPTION);
+        PersonalAccount account = PersonalAccount.builder()
+                .uuid(UUID_1)
+                .password(PASSWORD)
+                .username(USERNAME)
+                .url(URL)
+                .name(NAME)
+                .description(DESCRIPTION)
+                .build();
 
         PersonalAccountDto dto = personalAccountMapper.toDto(account);
 

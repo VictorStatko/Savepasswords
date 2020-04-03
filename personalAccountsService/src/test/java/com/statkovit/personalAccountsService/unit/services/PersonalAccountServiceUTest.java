@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountServiceUTest {
@@ -43,7 +42,7 @@ class PersonalAccountServiceUTest {
 
     @Test
     void saveShouldCallRepositoryMethod() {
-        final PersonalAccount accountMock = account(UUID_1);
+        final PersonalAccount accountMock = PersonalAccount.builder().uuid(UUID_1).build();
 
         personalAccountService.save(accountMock);
 
@@ -52,7 +51,8 @@ class PersonalAccountServiceUTest {
 
     @Test
     void deleteShouldCallRepositoryDeleteMethod() {
-        final PersonalAccount accountMock = account(UUID_1, ID_1);
+        final PersonalAccount accountMock = PersonalAccount.builder()
+                .uuid(UUID_1).accountEntityId(ID_1).build();
 
         when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
 
@@ -66,8 +66,11 @@ class PersonalAccountServiceUTest {
 
     @Test
     void getListShouldReturnAccountsOfCurrentEntityId() {
-        PersonalAccount firstAccount = account(UUID_1, ID_1);
-        PersonalAccount secondAccount = account(UUID_2, ID_2);
+        PersonalAccount firstAccount = PersonalAccount.builder()
+                .uuid(UUID_1).accountEntityId(ID_1).build();
+
+        PersonalAccount secondAccount = PersonalAccount.builder()
+                .uuid(UUID_2).accountEntityId(ID_2).build();
 
         List<PersonalAccount> allAccounts = List.of(firstAccount, secondAccount);
 
@@ -97,8 +100,11 @@ class PersonalAccountServiceUTest {
 
     @Test
     void findOneByUuidShouldReturnAccountIfCorrectData() {
-        PersonalAccount firstAccount = account(UUID_1, ID_1);
-        PersonalAccount secondAccount = account(UUID_2, ID_2);
+        PersonalAccount firstAccount = PersonalAccount.builder()
+                .uuid(UUID_1).accountEntityId(ID_1).build();
+
+        PersonalAccount secondAccount = PersonalAccount.builder()
+                .uuid(UUID_2).accountEntityId(ID_2).build();
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
@@ -121,8 +127,11 @@ class PersonalAccountServiceUTest {
 
     @Test
     void findOneByUuidShouldThrowLocalizedExceptionIfIncorrectData() {
-        PersonalAccount firstAccount = account(UUID_1, ID_1);
-        PersonalAccount secondAccount = account(UUID_2, ID_2);
+        PersonalAccount firstAccount = PersonalAccount.builder()
+                .uuid(UUID_1).accountEntityId(ID_1).build();
+
+        PersonalAccount secondAccount = PersonalAccount.builder()
+                .uuid(UUID_2).accountEntityId(ID_2).build();
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 

@@ -15,11 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.UUID;
 
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.accountDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountRestServiceImplUTest {
@@ -38,10 +37,10 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void createShouldReturnDtoOfSavedAccount() {
-        final PersonalAccountDto dtoBeforeSave = accountDTO();
+        final PersonalAccountDto dtoBeforeSave = accountDto();
 
-        final PersonalAccountDto dtoAfterSave = accountDTO(UUID_1);
-        final PersonalAccount accountAfterSave = account(UUID_1);
+        final PersonalAccountDto dtoAfterSave = PersonalAccountDto.builder().uuid(UUID_1).build();
+        final PersonalAccount accountAfterSave = PersonalAccount.builder().uuid(UUID_1).build();
 
         when(personalAccountService.save(any(PersonalAccount.class))).thenReturn(accountAfterSave);
         when(personalAccountConverter.toDto(accountAfterSave)).thenReturn(dtoAfterSave);
@@ -54,7 +53,7 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void createShouldCallConverterToEntity() {
-        final PersonalAccountDto dto = accountDTO();
+        final PersonalAccountDto dto = accountDto();
 
         personalAccountRestServiceImpl.create(dto);
 
@@ -63,11 +62,11 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void updateShouldReturnDtoOfSavedAccount() {
-        final PersonalAccountDto dtoBeforeUpdate = accountDTO(UUID_1);
-        final PersonalAccount accountForUpdate = account(UUID_1);
+        final PersonalAccountDto dtoBeforeUpdate = PersonalAccountDto.builder().uuid(UUID_1).build();
+        final PersonalAccount accountForUpdate = PersonalAccount.builder().uuid(UUID_1).build();
 
-        final PersonalAccountDto dtoAfterUpdate = accountDTO(UUID_1);
-        final PersonalAccount accountAfterUpdate = account(UUID_1);
+        final PersonalAccountDto dtoAfterUpdate = PersonalAccountDto.builder().uuid(UUID_1).build();
+        final PersonalAccount accountAfterUpdate = PersonalAccount.builder().uuid(UUID_1).build();
 
         when(personalAccountService.findOneByUuid(UUID_1)).thenReturn(accountForUpdate);
         when(personalAccountService.save(accountForUpdate)).thenReturn(accountAfterUpdate);
@@ -80,8 +79,8 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void updateShouldCallConverterToEntity() {
-        final PersonalAccountDto dtoForUpdate = accountDTO(UUID_1);
-        final PersonalAccount accountForUpdate = account(UUID_1);
+        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder().uuid(UUID_1).build();
+        final PersonalAccount accountForUpdate = PersonalAccount.builder().uuid(UUID_1).build();
 
         when(personalAccountService.findOneByUuid(UUID_1)).thenReturn(accountForUpdate);
 
@@ -92,10 +91,10 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void getListShouldReturnListOfDtos() {
-        PersonalAccount firstAccount = account(UUID_1);
-        PersonalAccountDto firstAccountDto = accountDTO(UUID_1);
-        PersonalAccount secondAccount = account(UUID_2);
-        PersonalAccountDto secondAccountDto = accountDTO(UUID_2);
+        PersonalAccount firstAccount = PersonalAccount.builder().uuid(UUID_1).build();
+        PersonalAccountDto firstAccountDto = PersonalAccountDto.builder().uuid(UUID_1).build();
+        PersonalAccount secondAccount = PersonalAccount.builder().uuid(UUID_1).build();
+        PersonalAccountDto secondAccountDto = PersonalAccountDto.builder().uuid(UUID_1).build();
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 

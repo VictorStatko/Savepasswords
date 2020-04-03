@@ -10,11 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.account;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.account;
-import static com.statkovit.personalAccountsService.unit.helper.domain.PersonalAccountDomainHelper.accountDTO;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountsEncryptorUTest {
@@ -39,8 +38,8 @@ class PersonalAccountsEncryptorUTest {
 
     @Test
     void encryptFieldsShouldNotSetNewSaltIfAlreadyExists() {
-        final PersonalAccount account = account();
-        account.setFieldsEncryptionSalt("old salt");
+        final PersonalAccount account = PersonalAccount.builder()
+                .fieldsEncryptionSalt("old salt").build();
 
         when(aesUtils.generateSalt()).thenReturn("new salt");
 
@@ -52,10 +51,11 @@ class PersonalAccountsEncryptorUTest {
 
     @Test
     void encryptFieldsShouldChangeNotNullFields() {
-        final PersonalAccount account = account();
-        account.setFieldsEncryptionSalt("salt");
-        account.setPassword("decrypted password");
-        account.setUsername("decrypted username");
+        final PersonalAccount account = PersonalAccount.builder()
+                .fieldsEncryptionSalt("salt")
+                .password("decrypted password")
+                .username("decrypted username")
+                .build();
 
         when(aesUtils.encrypt(account.getPassword(), account.getFieldsEncryptionSalt()))
                 .thenReturn("encrypted password");
@@ -72,9 +72,10 @@ class PersonalAccountsEncryptorUTest {
 
     @Test
     void decryptFieldsShouldChangeNotNullFields() {
-        final PersonalAccountDto accountDto = accountDTO();
-        accountDto.setPassword("encrypted password");
-        accountDto.setUsername("encrypted username");
+        final PersonalAccountDto accountDto = PersonalAccountDto.builder()
+                .password("encrypted password")
+                .username("encrypted username")
+                .build();
 
         when(aesUtils.decrypt(accountDto.getPassword(), "salt"))
                 .thenReturn("decrypted password");
