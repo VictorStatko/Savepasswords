@@ -31,11 +31,6 @@ public abstract class BaseRepositoryTest<T> {
     private final Class<T> type = (Class<T>) ((ParameterizedType) getClass()
             .getGenericSuperclass()).getActualTypeArguments()[0];
 
-    @BeforeEach
-    void prepareDb() {
-        deleteAllEntities();
-    }
-
     protected int deleteAllEntities() {
         CriteriaBuilder builder = entityManager.getEntityManager().getCriteriaBuilder();
         CriteriaDelete<T> query = builder.createCriteriaDelete(type);

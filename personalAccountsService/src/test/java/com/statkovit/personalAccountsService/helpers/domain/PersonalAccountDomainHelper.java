@@ -16,6 +16,10 @@ public final class PersonalAccountDomainHelper {
         return new PersonalAccountDto();
     }
 
+    public static PersonalAccountDto.PersonalAccountDtoBuilder<?, ?> prePopulatedValidAccountDtoBuilder() {
+        return PersonalAccountDto.builder().url(NN);
+    }
+
     public static PersonalAccount.PersonalAccountBuilder<?, ?> prePopulatedValidAccountBuilder() {
         return PersonalAccount.builder().accountEntityId(DEFAULT_ID).url(NN).fieldsEncryptionSalt(NN);
     }

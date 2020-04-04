@@ -26,6 +26,7 @@
         <commons-collections.version>4.1</commons-collections.version>
         <commons-lang.version>3.9</commons-lang.version>
         <test-containers-sb.version>1.43</test-containers-sb.version>
+        <wiremock.version>2.26.3</wiremock.version>
     </properties>
 
     <dependencies>
@@ -125,6 +126,13 @@
             <version>${test-containers-sb.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.statkolibraries</groupId>
             <artifactId>exceptions</artifactId>

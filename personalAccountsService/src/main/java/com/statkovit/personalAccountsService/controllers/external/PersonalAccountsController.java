@@ -1,6 +1,5 @@
 package com.statkovit.personalAccountsService.controllers.external;
 
-import com.statkovit.personalAccountsService.constants.ServerConstants;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
 import lombok.RequiredArgsConstructor;
@@ -12,36 +11,36 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+import static com.statkovit.personalAccountsService.constants.MappingConstants.PersonalAccountsExternalController.*;
+
 @RestController
 @RequiredArgsConstructor
 public class PersonalAccountsController {
 
-    private static final String CONTROLLER_ROUTE = ServerConstants.EXTERNAL_API_ROUTE + "accounts";
-
     private final PersonalAccountRestService personalAccountRestService;
 
-    @PostMapping(CONTROLLER_ROUTE)
+    @PostMapping(CREATE_ROUTE)
     public ResponseEntity<PersonalAccountDto> createPersonalAccount(@Valid @RequestBody PersonalAccountDto dto) {
         dto = personalAccountRestService.create(dto);
 
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping(CONTROLLER_ROUTE + "/{uuid}")
+    @PutMapping(UPDATE_ROUTE)
     public ResponseEntity<PersonalAccountDto> updatePersonalAccount(@PathVariable UUID uuid, @Valid @RequestBody PersonalAccountDto dto) {
         dto = personalAccountRestService.update(uuid, dto);
 
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping(CONTROLLER_ROUTE + "/{uuid}")
+    @DeleteMapping(DELETE_ROUTE)
     public ResponseEntity<PersonalAccountDto> deletePersonalAccount(@PathVariable UUID uuid) {
         personalAccountRestService.delete(uuid);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @GetMapping(CONTROLLER_ROUTE)
+    @GetMapping(GET_LIST_ROUTE)
     public ResponseEntity<List<PersonalAccountDto>> getPersonalAccounts() {
         List<PersonalAccountDto> accountDtos = personalAccountRestService.getList();
 

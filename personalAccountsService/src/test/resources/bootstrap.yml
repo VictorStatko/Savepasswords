@@ -1,3 +1,9 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
 embedded:
   postgresql:
     enabled: false

@@ -2,11 +2,38 @@ embedded:
   postgresql:
     enabled: true
     docker-image: postgres:11.5
+
 spring:
+  application:
+    name: personal-accounts-service
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
     username: ${embedded.postgresql.user}
     password: ${embedded.postgresql.password}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
   liquibase:
-    change-log: db/changelog.xml
+    change-log: classpath:/db/changelog.xml
+
+custom:
+  aes:
+    key: NEtTNUN4cGlVVzZpcXNmd3FzamhHZXppUVYwTnpWUDNPUUJGcEdKVmZSTmp5Y0xxUGlnUjdxdnRacDVDOGprWA==
+
+security:
+  oauth2:
+    client:
+      clientId: test
+      clientSecret: test
+      accessTokenUri: http://localhost:9999/oauth/token
+      grant-type: client_credentials
+      scope: service
+    resource:
+      user-info-uri: http://localhost:9999/api/v1/auth/accounts/current
+      token-info-uri: http://localhost:9999/oauth/check_token
