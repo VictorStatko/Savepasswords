@@ -33,7 +33,6 @@ class PersonalAccountRestServiceImplUTest {
     private PersonalAccountRestServiceImpl personalAccountRestServiceImpl;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final UUID UUID_2 = UUID.fromString("10000000-0000-0000-0000-000000000001");
 
     @Test
     void createShouldReturnDtoOfSavedAccount() {

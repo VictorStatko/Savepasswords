@@ -84,6 +84,10 @@ public final class RestHelper {
         return sendRequest(restTemplate, route, method, null, headers, tClass);
     }
 
+    public static <T> HttpResponse<T> sendRequest(TestRestTemplate restTemplate, String route, HttpMethod method, Object body, Class<T> tClass) {
+        return sendRequest(restTemplate, route, method, body, null, tClass);
+    }
+
     private static void printDelimiter() {
         System.out.println("-".repeat(200));
     }

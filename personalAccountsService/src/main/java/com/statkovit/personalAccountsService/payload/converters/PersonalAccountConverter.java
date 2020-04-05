@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class PersonalAccountConverter {
+public final class PersonalAccountConverter {
 
     private final PersonalAccountMapper personalAccountMapper;
     private final PersonalAccountsEncryptor personalAccountsEncryptor;

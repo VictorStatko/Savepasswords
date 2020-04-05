@@ -1,0 +1,46 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Victor Statko" id="2020-04-05_11-00" runAlways="false">
+        <createTable tableName="personal_account_folder">
+            <column name="id" type="BIGSERIAL">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_date" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_entity_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="personal_account_folder_id_seq" startValue="1"/>
+
+        <addColumn tableName="personal_account">
+            <column name="folder_id" type="bigint"/>
+        </addColumn>
+
+        <addForeignKeyConstraint constraintName="fk__personal_account__folder_id"
+                                 baseTableName="personal_account"
+                                 baseColumnNames="folder_id"
+                                 referencedTableName="personal_account_folder"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+</databaseChangeLog>

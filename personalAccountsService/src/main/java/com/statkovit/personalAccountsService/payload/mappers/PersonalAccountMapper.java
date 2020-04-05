@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PersonalAccountMapper {
+public final class PersonalAccountMapper {
     public void toEntity(PersonalAccountDto personalAccountDto, PersonalAccount personalAccount) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<PersonalAccountDto, PersonalAccount>() {

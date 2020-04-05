@@ -5,8 +5,9 @@ import com.statkovit.personalAccountsService.repository.PersonalAccountRepositor
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.dao.DataIntegrityViolationException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,8 +15,8 @@ import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.prePopulatedValidAccountBuilder;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class PersonalAccountRepositoryITest extends BaseRepositoryTest<PersonalAccount> {
+
+class PersonalAccountRepositoryITest extends BaseRepositoryTest {
 
     @Autowired
     PersonalAccountRepository personalAccountRepository;
@@ -24,14 +25,50 @@ class PersonalAccountRepositoryITest extends BaseRepositoryTest<PersonalAccount>
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @Test
+    void save_fieldsEncryptionSaltCanNotBeNull() {
+        Assertions.assertThrows(DataIntegrityViolationException.class, () ->
+                personalAccountRepository.saveAndFlush(
+                        prePopulatedValidAccountBuilder().fieldsEncryptionSalt(null).build()
+                )
+        );
+    }
+
+    @Test
+    void save_fieldsEncryptionUrlOrNameCanNotBeNull() {
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                personalAccountRepository.saveAndFlush(
+                        prePopulatedValidAccountBuilder().url(null).name(null).build()
+                )
+        );
+
+        Assertions.assertDoesNotThrow(() -> {
+            personalAccountRepository.saveAndFlush(
+                    prePopulatedValidAccountBuilder().url("url").build()
+            );
+        });
+
+        Assertions.assertDoesNotThrow(() -> {
+            personalAccountRepository.saveAndFlush(
+                    prePopulatedValidAccountBuilder().name("name").build()
+            );
+        });
+
+        Assertions.assertDoesNotThrow(() -> {
+            personalAccountRepository.saveAndFlush(
+                    prePopulatedValidAccountBuilder().url("url").name("name").build()
+            );
+        });
+    }
+
+    @Test
     void findAllByAccountEntityIdShouldReturnOnlyRequiredEntities() {
-        entityManager.persistAndFlush(
+        personalAccountRepository.saveAndFlush(
                 prePopulatedValidAccountBuilder().accountEntityId(1L).build()
         );
-        entityManager.persistAndFlush(
+        personalAccountRepository.saveAndFlush(
                 prePopulatedValidAccountBuilder().accountEntityId(1L).build()
         );
-        entityManager.persistAndFlush(
+        personalAccountRepository.saveAndFlush(
                 prePopulatedValidAccountBuilder().accountEntityId(2L).build()
         );
 
@@ -42,11 +79,11 @@ class PersonalAccountRepositoryITest extends BaseRepositoryTest<PersonalAccount>
 
     @Test
     void findByUuidAndAccountEntityIdShouldReturnOnlyRequiredEntities() {
-        entityManager.persistAndFlush(
+        personalAccountRepository.saveAndFlush(
                 prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build()
         );
 
-        entityManager.persistAndFlush(
+        personalAccountRepository.saveAndFlush(
                 prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).build()
         );
 
