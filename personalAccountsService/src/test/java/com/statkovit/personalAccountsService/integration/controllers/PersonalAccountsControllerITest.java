@@ -65,20 +65,23 @@ class PersonalAccountsControllerITest {
             "}";
     // @formatter:on
 
-    private static final Map<String, String> AUTH_HEADERS = Collections.singletonMap("Authorization", "Bearer myTestToken");
+    private static final Map<String, String> VALID_AUTH_HEADERS = Collections.singletonMap("Authorization", "Bearer myTestToken");
+    private static final Map<String, String> INVALID_AUTH_HEADERS = Collections.singletonMap("Authorization", "Bearer myInvalidTestToken");
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @BeforeEach
     public void setUp() {
         wireMockServer.stubFor(
-                post(urlPathMatching("/oauth/check_token")).willReturn(
+                post(urlPathMatching("/oauth/check_token"))
+                        .withQueryParam("token", equalTo("myTestToken")).willReturn(
                         okJson(CHECK_TOKEN_RESPONSE)
                 )
         );
 
         wireMockServer.stubFor(
-                get(urlPathMatching("/api/v1/auth/accounts/current")).willReturn(
+                get(urlPathMatching("/api/v1/auth/accounts/current"))
+                        .withHeader("Authorization", equalTo("Bearer myTestToken")).willReturn(
                         okJson(CURRENT_ACCOUNT_RESPONSE)
                 )
         );
@@ -92,11 +95,22 @@ class PersonalAccountsControllerITest {
     }
 
     @Test
+    public void createPersonalAccount_requireValidAuthToken() {
+        PersonalAccountDto dto = prePopulatedValidAccountDtoBuilder().build();
+
+        HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, INVALID_AUTH_HEADERS, PersonalAccountDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
     public void createPersonalAccount_DtoShouldContainAtLeastOneOfUrlName() {
         PersonalAccountDto dto = new PersonalAccountDto();
 
         HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
-                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
@@ -104,7 +118,7 @@ class PersonalAccountsControllerITest {
         dto = PersonalAccountDto.builder().name("name").build();
 
         response = RestHelper.sendRequest(
-                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -112,7 +126,7 @@ class PersonalAccountsControllerITest {
         dto = PersonalAccountDto.builder().url("url").build();
 
         response = RestHelper.sendRequest(
-                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -120,7 +134,7 @@ class PersonalAccountsControllerITest {
         dto = PersonalAccountDto.builder().url("url").name("name").build();
 
         response = RestHelper.sendRequest(
-                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -131,7 +145,7 @@ class PersonalAccountsControllerITest {
         PersonalAccountDto dto = PersonalAccountDto.builder().url("url").build();
 
         HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
-                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -144,6 +158,19 @@ class PersonalAccountsControllerITest {
     }
 
     @Test
+    public void updatePersonalAccount_requireValidAuthToken() {
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        PersonalAccountDto dto = prePopulatedValidAccountDtoBuilder().build();
+
+        HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, INVALID_AUTH_HEADERS, PersonalAccountDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
     public void updatePersonalAccount_DtoShouldContainAtLeastOneOfUrlName() {
         PersonalAccount account = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
         personalAccountRepository.save(account);
@@ -153,14 +180,14 @@ class PersonalAccountsControllerITest {
         PersonalAccountDto dto = PersonalAccountDto.builder().uuid(UUID_1).build();
 
         HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.PUT, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
 
         dto = PersonalAccountDto.builder().uuid(UUID_1).name("name").build();
         response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.PUT, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -168,7 +195,7 @@ class PersonalAccountsControllerITest {
         dto = PersonalAccountDto.builder().uuid(UUID_1).url("url").build();
 
         response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.PUT, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -176,7 +203,7 @@ class PersonalAccountsControllerITest {
         dto = PersonalAccountDto.builder().uuid(UUID_1).url("url").name("name").build();
 
         response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.PUT, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -189,7 +216,7 @@ class PersonalAccountsControllerITest {
         PersonalAccountDto dto = prePopulatedValidAccountDtoBuilder().uuid(UUID_1).build();
 
         HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.PUT, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
@@ -207,7 +234,7 @@ class PersonalAccountsControllerITest {
         PersonalAccountDto dto = prePopulatedValidAccountDtoBuilder().uuid(UUID_1).url("newUrl").build();
 
         HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.PUT, dto, AUTH_HEADERS, PersonalAccountDto.class
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
@@ -217,11 +244,22 @@ class PersonalAccountsControllerITest {
     }
 
     @Test
+    public void deletePersonalAccount_requireValidAuthToken() {
+        final String route = DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<Void> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.DELETE, INVALID_AUTH_HEADERS
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
     public void deletePersonalAccount_CanNotDeleteIfEntityNotExists() {
         final String route = DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
 
         HttpResponse<Void> response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.DELETE, AUTH_HEADERS
+                restTemplate, route, HttpMethod.DELETE, VALID_AUTH_HEADERS
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
@@ -237,10 +275,19 @@ class PersonalAccountsControllerITest {
         personalAccountRepository.save(account);
 
         HttpResponse<Void> response = RestHelper.sendRequest(
-                restTemplate, route, HttpMethod.DELETE, AUTH_HEADERS
+                restTemplate, route, HttpMethod.DELETE, VALID_AUTH_HEADERS
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void getPersonalAccounts_requireValidAuthToken() {
+        HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
+                restTemplate, GET_LIST_ROUTE, HttpMethod.GET, INVALID_AUTH_HEADERS, PersonalAccountDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
     }
 
     @Test
@@ -252,7 +299,7 @@ class PersonalAccountsControllerITest {
         personalAccountRepository.saveAll(List.of(account1, account2));
 
         HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
-                restTemplate, GET_LIST_ROUTE, HttpMethod.GET, AUTH_HEADERS, PersonalAccountDto[].class
+                restTemplate, GET_LIST_ROUTE, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
