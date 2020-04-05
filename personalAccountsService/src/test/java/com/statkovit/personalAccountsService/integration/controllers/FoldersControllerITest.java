@@ -128,6 +128,30 @@ class FoldersControllerITest {
     }
 
     @Test
+    public void createFolder_DtoCanNotExceedMaxLength() {
+        PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder()
+                .name("-".repeat(PersonalAccountFolder.MAX_LENGTH__NAME) + 1)
+                .build();
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+
+        dto = prePopulatedValidFolderDtoBuilder()
+                .name("-".repeat(PersonalAccountFolder.MAX_LENGTH__NAME))
+                .build();
+
+        response = RestHelper.sendRequest(
+                restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+    }
+
+
+    @Test
     public void createFolder_shouldReturnDtoOfCreatedEntity() {
         PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder().name("name").build();
 

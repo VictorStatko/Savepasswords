@@ -26,7 +26,7 @@ class PersonalAccountRepositoryITest extends BaseRepositoryTest {
 
     @Test
     void save_fieldsEncryptionSaltCanNotBeNull() {
-        Assertions.assertThrows(DataIntegrityViolationException.class, () ->
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
                 personalAccountRepository.saveAndFlush(
                         prePopulatedValidAccountBuilder().fieldsEncryptionSalt(null).build()
                 )

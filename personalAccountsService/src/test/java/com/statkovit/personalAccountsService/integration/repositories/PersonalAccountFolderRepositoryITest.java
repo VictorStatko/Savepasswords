@@ -5,8 +5,8 @@ import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRep
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
@@ -19,9 +19,18 @@ class PersonalAccountFolderRepositoryITest extends BaseRepositoryTest {
 
     @Test
     void save_nameCanNotBeNull() {
-        Assertions.assertThrows(DataIntegrityViolationException.class, () ->
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
                 personalAccountFolderRepository.saveAndFlush(
                         prePopulatedValidFolderBuilder().name(null).build()
+                )
+        );
+    }
+
+    @Test
+    void save_nameCanNotExceedLength() {
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                personalAccountFolderRepository.saveAndFlush(
+                        prePopulatedValidFolderBuilder().name("-".repeat(PersonalAccountFolder.MAX_LENGTH__NAME + 1)).build()
                 )
         );
     }

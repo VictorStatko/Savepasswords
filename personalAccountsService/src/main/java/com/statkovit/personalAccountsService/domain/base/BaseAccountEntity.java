@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 @MappedSuperclass
 @Getter
@@ -15,6 +16,7 @@ import javax.persistence.MappedSuperclass;
 @NoArgsConstructor
 public abstract class BaseAccountEntity extends BaseIndexedEntity {
 
+    @NotNull
     @Column(name = "account_entity_id", nullable = false)
     private Long accountEntityId;
 

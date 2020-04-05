@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "personal_account")
@@ -36,7 +38,9 @@ public class PersonalAccount extends BaseAccountEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "fields_encryption_salt", nullable = false, length = MAX_LENGTH__FIELDS_ENCRYPTION_SALT)
+    @NotNull
+    @Size(max = MAX_LENGTH__FIELDS_ENCRYPTION_SALT)
+    @Column(name = "fields_encryption_salt")
     private String fieldsEncryptionSalt;
 
     @ManyToOne

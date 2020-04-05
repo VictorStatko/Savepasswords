@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ public abstract class BaseIndexedEntity extends BaseAuditingEntity {
     private Long id;
 
     @Type(type = "pg-uuid")
+    @NotNull
     @Column(name = "uuid", nullable = false, updatable = false)
     private UUID uuid;
 

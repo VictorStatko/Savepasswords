@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -24,10 +25,12 @@ import java.time.Instant;
 public abstract class BaseAuditingEntity implements Serializable {
 
     @CreatedDate
+    @NotNull
     @Column(name = "created_date", nullable = false, updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate
+    @NotNull
     @Column(name = "updated_date", nullable = false)
     private Instant updateDate;
 

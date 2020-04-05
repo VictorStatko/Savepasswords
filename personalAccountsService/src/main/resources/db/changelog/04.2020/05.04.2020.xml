@@ -43,4 +43,8 @@
                                  onDelete="SET NULL"/>
     </changeSet>
 
+    <changeSet id="2020-04-05_18-00" author="vstatko">
+        <modifyDataType columnName="name" newDataType="varchar(255)" tableName="personal_account_folder"/>
+    </changeSet>
+
 </databaseChangeLog>

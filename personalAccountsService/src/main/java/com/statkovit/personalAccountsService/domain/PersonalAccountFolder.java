@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,11 @@ import java.util.List;
 @NoArgsConstructor
 public class PersonalAccountFolder extends BaseAccountEntity {
 
-    @Column(name = "name", nullable = false)
+    public static final int MAX_LENGTH__NAME = 255;
+
+    @Size(max = MAX_LENGTH__NAME)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
     @OneToMany(mappedBy = "folder")
