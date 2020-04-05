@@ -34,7 +34,7 @@ class TextInput extends Component {
                     autoFocus={focused}
                     autoComplete="off"
                 />
-                {isEmpty(error) ? null : <span className={styles.errorText}>{error}</span>}
+                {isEmpty(error) ? null : <div className={styles.errorText}>{error}</div>}
             </div>
         );
     }

@@ -6,8 +6,8 @@
 "global.close": "Close",
 "global.cancel": "Cancel",
 "global.back": "Back",
-"global.requestError": "An error occurred while accessing the server. Please contact your system administrator.",
-"global.internalError": "An internal error occurred. Please contact your system administrator.",
+"global.requestError": "An error occurred while accessing the server. Please retry or contact your system administrator.",
+"global.internalError": "An internal error occurred. Please reload page or contact your system administrator.",
 "global.serverValidationError": "An error occurred during server validation of form. Please check the entered data.",
 "global.validation.maxLength": "Field length must not exceed {{maxLength}} symbols.",
 "global.validation.minLength": "Field length must be greater than {{minLength}} symbols.",
@@ -59,7 +59,7 @@
 "personalAccounts.modal.form.password": "Password",
 "personalAccounts.modal.form.description": "Description",
 "personalAccounts.modal.form.validation.nameUrl": "At least one of the fields (url, name) must not be empty",
-"personalAccounts.creationSuccess": "Account was saved successfully",
+"personalAccounts.creationSuccess": "Account was created successfully",
 "personalAccounts.removeSuccess": "Account was removed successfully",
 "personalAccounts.updateSuccess": "Account was updated successfully",
 "personalAccounts.removeConfirmation.header": "Account removing confirmation",
@@ -67,5 +67,9 @@
 "personalAccounts.removeConfirmation.note": "Please note that data cannot be restored.",
 "personalAccounts.removeConfirmation.accountName": "Account name:",
 "personalAccounts.removeConfirmation.accountUrl": "Account URL:",
-"exceptions.personalAccountNotFoundByUuid": "Personal account with requested uuid is not found in the system."
+"exceptions.personalAccountNotFoundByUuid": "Personal account with requested uuid is not found in the system.",
+
+ "personalAccountFolders.modal.header.new": "Add new folder",
+ "personalAccountFolders.modal.header.edit": "Edit folder",
+ "personalAccountFolders.creationSuccess": "Folder was created successfully"
 }
