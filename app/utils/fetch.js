@@ -45,13 +45,14 @@ export default async (method, path, data, headers) => {
 
                     if (!logoutTry) {
                         toast.error(i18n.t('global.auth.sessionExpired'));
+                        return Promise.reject(error.response);
                     }
 
-                    return;
+                    return Promise.resolve();
                 }
 
                 try {
-                    const res = await axios.post(`${BACKEND_URL}${'auth/token'}`,
+                    const res = await transport.post(`${BACKEND_URL}${'auth/token'}`,
                         queryString.stringify({
                             "refresh_token": refreshToken,
                             "grant_type": "refresh_token",
@@ -60,18 +61,16 @@ export default async (method, path, data, headers) => {
                             headers: {"Content-Type": "application/x-www-form-urlencoded"}
                         });
 
-                    if (res.status === 200) {
-                        localStorageService.setToken(
-                            {
-                                access_token: res.data.access_token,
-                                refresh_token: res.data.refresh_token
-                            }
-                        );
+                    localStorageService.setToken(
+                        {
+                            access_token: res.data.access_token,
+                            refresh_token: res.data.refresh_token
+                        }
+                    );
 
-                        originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
+                    originalRequest.headers['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
 
-                        return transport(originalRequest);
-                    }
+                    return transport(originalRequest);
                 } catch (e) {
                     toast.error(i18n.t('global.auth.sessionExpired'));
                     localStorageService.clearToken();
