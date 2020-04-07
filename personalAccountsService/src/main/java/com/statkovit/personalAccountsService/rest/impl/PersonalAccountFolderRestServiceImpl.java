@@ -8,6 +8,9 @@ import com.statkovit.personalAccountsService.services.PersonalAccountFolderServi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFolderRestService {
@@ -24,5 +27,12 @@ public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFold
         folderForSave = personalAccountFolderService.save(folderForSave);
 
         return folderConverter.toDto(folderForSave);
+    }
+
+    @Override
+    public List<PersonalAccountFolderDto> getListOfCurrentAccountEntity() {
+        List<PersonalAccountFolder> folders = personalAccountFolderService.getFolderListOfCurrentAccount();
+
+        return folders.stream().map(folderConverter::toDto).collect(Collectors.toList());
     }
 }

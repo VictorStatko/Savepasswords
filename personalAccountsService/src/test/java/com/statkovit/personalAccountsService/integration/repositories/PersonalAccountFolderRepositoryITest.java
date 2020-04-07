@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
@@ -61,4 +63,22 @@ class PersonalAccountFolderRepositoryITest extends BaseRepositoryTest {
 
         Assertions.assertTrue(optional.isEmpty());
     }
+
+    @Test
+    void findAllByAccountEntityIdShouldReturnOnlyRequiredEntities() {
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(1L).build()
+        );
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(1L).build()
+        );
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(2L).build()
+        );
+
+        List<PersonalAccountFolder> result = personalAccountFolderRepository.findAllByAccountEntityId(1L);
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertTrue(result.stream().allMatch(folder -> Objects.equals(1L, folder.getAccountEntityId())));
+    }
+
 }

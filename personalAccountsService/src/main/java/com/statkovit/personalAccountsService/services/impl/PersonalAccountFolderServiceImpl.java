@@ -4,9 +4,11 @@ import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
+import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,6 +16,7 @@ import java.util.Optional;
 public class PersonalAccountFolderServiceImpl implements PersonalAccountFolderService {
 
     private final PersonalAccountFolderRepository personalAccountFolderRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     public PersonalAccountFolder save(PersonalAccountFolder folder) {
@@ -34,5 +37,12 @@ public class PersonalAccountFolderServiceImpl implements PersonalAccountFolderSe
         }
 
         return personalAccountFolderRepository.save(folder);
+    }
+
+    @Override
+    public List<PersonalAccountFolder> getFolderListOfCurrentAccount() {
+        Long currentAccountEntityId = securityUtils.getCurrentAccountEntityId();
+
+        return personalAccountFolderRepository.findAllByAccountEntityId(currentAccountEntityId);
     }
 }

@@ -19,12 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.CREATE_ROUTE;
+import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.GET_LIST_ROUTE;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderDtoBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -190,4 +189,35 @@ class FoldersControllerITest {
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
     }
 
+    @Test
+    public void getFolderListOfCurrentAccountEntity_requireValidAuthToken() {
+        HttpResponse<PersonalAccountFolderDto[]> response = RestHelper.sendRequest(
+                restTemplate, GET_LIST_ROUTE, HttpMethod.GET, INVALID_AUTH_HEADERS, PersonalAccountFolderDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void getFolderListOfCurrentAccountEntity_ShouldReturnListOfCurrentUserFolders() {
+        PersonalAccountFolder folder1 = prePopulatedValidFolderBuilder().accountEntityId(1L).uuid(UUID_1).build();
+
+        PersonalAccountFolder folder2 = prePopulatedValidFolderBuilder().accountEntityId(2L).uuid(UUID_2).build();
+
+        folderRepository.saveAll(List.of(folder1, folder2));
+
+        HttpResponse<PersonalAccountFolderDto[]> response = RestHelper.sendRequest(
+                restTemplate, GET_LIST_ROUTE, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountFolderDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        List<PersonalAccountFolderDto> folderDtos = Arrays.asList(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, folderDtos.size());
+        Assertions.assertTrue(
+                folderDtos.stream().allMatch(dto -> dto.getUuid().equals(UUID_1))
+        );
+    }
 }

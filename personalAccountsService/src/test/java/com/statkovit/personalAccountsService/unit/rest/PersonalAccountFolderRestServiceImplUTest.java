@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.folderDto;
@@ -32,6 +33,7 @@ class PersonalAccountFolderRestServiceImplUTest {
     private PersonalAccountFolderRestServiceImpl personalAccountFolderRestService;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @Test
     void create_shouldReturnDtoOfSavedFolder() {
@@ -58,5 +60,33 @@ class PersonalAccountFolderRestServiceImplUTest {
         verify(folderConverter, times(1)).toEntity(same(dto), any(PersonalAccountFolder.class));
     }
 
+    @Test
+    void getListShouldReturnListOfDtos() {
+        PersonalAccountFolder firstAccountFolder = PersonalAccountFolder.builder().uuid(UUID_1).build();
+        PersonalAccountFolderDto firstAccountFolderDto = PersonalAccountFolderDto.builder().uuid(UUID_1).build();
+        PersonalAccountFolder secondAccountFolder = PersonalAccountFolder.builder().uuid(UUID_2).build();
+        PersonalAccountFolderDto secondAccountFolderDto = PersonalAccountFolderDto.builder().uuid(UUID_2).build();
+
+        List<PersonalAccountFolder> accountFolders = List.of(firstAccountFolder, secondAccountFolder);
+
+        when(personalAccountFolderService.getFolderListOfCurrentAccount()).thenReturn(accountFolders);
+
+        when(folderConverter.toDto(any(PersonalAccountFolder.class))).thenAnswer(invocation -> {
+            PersonalAccountFolder param = invocation.getArgument(0);
+            if (param == firstAccountFolder) {
+                return firstAccountFolderDto;
+            }
+            if (param == secondAccountFolder) {
+                return secondAccountFolderDto;
+            }
+            throw new RuntimeException("Invalid account");
+        });
+
+        List<PersonalAccountFolderDto> resultDtos = personalAccountFolderRestService.getListOfCurrentAccountEntity();
+
+        Assertions.assertEquals(resultDtos.size(), 2);
+        Assertions.assertEquals(resultDtos.get(0), firstAccountFolderDto);
+        Assertions.assertEquals(resultDtos.get(1), secondAccountFolderDto);
+    }
 
 }

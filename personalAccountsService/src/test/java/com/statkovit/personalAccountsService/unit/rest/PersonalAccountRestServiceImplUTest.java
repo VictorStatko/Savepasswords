@@ -33,6 +33,7 @@ class PersonalAccountRestServiceImplUTest {
     private PersonalAccountRestServiceImpl personalAccountRestServiceImpl;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @Test
     void createShouldReturnDtoOfSavedAccount() {
@@ -92,8 +93,8 @@ class PersonalAccountRestServiceImplUTest {
     void getListShouldReturnListOfDtos() {
         PersonalAccount firstAccount = PersonalAccount.builder().uuid(UUID_1).build();
         PersonalAccountDto firstAccountDto = PersonalAccountDto.builder().uuid(UUID_1).build();
-        PersonalAccount secondAccount = PersonalAccount.builder().uuid(UUID_1).build();
-        PersonalAccountDto secondAccountDto = PersonalAccountDto.builder().uuid(UUID_1).build();
+        PersonalAccount secondAccount = PersonalAccount.builder().uuid(UUID_2).build();
+        PersonalAccountDto secondAccountDto = PersonalAccountDto.builder().uuid(UUID_2).build();
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
