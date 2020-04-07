@@ -11,7 +11,7 @@ class AccountList extends React.Component {
 
     render() {
         const listItems = this.props.accounts.map((account) =>
-            <Col xl={3} lg={4} md={6} sm={12} key={account.uuid}>
+            <Col xl={4} lg={6} md={6} key={account.uuid}>
                 <AccountCard account={account}/>
             </Col>
         );

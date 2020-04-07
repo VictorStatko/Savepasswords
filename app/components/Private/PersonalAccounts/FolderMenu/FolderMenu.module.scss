@@ -1,0 +1,25 @@
+@import "styles/colors";
+
+.navItem {
+  min-height: 30px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+
+  & .icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-right: 0.7rem;
+  }
+
+}
+
+.navItem:hover {
+  background-color: $super-light-gray;
+  cursor: pointer;
+}
+
+.menuContainer {
+  margin: 0.5rem;
+}

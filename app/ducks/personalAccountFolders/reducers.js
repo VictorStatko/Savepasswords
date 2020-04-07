@@ -18,6 +18,10 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
         }
         return {...state, ...{folders: folders}};
     },
+
+    [types.FOLDERS_FETCH_SUCCESS]: (state, {folders}) => {
+        return {...state, ...{folders: folders}};
+    },
 });
 
 export default personalAccountsFoldersReducer;

@@ -71,5 +71,6 @@
 
  "personalAccountFolders.modal.header.new": "Add new folder",
  "personalAccountFolders.modal.header.edit": "Edit folder",
- "personalAccountFolders.creationSuccess": "Folder was created successfully"
+ "personalAccountFolders.creationSuccess": "Folder was created successfully",
+ "personalAccountFolders.unfolderedItems": "Unfoldered items"
 }

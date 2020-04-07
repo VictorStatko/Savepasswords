@@ -10,6 +10,7 @@ import {ReactComponent as InfoIcon} from 'images/icons/info.svg';
 import {ReactComponent as PasswordIcon} from 'images/icons/password.svg';
 import {ReactComponent as EyeIcon} from 'images/icons/eye.svg';
 import {ReactComponent as NewFolderIcon} from 'images/icons/new-folder.svg';
+import {ReactComponent as FolderIcon} from 'images/icons/folder.svg';
 import * as PropTypes from "prop-types";
 
 const Icon = ({name, styles, onClick}) => {
@@ -36,6 +37,8 @@ const Icon = ({name, styles, onClick}) => {
             return (<EyeIcon className={styles} onClick={onClick}/>);
         case 'newFolder':
             return (<NewFolderIcon className={styles} onClick={onClick}/>);
+        case 'folder':
+            return (<FolderIcon className={styles} onClick={onClick}/>);
         default:
             return null;
     }
