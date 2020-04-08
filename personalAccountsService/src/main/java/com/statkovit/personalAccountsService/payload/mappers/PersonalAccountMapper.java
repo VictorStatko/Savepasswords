@@ -16,6 +16,7 @@ public final class PersonalAccountMapper {
             @Override
             protected void configure() {
                 skip(destination.getUuid());
+                skip(destination.getFolder());
             }
         });
 

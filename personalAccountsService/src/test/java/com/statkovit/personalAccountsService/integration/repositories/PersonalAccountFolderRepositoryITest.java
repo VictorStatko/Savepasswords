@@ -10,6 +10,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 
@@ -18,6 +19,9 @@ class PersonalAccountFolderRepositoryITest extends BaseRepositoryTest {
 
     @Autowired
     private PersonalAccountFolderRepository personalAccountFolderRepository;
+
+    private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @Test
     void save_nameCanNotBeNull() {
@@ -81,4 +85,30 @@ class PersonalAccountFolderRepositoryITest extends BaseRepositoryTest {
         Assertions.assertTrue(result.stream().allMatch(folder -> Objects.equals(1L, folder.getAccountEntityId())));
     }
 
+    @Test
+    void findByUuidAndAccountEntityIdShouldReturnOnlyRequiredEntities() {
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(1L).uuid(UUID_1).build()
+        );
+
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(1L).uuid(UUID_2).build()
+        );
+
+        Optional<PersonalAccountFolder> optional = personalAccountFolderRepository.findByUuidAndAccountEntityId(UUID_1, 1L);
+
+        Assertions.assertTrue(optional.isPresent());
+        Assertions.assertEquals(1L, optional.get().getAccountEntityId());
+        Assertions.assertEquals(UUID_1, optional.get().getUuid());
+
+        optional = personalAccountFolderRepository.findByUuidAndAccountEntityId(UUID_2, 1L);
+
+        Assertions.assertTrue(optional.isPresent());
+        Assertions.assertEquals(1L, optional.get().getAccountEntityId());
+        Assertions.assertEquals(UUID_2, optional.get().getUuid());
+
+        optional = personalAccountFolderRepository.findByUuidAndAccountEntityId(UUID_1, 2L);
+
+        Assertions.assertTrue(optional.isEmpty());
+    }
 }

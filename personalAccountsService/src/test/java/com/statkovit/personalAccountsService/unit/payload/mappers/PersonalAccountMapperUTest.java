@@ -1,6 +1,7 @@
 package com.statkovit.personalAccountsService.unit.payload.mappers;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
+import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.mappers.PersonalAccountMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PersonalAccountMapperUTest {
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
     private static final String PASSWORD = "password";
     private static final String USERNAME = "username";
     private static final String URL = "url";
@@ -39,6 +41,7 @@ class PersonalAccountMapperUTest {
                 .url(URL)
                 .name(NAME)
                 .description(DESCRIPTION)
+                .folderUuid(UUID_2)
                 .build();
 
         PersonalAccount account = account();
@@ -46,6 +49,7 @@ class PersonalAccountMapperUTest {
 
         assertNotNull(account);
         assertNull(account.getUuid());
+        assertNull(account.getFolder());
 
         assertEquals(dto.getPassword(), account.getPassword());
         assertEquals(dto.getUsername(), account.getUsername());
@@ -63,6 +67,7 @@ class PersonalAccountMapperUTest {
                 .url(URL)
                 .name(NAME)
                 .description(DESCRIPTION)
+                .folder(PersonalAccountFolder.builder().uuid(UUID_2).build())
                 .build();
 
         PersonalAccountDto dto = personalAccountMapper.toDto(account);
@@ -75,5 +80,6 @@ class PersonalAccountMapperUTest {
         assertEquals(account.getUrl(), dto.getUrl());
         assertEquals(account.getName(), dto.getName());
         assertEquals(account.getDescription(), dto.getDescription());
+        assertEquals(account.getFolder().getUuid(), dto.getFolderUuid());
     }
 }

@@ -1,10 +1,12 @@
 package com.statkovit.personalAccountsService.unit.payload.converters;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
+import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.encryptors.PersonalAccountsEncryptor;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.payload.mappers.PersonalAccountMapper;
+import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,13 +20,13 @@ import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.account;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.accountDto;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PersonalAccountConverterUTest {
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
     private static final Long ID_1 = 1L;
 
     @Mock
@@ -35,6 +37,9 @@ class PersonalAccountConverterUTest {
 
     @Mock
     private SecurityUtils securityUtils;
+
+    @Mock
+    private PersonalAccountFolderService folderService;
 
     @InjectMocks
     private PersonalAccountConverter personalAccountConverter;
@@ -89,6 +94,32 @@ class PersonalAccountConverterUTest {
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
         verify(personalAccountsEncryptor, times(1)).encryptFields(accountForUpdate);
+    }
+
+    @Test
+    void toEntityConverterShouldSetNewFolder() {
+        PersonalAccount accountForUpdate = PersonalAccount.builder()
+                .uuid(UUID_1).build();
+
+        PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+                .uuid(UUID_1).folderUuid(UUID_2).build();
+
+        PersonalAccountFolder folder = PersonalAccountFolder.builder()
+                .uuid(UUID_2).build();
+
+        when(folderService.getByUuid(UUID_2)).thenReturn(folder);
+
+        personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
+
+        Assertions.assertNotNull(accountForUpdate.getFolder());
+        Assertions.assertEquals(UUID_2, accountForUpdate.getFolder().getUuid());
+
+        accountForUpdate = PersonalAccount.builder().uuid(UUID_1).folder(folder).build();
+        dtoForUpdate = PersonalAccountDto.builder().uuid(UUID_1).folderUuid(null).build();
+
+        personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
+
+        Assertions.assertNull(accountForUpdate.getFolder());
     }
 
     @Test

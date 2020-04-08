@@ -31,4 +31,6 @@ public class PersonalAccountDto {
     private String password;
 
     private String description;
+
+    private UUID folderUuid;
 }

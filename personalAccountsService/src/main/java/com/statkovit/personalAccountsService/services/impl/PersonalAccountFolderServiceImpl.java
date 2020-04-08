@@ -8,8 +8,10 @@ import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +46,17 @@ public class PersonalAccountFolderServiceImpl implements PersonalAccountFolderSe
         Long currentAccountEntityId = securityUtils.getCurrentAccountEntityId();
 
         return personalAccountFolderRepository.findAllByAccountEntityId(currentAccountEntityId);
+    }
+
+    @Override
+    public PersonalAccountFolder getByUuid(UUID uuid) {
+        Long accountEntityId = securityUtils.getCurrentAccountEntityId();
+
+        return personalAccountFolderRepository.findByUuidAndAccountEntityId(uuid, accountEntityId).orElseThrow(
+                () -> new LocalizedException(
+                        new EntityNotFoundException("Personal account folder with uuid = " + uuid + " has not been found."),
+                        "exceptions.personalAccountFolderNotFoundByUuid"
+                )
+        );
     }
 }

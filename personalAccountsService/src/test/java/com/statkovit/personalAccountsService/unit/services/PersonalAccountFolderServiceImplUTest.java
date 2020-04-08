@@ -13,13 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,5 +113,61 @@ class PersonalAccountFolderServiceImplUTest {
 
         result = personalAccountFolderService.getFolderListOfCurrentAccount();
         assertEquals(0, result.size());
+    }
+
+    @Test
+    void getByUuidShouldReturnAccountIfCorrectData() {
+        PersonalAccountFolder firstAccountFolder = PersonalAccountFolder.builder()
+                .uuid(UUID_1).accountEntityId(1L).build();
+
+        PersonalAccountFolder secondAccountFolder = PersonalAccountFolder.builder()
+                .uuid(UUID_2).accountEntityId(2L).build();
+
+        List<PersonalAccountFolder> accountFolders = List.of(firstAccountFolder, secondAccountFolder);
+
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(2L);
+
+        when(personalAccountFolderRepository.findByUuidAndAccountEntityId(any(UUID.class), anyLong()))
+                .then(invocation -> {
+                    UUID uuid = invocation.getArgument(0);
+                    Long accountEntityId = invocation.getArgument(1);
+                    return accountFolders.stream().filter(folder ->
+                            uuid.equals(folder.getUuid())
+                                    && accountEntityId.equals(folder.getAccountEntityId())
+                    ).findFirst();
+                });
+
+        final PersonalAccountFolder result = personalAccountFolderService.getByUuid(UUID_2);
+        assertNotNull(result);
+        assertEquals(result.getUuid(), UUID_2);
+    }
+
+    @Test
+    void getByUuidShouldThrowLocalizedExceptionIfIncorrectData() {
+        PersonalAccountFolder firstAccountFolder = PersonalAccountFolder.builder()
+                .uuid(UUID_1).accountEntityId(1L).build();
+
+        PersonalAccountFolder secondAccountFolder = PersonalAccountFolder.builder()
+                .uuid(UUID_2).accountEntityId(2L).build();
+
+        List<PersonalAccountFolder> accountFolders = List.of(firstAccountFolder, secondAccountFolder);
+
+        when(securityUtils.getCurrentAccountEntityId()).thenReturn(2L);
+
+        when(personalAccountFolderRepository.findByUuidAndAccountEntityId(any(UUID.class), anyLong()))
+                .then(invocation -> {
+                    UUID uuid = invocation.getArgument(0);
+                    Long accountEntityId = invocation.getArgument(1);
+                    return accountFolders.stream().filter(folder ->
+                            uuid.equals(folder.getUuid())
+                                    && accountEntityId.equals(folder.getAccountEntityId())
+                    ).findFirst();
+                });
+
+        Exception exception = assertThrows(LocalizedException.class, () ->
+                personalAccountFolderService.getByUuid(UUID_1)
+        );
+
+        assertTrue(exception.getCause() instanceof EntityNotFoundException);
     }
 }
