@@ -53,7 +53,7 @@ class FolderModal extends React.Component {
         await setStateAsync(this, {loading: true});
 
         try {
-            await this.props.createFolder({...folder});
+            await this.props.createFolder({...folder}, true);
             toast.success(t('personalAccountFolders.creationSuccess'));
             this.props.close();
         } catch (error) {

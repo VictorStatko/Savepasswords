@@ -14,9 +14,11 @@ import {isStringMaxLengthValid} from "utils/validationUtils";
 import {toast} from "react-toastify";
 import {IndexedDBService} from "indexedDB";
 import {rsaDecrypt} from "utils/encryptionUtils";
+import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 
 const MAX_LENGTH_URL = 2047;
 const MAX_LENGTH_NAME = 254;
+const MAX_LENGTH_FOLDER_NAME = 255;
 
 const indexedDBService = IndexedDBService.getService();
 
@@ -45,6 +47,39 @@ class AccountModal extends React.Component {
         }
 
         this.setState({account: account});
+    };
+
+    handleFolderCreate = async (folderName) => {
+        const {t} = this.props;
+
+        let valid = true;
+
+        if (isEmpty(folderName)) {
+            this.setState({
+                folderUuidError: t('global.validation.notEmpty')
+            });
+            valid = false;
+        } else if (!isStringMaxLengthValid(folderName, MAX_LENGTH_FOLDER_NAME)) {
+            this.setState({
+                folderUuidError: t('global.validation.maxLength', {maxLength: MAX_LENGTH_FOLDER_NAME})
+            });
+            valid = false;
+        }
+
+        if (!valid) {
+            throw new Error('Validation failed');
+        }
+
+        try {
+            return await this.props.createFolder({name: folderName}, false);
+        } catch (error) {
+            this.setState({
+                account: {
+                    ...this.state.account, ...{folderUuid: null}
+                }
+            });
+           throw error;
+        }
     };
 
     handleChange = (input, value) => {
@@ -128,7 +163,7 @@ class AccountModal extends React.Component {
         const validUrlName = this.validateUrlName();
         const validUrl = this.validateUrl();
         const validName = this.validateName();
-        return validUrlName && validUrl && validName;
+        return validUrlName && validUrl && validName && isEmpty(this.state.folderUuidError);
     };
 
     validateUrl = () => {
@@ -202,7 +237,7 @@ class AccountModal extends React.Component {
 
     render() {
         const {t, close} = this.props;
-        const {account, urlError, nameError, serverError, infoAccount, newAccount, editAccount, loading} = this.state;
+        const {account, urlError, nameError, serverError, folderUuidError, infoAccount, newAccount, editAccount, loading} = this.state;
 
         return (
             <Modal show centered size="lg" backdrop='static'>
@@ -217,6 +252,8 @@ class AccountModal extends React.Component {
                         <div>
                             <AccountForm account={account} urlError={urlError}
                                          nameError={nameError} serverError={serverError}
+                                         folderError={folderUuidError}
+                                         handleFolderCreate={this.handleFolderCreate}
                                          handleChange={this.handleChange} disabled={infoAccount}/>
                         </div>
                     </Modal.Body>
@@ -238,7 +275,8 @@ class AccountModal extends React.Component {
 
 const withConnect = connect(null, {
     createPersonalAccount: personalAccountsOperations.createPersonalAccount,
-    updatePersonalAccount: personalAccountsOperations.updatePersonalAccount
+    updatePersonalAccount: personalAccountsOperations.updatePersonalAccount,
+    createFolder: personalAccountFoldersOperations.createFolder
 });
 
 export default compose(withTranslation(), withConnect)(AccountModal);

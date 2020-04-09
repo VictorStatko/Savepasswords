@@ -68,9 +68,11 @@
 "personalAccounts.removeConfirmation.accountName": "Account name:",
 "personalAccounts.removeConfirmation.accountUrl": "Account URL:",
 "exceptions.personalAccountNotFoundByUuid": "Personal account with requested uuid is not found in the system.",
+"exceptions.personalAccountFolderNotFoundByUuid": "Personal account folder with requested uuid is not found in the system.",
 
  "personalAccountFolders.modal.header.new": "Add new folder",
  "personalAccountFolders.modal.header.edit": "Edit folder",
  "personalAccountFolders.creationSuccess": "Folder was created successfully",
- "personalAccountFolders.unfolderedItems": "Unfoldered items"
+ "personalAccountFolders.unfolderedItems": "Unfoldered items",
+ "exceptions.folderAlreadyExists": "Personal account folder with specified name already exists."
 }

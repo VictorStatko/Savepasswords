@@ -14,12 +14,17 @@ const foldersFetched = folders => ({
     folders
 });
 
-export const createFolder = (folder) => async dispatch => {
+export const createFolder = (folder, errorsAsForm) => async dispatch => {
     try {
         const createResponse = await fetch(POST, "personal-accounts-management/folders", folder);
         dispatch(folderUpdated(createResponse.data));
+        return createResponse.data;
     } catch (error) {
-        throw processErrorAsFormOrNotification(error);
+        if (errorsAsForm) {
+            throw processErrorAsFormOrNotification(error);
+        } else {
+            throw processErrorAsNotification(error);
+        }
     }
 };
 

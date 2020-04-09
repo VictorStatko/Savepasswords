@@ -28,7 +28,7 @@ class TextInput extends Component {
                     type={secret && showSecret ? 'password' : 'text'}
                     value={value}
                     placeholder={placeholder}
-                    className={isEmpty(error) ? null : styles.error}
+                    className={isEmpty(error) ? styles.textInput : `${styles.textInput} ${styles.error}`}
                     onChange={onChange}
                     readOnly={readOnly}
                     autoFocus={focused}

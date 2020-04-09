@@ -1,0 +1,30 @@
+@import "styles/colors";
+
+.selectContainer {
+ // padding: 0.6rem 1.2rem;
+  margin-top: 1rem !important;
+}
+
+.loadingSpinner {
+  margin-right: 1rem;
+}
+
+.labelText {
+  color: $gray;
+  font-weight: 500;
+  margin-left: 0.3rem;
+}
+
+.selectError {
+  box-shadow: inset 0 0 0 1px $red;
+  background: url(~images/icons/error.svg) no-repeat top 50% right 1rem;
+  background-size: 25px 25px;
+  padding-right: 4rem;
+}
+
+.errorText {
+  color: $red;
+  font-weight: 500;
+  margin-top: 0.2rem;
+  margin-left: 0.3rem;
+}
