@@ -5,9 +5,6 @@ import styles from "./AccountRemovingConfirmation.module.scss";
 import Icon from "components/default/icons";
 import {Button, DeclineButton, PrimaryButton} from "components/default/buttons/Button/Button";
 import {isEmpty} from "utils/stringUtils";
-import {connect} from "react-redux";
-import {personalAccountsOperations} from "ducks/personalAccounts";
-import {compose} from "redux";
 import {setStateAsync} from "utils/stateUtils";
 import {toast} from "react-toastify";
 
@@ -72,9 +69,5 @@ class AccountRemovingConfirmation extends React.Component {
 
 }
 
-const withConnect = connect(null, {
-    removePersonalAccount: personalAccountsOperations.removePersonalAccount
-});
-
-export default compose(withTranslation(), withConnect)(AccountRemovingConfirmation);
+export default withTranslation()(AccountRemovingConfirmation);
 

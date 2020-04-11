@@ -14,7 +14,6 @@ import AccountModal from "../AccountModal";
 
 class AccountCard extends React.Component {
     state = {
-        show: false
     };
 
     handleDataModalToggle = () => {
@@ -26,7 +25,7 @@ class AccountCard extends React.Component {
     };
 
     handleDeleteConfirm = async () => {
-        await this.props.removePersonalAccount(this.props.account.uuid);
+        await this.props.removePersonalAccount(this.props.account);
     };
 
     preventDragHandler = (e) => {

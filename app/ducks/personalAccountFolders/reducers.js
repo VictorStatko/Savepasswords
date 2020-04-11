@@ -22,6 +22,32 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
     [types.FOLDERS_FETCH_SUCCESS]: (state, {folders}) => {
         return {...state, ...{folders: folders}};
     },
+
+    [types.FOLDER_ACCOUNT_SIZE_DECREASED]: (state, {folderUuid}) => {
+        if (!folderUuid) {
+            folderUuid = null;
+        }
+
+        const folders = state.folders.slice();
+        const index = folders.findIndex(listFolder => listFolder.uuid === folderUuid);
+
+        folders[index].accountsCount = folders[index].accountsCount - 1;
+
+        return {...state, ...{folders: folders}};
+    },
+
+    [types.FOLDER_ACCOUNT_SIZE_INCREASED]: (state, {folderUuid}) => {
+        if (!folderUuid) {
+            folderUuid = null;
+        }
+
+        const folders = state.folders.slice();
+        const index = folders.findIndex(listFolder => listFolder.uuid === folderUuid);
+
+        folders[index].accountsCount = folders[index].accountsCount + 1;
+
+        return {...state, ...{folders: folders}};
+    },
 });
 
 export default personalAccountsFoldersReducer;

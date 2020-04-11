@@ -10,7 +10,16 @@
     flex: none;
     width: 20px;
     height: 20px;
-    margin-right: 0.7rem;
+    margin-right: 0.4rem;
+  }
+
+  & .badge {
+    margin-top: 0.1rem;
+    margin-right: 0.5rem;
+  }
+
+  & .text {
+    margin-top: 0.2rem;
   }
 
 }

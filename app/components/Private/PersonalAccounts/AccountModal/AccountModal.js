@@ -143,7 +143,7 @@ class AccountModal extends React.Component {
         await setStateAsync(this, {loading: true});
 
         try {
-            await this.props.updatePersonalAccount({...account});
+            await this.props.updatePersonalAccount({...account}, this.props.account);
             toast.success(t('personalAccounts.updateSuccess'));
             this.props.close();
         } catch (error) {

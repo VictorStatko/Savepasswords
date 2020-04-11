@@ -2,7 +2,7 @@ import {toast} from 'react-toastify';
 import i18n from 'i18n';
 
 export function processErrorAsNotification(error) {
-
+    console.error(error);
     if (error && error.data && error.data.error) {
         toast.error(i18n.t(error.data.error, i18n.t('global.requestError')));
     } else {
@@ -13,7 +13,7 @@ export function processErrorAsNotification(error) {
 }
 
 export function processErrorAsFormOrNotification(error) {
-
+    console.error(error);
     if (error && error.status === 500) {
         return processErrorAsNotification(error);
     }

@@ -5,13 +5,15 @@ import Icon from "components/default/icons";
 import {connect} from "react-redux";
 import {compose} from "redux";
 import {withTranslation} from "react-i18next";
+import {Badge} from "react-bootstrap";
 
 class FolderMenu extends React.Component {
 
     render() {
         const listItems = this.props.folders.map((folder) => {
                 return <div key={folder.uuid} className={styles.navItem} onClick={() => this.props.click(folder.uuid)}>
-                    <Icon name='folder' styles={styles.icon}/> {folder.name}
+                    <Icon name='folder' styles={styles.icon}/> <Badge variant="secondary" className={styles.badge}>{folder.accountsCount}</Badge>
+                    <span className={styles.text}>{folder.name}</span>
                 </div>
             }
         );

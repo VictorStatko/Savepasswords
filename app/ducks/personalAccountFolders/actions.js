@@ -14,6 +14,16 @@ const foldersFetched = folders => ({
     folders
 });
 
+export const folderAccountsCountIncreased = folderUuid => ({
+    type: types.FOLDER_ACCOUNT_SIZE_INCREASED,
+    folderUuid
+});
+
+export const folderAccountsCountDecreased = folderUuid => ({
+    type: types.FOLDER_ACCOUNT_SIZE_DECREASED,
+    folderUuid
+});
+
 export const createFolder = (folder, errorsAsForm) => async dispatch => {
     try {
         const createResponse = await fetch(POST, "personal-accounts-management/folders", folder);
@@ -31,7 +41,7 @@ export const createFolder = (folder, errorsAsForm) => async dispatch => {
 export const fetchPersonalAccountFolders = () => async dispatch => {
     try {
         const fetchResponse = await fetch(GET, "personal-accounts-management/folders");
-        dispatch(foldersFetched([{uuid: null, name: i18n.t('personalAccountFolders.unfolderedItems')}, ... fetchResponse.data]));
+        dispatch(foldersFetched([{uuid: null, name: i18n.t('personalAccountFolders.unfolderedItems'), accountsCount: 999}, ... fetchResponse.data]));
     } catch (error) {
         throw processErrorAsNotification(error);
     }
