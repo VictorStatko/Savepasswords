@@ -1,5 +1,6 @@
 package com.statkovit.personalAccountsService.services;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface PersonalAccountService {
 
     void delete(UUID accountUuid);
 
-    List<PersonalAccount> getList();
+    List<PersonalAccount> getList(BooleanExpression booleanExpression);
 
     PersonalAccount findOneByUuid(UUID accountUuid);
 }

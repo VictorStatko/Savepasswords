@@ -1,8 +1,11 @@
 package com.statkovit.personalAccountsService.unit.rest;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
+import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
+import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
 import com.statkovit.personalAccountsService.rest.impl.PersonalAccountRestServiceImpl;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import org.junit.jupiter.api.Assertions;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -28,6 +32,9 @@ class PersonalAccountRestServiceImplUTest {
 
     @Mock
     private PersonalAccountConverter personalAccountConverter;
+
+    @Mock
+    private PersonalAccountsExpressionsBuilder expressionsBuilder;
 
     @InjectMocks
     private PersonalAccountRestServiceImpl personalAccountRestServiceImpl;
@@ -91,6 +98,7 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void getListShouldReturnListOfDtos() {
+        BooleanExpression mockExpression = Mockito.mock(BooleanExpression.class);
         PersonalAccount firstAccount = PersonalAccount.builder().uuid(UUID_1).build();
         PersonalAccountDto firstAccountDto = PersonalAccountDto.builder().uuid(UUID_1).build();
         PersonalAccount secondAccount = PersonalAccount.builder().uuid(UUID_2).build();
@@ -98,7 +106,9 @@ class PersonalAccountRestServiceImplUTest {
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
-        when(personalAccountService.getList()).thenReturn(accounts);
+        when(expressionsBuilder.getListExpression(any(PersonalAccountListFilters.class))).thenReturn(mockExpression);
+
+        when(personalAccountService.getList(mockExpression)).thenReturn(accounts);
 
         when(personalAccountConverter.toDto(any(PersonalAccount.class))).thenAnswer(invocation -> {
             PersonalAccount param = invocation.getArgument(0);
@@ -111,7 +121,7 @@ class PersonalAccountRestServiceImplUTest {
             throw new RuntimeException("Invalid account");
         });
 
-        List<PersonalAccountDto> resultDtos = personalAccountRestServiceImpl.getList();
+        List<PersonalAccountDto> resultDtos = personalAccountRestServiceImpl.getList(new PersonalAccountListFilters());
 
         Assertions.assertEquals(resultDtos.size(), 2);
         Assertions.assertEquals(resultDtos.get(0), firstAccountDto);

@@ -1,6 +1,7 @@
 package com.statkovit.personalAccountsService.controllers.external;
 
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
+import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
 import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,8 +42,8 @@ public class PersonalAccountsController {
     }
 
     @GetMapping(GET_LIST_ROUTE)
-    public ResponseEntity<List<PersonalAccountDto>> getPersonalAccounts() {
-        List<PersonalAccountDto> accountDtos = personalAccountRestService.getList();
+    public ResponseEntity<List<PersonalAccountDto>> getPersonalAccounts(PersonalAccountListFilters filters) {
+        List<PersonalAccountDto> accountDtos = personalAccountRestService.getList(filters);
 
         return ResponseEntity.ok(accountDtos);
     }

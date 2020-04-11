@@ -1,11 +1,13 @@
 package com.statkovit.personalAccountsService.services.impl;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +30,8 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PersonalAccount> getList() {
-        Long accountEntityId = securityUtils.getCurrentAccountEntityId();
-
-        return personalAccountRepository.findAllByAccountEntityId(accountEntityId);
+    public List<PersonalAccount> getList(BooleanExpression booleanExpression) {
+        return IterableUtils.toList(personalAccountRepository.findAll(booleanExpression));
     }
 
     @Transactional

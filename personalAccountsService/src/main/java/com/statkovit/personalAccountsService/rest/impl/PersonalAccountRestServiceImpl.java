@@ -3,6 +3,8 @@ package com.statkovit.personalAccountsService.rest.impl;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
+import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
+import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
 import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
 
     private final PersonalAccountService personalAccountService;
     private final PersonalAccountConverter personalAccountConverter;
+    private final PersonalAccountsExpressionsBuilder expressionsBuilder;
 
     @Override
     public PersonalAccountDto create(PersonalAccountDto personalAccountDto) {
@@ -39,8 +42,10 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
     }
 
     @Override
-    public List<PersonalAccountDto> getList() {
-        List<PersonalAccount> accounts = personalAccountService.getList();
+    public List<PersonalAccountDto> getList(PersonalAccountListFilters filters) {
+        List<PersonalAccount> accounts = personalAccountService.getList(
+                expressionsBuilder.getListExpression(filters)
+        );
 
         return accounts.stream()
                 .map(personalAccountConverter::toDto)

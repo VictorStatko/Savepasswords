@@ -3,9 +3,12 @@ package com.statkovit.personalAccountsService.integration.controllers;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.statkovit.personalAccountsService.constants.MappingConstants;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
+import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper.HttpResponse;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
+import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -19,8 +22,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.statkovit.personalAccountsService.constants.MappingConstants.PersonalAccountsExternalController.*;
@@ -39,6 +44,9 @@ class PersonalAccountsControllerITest {
 
     @Autowired
     private PersonalAccountRepository personalAccountRepository;
+
+    @Autowired
+    private PersonalAccountFolderRepository personalAccountFolderRepository;
 
     private final WireMockServer wireMockServer = new WireMockServer(9999);
 
@@ -69,6 +77,9 @@ class PersonalAccountsControllerITest {
     private static final Map<String, String> INVALID_AUTH_HEADERS = Collections.singletonMap("Authorization", "Bearer myInvalidTestToken");
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private static final UUID UUID_3 = UUID.fromString("00000000-0000-0000-0000-000000000003");
+    private static final UUID UUID_4 = UUID.fromString("00000000-0000-0000-0000-000000000004");
+    private static final UUID UUID_5 = UUID.fromString("00000000-0000-0000-0000-000000000005");
 
     @BeforeEach
     public void setUp() {
@@ -291,12 +302,11 @@ class PersonalAccountsControllerITest {
     }
 
     @Test
-    public void getPersonalAccounts_ShouldReturnListOfCurrentUserAccounts() {
+    public void getPersonalAccounts_ShouldReturnListOfCurrentUserAccountsAccordingToFilters() {
         PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
-
         PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(2L).uuid(UUID_2).build();
-
-        personalAccountRepository.saveAll(List.of(account1, account2));
+        PersonalAccount account3 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_3).build();
+        personalAccountRepository.saveAll(List.of(account1, account2, account3));
 
         HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
                 restTemplate, GET_LIST_ROUTE, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
@@ -307,9 +317,96 @@ class PersonalAccountsControllerITest {
 
         List<PersonalAccountDto> accountDtos = Arrays.asList(response.getConvertedResponse());
 
-        Assertions.assertEquals(1, accountDtos.size());
+        Assertions.assertEquals(2, accountDtos.size());
         Assertions.assertTrue(
-                accountDtos.stream().allMatch(dto -> dto.getUuid().equals(UUID_1))
+                accountDtos.stream().map(PersonalAccountDto::getUuid).collect(Collectors.toList()).containsAll(List.of(UUID_1, UUID_3))
         );
+
+    }
+
+    @Test
+    public void getPersonalAccounts_ShouldReturnListAccordingToUnfolderedFilter() {
+        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().build();
+        folder = personalAccountFolderRepository.save(folder);
+
+        final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        final PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).folder(folder).build();
+
+        personalAccountRepository.saveAll(List.of(account1, account2));
+
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_ROUTE)
+                .queryParam("unfolderedOnly", true)
+                .toUriString();
+
+        final HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        List<PersonalAccountDto> accountDtos = Arrays.asList(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, accountDtos.size());
+        Assertions.assertEquals(account1.getUuid(), accountDtos.get(0).getUuid());
+    }
+
+    @Test
+    public void getPersonalAccounts_ShouldReturnListAndUnfolderedFilterHasHigherPriorityThenFolderUuidFilter() {
+        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_3).build();
+        folder = personalAccountFolderRepository.save(folder);
+
+        final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        final PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).folder(folder).build();
+
+        personalAccountRepository.saveAll(List.of(account1, account2));
+
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_ROUTE)
+                .queryParam("unfolderedOnly", true)
+                .queryParam("folderUuid", UUID_3)
+                .toUriString();
+
+        final HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        List<PersonalAccountDto> accountDtos = Arrays.asList(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, accountDtos.size());
+        Assertions.assertEquals(account1.getUuid(), accountDtos.get(0).getUuid());
+    }
+
+    @Test
+    public void getPersonalAccounts_ShouldReturnListAccordingToFolderUuidFilter() {
+        PersonalAccountFolder folder1 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_4).build();
+        folder1 = personalAccountFolderRepository.save(folder1);
+
+        PersonalAccountFolder folder2 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_5).build();
+        folder2 = personalAccountFolderRepository.save(folder2);
+
+        final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        final PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).folder(folder1).build();
+        final PersonalAccount account3 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_3).folder(folder2).build();
+
+        personalAccountRepository.saveAll(List.of(account1, account2, account3));
+
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_ROUTE)
+                .queryParam("folderUuid", UUID_4)
+                .toUriString();
+
+        final HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        List<PersonalAccountDto> accountDtos = Arrays.asList(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, accountDtos.size());
+        Assertions.assertEquals(account2.getUuid(), accountDtos.get(0).getUuid());
     }
 }

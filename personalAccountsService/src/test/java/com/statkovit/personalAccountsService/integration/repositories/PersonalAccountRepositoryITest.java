@@ -5,11 +5,8 @@ import com.statkovit.personalAccountsService.repository.PersonalAccountRepositor
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,23 +55,6 @@ class PersonalAccountRepositoryITest extends BaseRepositoryTest {
                     prePopulatedValidAccountBuilder().url("url").name("name").build()
             );
         });
-    }
-
-    @Test
-    void findAllByAccountEntityIdShouldReturnOnlyRequiredEntities() {
-        personalAccountRepository.saveAndFlush(
-                prePopulatedValidAccountBuilder().accountEntityId(1L).build()
-        );
-        personalAccountRepository.saveAndFlush(
-                prePopulatedValidAccountBuilder().accountEntityId(1L).build()
-        );
-        personalAccountRepository.saveAndFlush(
-                prePopulatedValidAccountBuilder().accountEntityId(2L).build()
-        );
-
-        List<PersonalAccount> result = personalAccountRepository.findAllByAccountEntityId(1L);
-        Assertions.assertFalse(result.isEmpty());
-        Assertions.assertTrue(result.stream().allMatch(account -> Objects.equals(1L, account.getAccountEntityId())));
     }
 
     @Test

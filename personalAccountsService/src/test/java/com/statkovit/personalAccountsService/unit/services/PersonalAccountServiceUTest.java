@@ -1,5 +1,6 @@
 package com.statkovit.personalAccountsService.unit.services;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
@@ -9,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,37 +66,23 @@ class PersonalAccountServiceUTest {
     }
 
     @Test
-    void getListShouldReturnAccountsOfCurrentEntityId() {
+    void getListShouldReturnAccountsFromRepository() {
         PersonalAccount firstAccount = PersonalAccount.builder()
                 .uuid(UUID_1).accountEntityId(ID_1).build();
 
         PersonalAccount secondAccount = PersonalAccount.builder()
-                .uuid(UUID_2).accountEntityId(ID_2).build();
+                .uuid(UUID_2).accountEntityId(ID_1).build();
+
+        BooleanExpression expression = Mockito.mock(BooleanExpression.class);
 
         List<PersonalAccount> allAccounts = List.of(firstAccount, secondAccount);
 
-        when(personalAccountRepository.findAllByAccountEntityId(anyLong()))
-                .then(invocation -> {
-                    Long accountEntityId = invocation.getArgument(0);
-                    return allAccounts.stream().filter(account -> accountEntityId.equals(account.getAccountEntityId())).collect(Collectors.toList());
-                });
+        when(personalAccountRepository.findAll(expression)).thenReturn(allAccounts);
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
 
-        List<PersonalAccount> result = personalAccountService.getList();
-        assertEquals(1, result.size());
-        assertEquals(firstAccount, result.get(0));
-
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_2);
-
-        result = personalAccountService.getList();
-        assertEquals(1, result.size());
-        assertSame(secondAccount, result.get(0));
-
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_3);
-
-        result = personalAccountService.getList();
-        assertEquals(0, result.size());
+        List<PersonalAccount> result = personalAccountService.getList(expression);
+        assertEquals(2, result.size());
+        assertTrue(result.containsAll(allAccounts));
     }
 
     @Test
