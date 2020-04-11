@@ -26,7 +26,18 @@ public class PersonalAccountFolderMapper {
     public PersonalAccountFolderDto toDto(PersonalAccountFolder personalAccountFolder) {
         ModelMapper modelMapper = new ModelMapper();
 
-        return modelMapper.map(personalAccountFolder, PersonalAccountFolderDto.class);
+        modelMapper.addMappings(new PropertyMap<PersonalAccountFolder, PersonalAccountFolderDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getAccountsCount());
+            }
+        });
+
+        PersonalAccountFolderDto dto = modelMapper.map(personalAccountFolder, PersonalAccountFolderDto.class);
+
+        dto.setAccountsCount(personalAccountFolder.getAccounts().size());
+
+        return dto;
     }
 
 

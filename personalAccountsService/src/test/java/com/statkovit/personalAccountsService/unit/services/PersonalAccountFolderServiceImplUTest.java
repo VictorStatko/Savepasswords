@@ -82,7 +82,7 @@ class PersonalAccountFolderServiceImplUTest {
     }
 
     @Test
-    void getListShouldReturnAccountsOfCurrentEntityId() {
+    void getListShouldReturnFoldersOfCurrentEntityId() {
         PersonalAccountFolder firstAccountFolder = PersonalAccountFolder.builder()
                 .uuid(UUID_1).accountEntityId(1L).build();
 

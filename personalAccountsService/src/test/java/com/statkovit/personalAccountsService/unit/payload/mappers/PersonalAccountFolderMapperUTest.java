@@ -1,6 +1,8 @@
 package com.statkovit.personalAccountsService.unit.payload.mappers;
 
+import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.payload.mappers.PersonalAccountFolderMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.folder;
@@ -43,9 +46,13 @@ class PersonalAccountFolderMapperUTest {
 
     @Test
     void shouldMapEntityToDto() {
+        PersonalAccount account1 = PersonalAccountDomainHelper.prePopulatedValidAccountBuilder().build();
+        PersonalAccount account2 = PersonalAccountDomainHelper.prePopulatedValidAccountBuilder().build();
+
         PersonalAccountFolder folder = PersonalAccountFolder.builder()
                 .name(NAME)
                 .uuid(UUID_1)
+                .accounts(List.of(account1, account2))
                 .build();
 
         PersonalAccountFolderDto dto = personalAccountFolderMapper.toDto(folder);
@@ -54,6 +61,7 @@ class PersonalAccountFolderMapperUTest {
 
         assertEquals(folder.getName(), dto.getName());
         assertEquals(folder.getUuid(), dto.getUuid());
+        assertEquals(2, dto.getAccountsCount());
     }
 
 }
