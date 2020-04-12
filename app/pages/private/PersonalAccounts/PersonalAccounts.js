@@ -12,7 +12,6 @@ import AccountList from "components/Private/PersonalAccounts/AccountList";
 import FolderMenu from "components/Private/PersonalAccounts/FolderMenu";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {PageSpinner} from "components/default/spinner/Spinner";
-import history from 'utils/history';
 
 class PersonalAccounts extends React.Component {
 
@@ -44,7 +43,10 @@ class PersonalAccounts extends React.Component {
                         <FolderMenu/>}
                 </Col>
                 <Col className={styles.listColumn}>
-                    <AccountList parentLoading={this.state.loading}/>
+                    <Col><h1>Social</h1></Col>
+                    <Col className={styles.accountList}>
+                        <AccountList parentLoading={this.state.loading}/>
+                    </Col>
                 </Col>
             </Row>
         }

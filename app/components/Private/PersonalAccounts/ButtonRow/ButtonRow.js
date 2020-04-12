@@ -25,9 +25,9 @@ class ButtonRow extends React.Component {
         return (
             <React.Fragment>
                 <Button content={<Icon name='add' styles={styles.buttonIcon}/>}
-                        customStyle={styles.button} onClick={this.toggleAddAccount}/>
+                         onClick={this.toggleAddAccount}/>
                 <Button content={<Icon name='newFolder' styles={styles.buttonIcon}/>}
-                        customStyle={styles.button} onClick={this.toggleAddFolder}/>
+                         onClick={this.toggleAddFolder}/>
                 {this.state.showAddAccount ? <AccountModal close={this.toggleAddAccount}/> : null}
                 {this.state.showAddFolder ? <FolderModal close={this.toggleAddFolder}/> : null}
             </React.Fragment>
