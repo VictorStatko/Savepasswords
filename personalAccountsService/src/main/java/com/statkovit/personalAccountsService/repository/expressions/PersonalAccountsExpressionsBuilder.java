@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class PersonalAccountsExpressionsBuilder {
             );
         } else if (Objects.nonNull(filters.getFolderUuid())) {
             expression = expression.and(
-                    QPersonalAccount.personalAccount.folder.uuid.eq(filters.getFolderUuid())
+                    QPersonalAccount.personalAccount.folder.uuid.eq(UUID.fromString(filters.getFolderUuid()))
             );
         }
 

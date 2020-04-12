@@ -111,4 +111,34 @@ class PersonalAccountFolderRepositoryITest extends BaseRepositoryTest {
 
         Assertions.assertTrue(optional.isEmpty());
     }
+
+    @Test
+    void existsByUuidAndAccountEntityId_shouldReturnTrueIfExists() {
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(1L).uuid(UUID_1).build()
+        );
+
+        boolean result = personalAccountFolderRepository.existsByUuidAndAccountEntityId(UUID_1, 1L);
+
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void existsByUuidAndAccountEntityId_shouldReturnFalseIfNotExists() {
+        personalAccountFolderRepository.saveAndFlush(
+                prePopulatedValidFolderBuilder().accountEntityId(2L).uuid(UUID_1).build()
+        );
+
+        boolean result = personalAccountFolderRepository.existsByUuidAndAccountEntityId(UUID_1, 1L);
+
+        Assertions.assertFalse(result);
+
+        result = personalAccountFolderRepository.existsByUuidAndAccountEntityId(UUID_2, 1L);
+
+        Assertions.assertFalse(result);
+
+        result = personalAccountFolderRepository.existsByUuidAndAccountEntityId(UUID_2, 2L);
+
+        Assertions.assertFalse(result);
+    }
 }

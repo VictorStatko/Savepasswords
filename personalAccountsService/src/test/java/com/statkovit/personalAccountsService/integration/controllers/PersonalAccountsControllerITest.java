@@ -409,4 +409,17 @@ class PersonalAccountsControllerITest {
         Assertions.assertEquals(1, accountDtos.size());
         Assertions.assertEquals(account2.getUuid(), accountDtos.get(0).getUuid());
     }
+
+    @Test
+    public void getPersonalAccounts_ShouldReturnBadRequestIfFolderNotExists() {
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_ROUTE)
+                .queryParam("folderUuid", UUID_1)
+                .toUriString();
+
+        final HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+    }
 }

@@ -7,10 +7,12 @@ import com.statkovit.personalAccountsService.payload.filters.PersonalAccountList
 import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
 import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
+import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
     private final PersonalAccountService personalAccountService;
     private final PersonalAccountConverter personalAccountConverter;
     private final PersonalAccountsExpressionsBuilder expressionsBuilder;
+    private final PersonalAccountFolderValidator folderValidator;
 
     @Override
     public PersonalAccountDto create(PersonalAccountDto personalAccountDto) {
@@ -43,6 +46,11 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
 
     @Override
     public List<PersonalAccountDto> getList(PersonalAccountListFilters filters) {
+
+        if (!filters.isUnfolderedOnly() && Objects.nonNull(filters.getFolderUuid())) {
+            folderValidator.validateFolderExistence(filters.getFolderUuid());
+        }
+
         List<PersonalAccount> accounts = personalAccountService.getList(
                 expressionsBuilder.getListExpression(filters)
         );

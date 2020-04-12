@@ -15,5 +15,5 @@ public class PersonalAccountListFilters {
 
     private boolean unfolderedOnly = false;
 
-    private UUID folderUuid;
+    private String folderUuid;
 }

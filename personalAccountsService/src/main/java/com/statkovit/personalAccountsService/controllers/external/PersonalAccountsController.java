@@ -42,9 +42,9 @@ public class PersonalAccountsController {
     }
 
     @GetMapping(GET_LIST_ROUTE)
-    public ResponseEntity<List<PersonalAccountDto>> getPersonalAccounts(PersonalAccountListFilters filters) {
+    public ResponseEntity<List<PersonalAccountDto>> getPersonalAccounts(PersonalAccountListFilters filters) throws InterruptedException {
         List<PersonalAccountDto> accountDtos = personalAccountRestService.getList(filters);
-
+        Thread.sleep(3000);
         return ResponseEntity.ok(accountDtos);
     }
 

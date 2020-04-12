@@ -8,6 +8,7 @@ import com.statkovit.personalAccountsService.payload.filters.PersonalAccountList
 import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
 import com.statkovit.personalAccountsService.rest.impl.PersonalAccountRestServiceImpl;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
+import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,10 @@ class PersonalAccountRestServiceImplUTest {
 
     @Mock
     private PersonalAccountsExpressionsBuilder expressionsBuilder;
+
+    @Mock
+    private PersonalAccountFolderValidator folderValidator;
+
 
     @InjectMocks
     private PersonalAccountRestServiceImpl personalAccountRestServiceImpl;
@@ -126,6 +131,17 @@ class PersonalAccountRestServiceImplUTest {
         Assertions.assertEquals(resultDtos.size(), 2);
         Assertions.assertEquals(resultDtos.get(0), firstAccountDto);
         Assertions.assertEquals(resultDtos.get(1), secondAccountDto);
+    }
+
+    @Test
+    void getListShouldCallFolderExistenceValidatorIfNotUnfolderedAndFolderUuidPresent() {
+        PersonalAccountListFilters filters = new PersonalAccountListFilters();
+        filters.setFolderUuid(UUID_1.toString());
+        filters.setUnfolderedOnly(false);
+
+        personalAccountRestServiceImpl.getList(filters);
+
+        verify(folderValidator, times(1)).validateFolderExistence(UUID_1.toString());
     }
 
     @Test

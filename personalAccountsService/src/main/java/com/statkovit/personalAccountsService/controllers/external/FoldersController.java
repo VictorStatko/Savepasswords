@@ -29,8 +29,10 @@ public class FoldersController {
     }
 
     @GetMapping(GET_LIST_ROUTE)
-    public ResponseEntity<List<PersonalAccountFolderDto>> getFolderListOfCurrentAccountEntity() {
+    public ResponseEntity<List<PersonalAccountFolderDto>> getFolderListOfCurrentAccountEntity() throws InterruptedException {
         List<PersonalAccountFolderDto> folderDtos = folderRestService.getListOfCurrentAccountEntity();
+
+        Thread.sleep(1500);
 
         return ResponseEntity.ok(folderDtos);
     }

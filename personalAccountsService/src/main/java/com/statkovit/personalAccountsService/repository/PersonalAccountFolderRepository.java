@@ -13,5 +13,7 @@ public interface PersonalAccountFolderRepository extends JpaRepository<PersonalA
 
     Optional<PersonalAccountFolder> findByUuidAndAccountEntityId(UUID uuid, Long accountEntityId);
 
+    boolean existsByUuidAndAccountEntityId(UUID uuid, Long accountEntityId);
+
     List<PersonalAccountFolder> findAllByAccountEntityId(Long accountEntityId);
 }
