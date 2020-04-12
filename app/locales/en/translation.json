@@ -74,6 +74,7 @@
  "personalAccountFolders.modal.header.new": "Add new folder",
  "personalAccountFolders.modal.header.edit": "Edit folder",
  "personalAccountFolders.creationSuccess": "Folder was created successfully",
+ "personalAccountFolders.updateSuccess": "Folder was updated successfully",
  "personalAccountFolders.unfolderedItems": "Unfoldered items",
  "exceptions.folderAlreadyExists": "Personal account folder with specified name already exists."
 }

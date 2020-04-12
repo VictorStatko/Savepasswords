@@ -14,6 +14,7 @@ import {connect} from "react-redux";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {compose} from "redux";
 import history from "utils/history";
+import {isObjectModified} from "utils/objectUtils";
 
 const MAX_LENGTH_NAME = 255;
 
@@ -41,7 +42,7 @@ class FolderModal extends React.Component {
         }
 
         if (this.props.folder) {
-            //   await this.onUpdate();
+            await this.onUpdate();
         } else {
             await this.onCreate();
         }
@@ -67,6 +68,32 @@ class FolderModal extends React.Component {
                 });
             } else {
                 console.error(error);
+            }
+        }
+    };
+
+    onUpdate = async () => {
+        const {t} = this.props;
+        const {folder} = this.state;
+
+        if (!isObjectModified(folder, this.props.folder)) {
+            toast.success(t('personalAccountFolders.updateSuccess'));
+            this.props.close();
+        }
+
+        await setStateAsync(this, {loading: true});
+
+        try {
+            await this.props.updateFolder({...folder});
+            toast.success(t('personalAccountFolders.updateSuccess'));
+            this.props.close();
+        } catch (error) {
+            await setStateAsync(this, {loading: false});
+
+            if (error && error.message && error.message === 'showOnForm') {
+                this.setState({
+                    serverError: error.messageTranslation
+                });
             }
         }
     };
@@ -125,7 +152,8 @@ class FolderModal extends React.Component {
 }
 
 const withConnect = connect(null, {
-    createFolder: personalAccountFoldersOperations.createFolder
+    createFolder: personalAccountFoldersOperations.createFolder,
+    updateFolder: personalAccountFoldersOperations.updateFolder
 });
 
 export default compose(withTranslation(), withConnect)(FolderModal);

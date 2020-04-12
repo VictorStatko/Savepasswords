@@ -1,5 +1,5 @@
 import fetch from "utils/fetch";
-import {GET, POST} from "utils/appConstants";
+import {GET, POST, PUT} from "utils/appConstants";
 import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import * as types from "./types";
 import i18n from 'i18n';
@@ -42,18 +42,31 @@ export const createFolder = (folder, errorsAsForm) => async dispatch => {
     }
 };
 
+export const updateFolder = (folder) => async dispatch => {
+    try {
+        dispatch(progressStarted());
+        const updateResponse = await fetch(PUT, `personal-accounts-management/folders/${folder.uuid}`, folder);
+        dispatch(folderUpdated(updateResponse.data));
+        return updateResponse.data;
+    } catch (error) {
+        throw processErrorAsFormOrNotification(error);
+    } finally {
+        dispatch(progressFinished());
+    }
+};
+
 export const fetchPersonalAccountFolders = () => async dispatch => {
     try {
         dispatch(progressStarted());
         const fetchFoldersResponse = await fetch(GET, "personal-accounts-management/folders");
         const unfolderedItem = {uuid: null, name: i18n.t('personalAccountFolders.unfolderedItems'), accountsCount: 0};
-        dispatch(foldersFetched([unfolderedItem, ... fetchFoldersResponse.data]));
+        dispatch(foldersFetched([unfolderedItem, ...fetchFoldersResponse.data]));
 
         const fetchUnfolderedCountResponse = await fetch(GET, "personal-accounts-management/accounts/count?unfolderedOnly=true");
 
         unfolderedItem.accountsCount = fetchUnfolderedCountResponse.data.value;
         dispatch(folderUpdated(unfolderedItem));
-    }  finally {
+    } finally {
         dispatch(progressFinished());
     }
 };

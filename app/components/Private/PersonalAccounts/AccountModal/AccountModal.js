@@ -16,6 +16,7 @@ import {IndexedDBService} from "indexedDB";
 import {rsaDecrypt} from "utils/encryptionUtils";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import history from "utils/history";
+import {isObjectModified} from "utils/objectUtils";
 
 const MAX_LENGTH_URL = 2047;
 const MAX_LENGTH_NAME = 254;
@@ -79,7 +80,7 @@ class AccountModal extends React.Component {
                     ...this.state.account, ...{folderUuid: null}
                 }
             });
-           throw error;
+            throw error;
         }
     };
 
@@ -125,7 +126,7 @@ class AccountModal extends React.Component {
             toast.success(t('personalAccounts.creationSuccess'));
             this.props.close();
             let url;
-            if (account.folderUuid){
+            if (account.folderUuid) {
                 url = `/accounts?folderUuid=${account.folderUuid}`;
             } else {
                 url = `/accounts`;
@@ -148,6 +149,11 @@ class AccountModal extends React.Component {
         const {t} = this.props;
         const {account} = this.state;
 
+        if (!isObjectModified(account, this.props.account)) {
+            toast.success(t('personalAccounts.updateSuccess'));
+            this.props.close();
+        }
+
         await setStateAsync(this, {loading: true});
 
         try {
@@ -155,7 +161,7 @@ class AccountModal extends React.Component {
             toast.success(t('personalAccounts.updateSuccess'));
             this.props.close();
             let url;
-            if (account.folderUuid){
+            if (account.folderUuid) {
                 url = `/accounts?folderUuid=${account.folderUuid}`;
             } else {
                 url = `/accounts`;

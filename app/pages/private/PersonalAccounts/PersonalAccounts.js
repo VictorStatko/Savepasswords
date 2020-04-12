@@ -62,7 +62,7 @@ class PersonalAccounts extends React.Component {
                                 activeFolder.uuid === null
                                     ? null
                                     : <Col xs={3} className="d-flex justify-content-end align-items-center">
-                                        <FolderButtonRow/>
+                                        <FolderButtonRow folder={activeFolder}/>
                                     </Col>
                             }
                         </Row>
