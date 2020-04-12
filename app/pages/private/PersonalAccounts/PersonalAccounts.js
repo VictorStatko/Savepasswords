@@ -32,16 +32,6 @@ class PersonalAccounts extends React.Component {
         }
     };
 
-    onFolderClick = (uuid) => {
-        let url;
-        if (uuid){
-            url = `/accounts?folderUuid=${uuid}`;
-        } else {
-            url = `/accounts`;
-        }
-       history.push(url);
-    };
-
     renderDataOrLoader = () => {
 
 
@@ -51,7 +41,7 @@ class PersonalAccounts extends React.Component {
             return <Row>
                 <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
                     {this.state.loading ? <PageSpinner className={styles.spinner}/> :
-                        <FolderMenu click={this.onFolderClick}/>}
+                        <FolderMenu/>}
                 </Col>
                 <Col className={styles.listColumn}>
                     <AccountList parentLoading={this.state.loading}/>
