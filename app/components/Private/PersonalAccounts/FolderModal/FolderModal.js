@@ -13,6 +13,7 @@ import {toast} from "react-toastify";
 import {connect} from "react-redux";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {compose} from "redux";
+import history from "utils/history";
 
 const MAX_LENGTH_NAME = 255;
 
@@ -53,9 +54,10 @@ class FolderModal extends React.Component {
         await setStateAsync(this, {loading: true});
 
         try {
-            await this.props.createFolder({...folder}, true);
+            const createdFolder = await this.props.createFolder({...folder}, true);
             toast.success(t('personalAccountFolders.creationSuccess'));
             this.props.close();
+            history.push(`/accounts?folderUuid=${createdFolder.uuid}`);
         } catch (error) {
             await setStateAsync(this, {loading: false});
 
