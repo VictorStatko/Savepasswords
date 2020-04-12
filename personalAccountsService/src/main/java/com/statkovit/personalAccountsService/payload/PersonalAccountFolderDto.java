@@ -27,5 +27,5 @@ public class PersonalAccountFolderDto {
     @Size(max = PersonalAccountFolder.MAX_LENGTH__NAME)
     private String name;
 
-    private Integer accountsCount;
+    private Long accountsCount;
 }

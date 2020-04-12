@@ -1,5 +1,6 @@
 package com.statkovit.personalAccountsService.controllers.external;
 
+import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
 import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
@@ -48,5 +49,11 @@ public class PersonalAccountsController {
         return ResponseEntity.ok(accountDtos);
     }
 
+    @GetMapping(GET_LIST_COUNT_ROUTE)
+    public ResponseEntity<LongDto> getPersonalAccountsCount(PersonalAccountListFilters filters) {
+        LongDto count = personalAccountRestService.getListCount(filters);
+
+        return ResponseEntity.ok(count);
+    }
 
 }

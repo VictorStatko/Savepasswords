@@ -35,7 +35,7 @@ public class PersonalAccountFolderMapper {
 
         PersonalAccountFolderDto dto = modelMapper.map(personalAccountFolder, PersonalAccountFolderDto.class);
 
-        dto.setAccountsCount(personalAccountFolder.getAccounts().size());
+        dto.setAccountsCount((long) personalAccountFolder.getAccounts().size());
 
         return dto;
     }

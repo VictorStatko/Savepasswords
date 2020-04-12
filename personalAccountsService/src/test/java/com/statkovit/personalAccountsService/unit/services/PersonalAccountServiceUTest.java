@@ -86,6 +86,18 @@ class PersonalAccountServiceUTest {
     }
 
     @Test
+    void getListCountShouldReturnCountFromRepository() {
+        BooleanExpression expression = Mockito.mock(BooleanExpression.class);
+
+        when(personalAccountRepository.count(expression)).thenReturn(99L);
+
+
+        long result = personalAccountService.count(expression);
+
+        assertEquals(99L, result);
+    }
+
+    @Test
     void findOneByUuidShouldReturnAccountIfCorrectData() {
         PersonalAccount firstAccount = PersonalAccount.builder()
                 .uuid(UUID_1).accountEntityId(ID_1).build();

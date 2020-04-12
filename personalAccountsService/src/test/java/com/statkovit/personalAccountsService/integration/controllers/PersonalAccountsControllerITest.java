@@ -7,6 +7,7 @@ import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper.HttpResponse;
+import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
@@ -302,7 +303,7 @@ class PersonalAccountsControllerITest {
     }
 
     @Test
-    public void getPersonalAccounts_ShouldReturnListOfCurrentUserAccountsAccordingToFilters() {
+    public void getPersonalAccounts_ShouldReturnListOfCurrentUserAccounts() {
         PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
         PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(2L).uuid(UUID_2).build();
         PersonalAccount account3 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_3).build();
@@ -321,7 +322,6 @@ class PersonalAccountsControllerITest {
         Assertions.assertTrue(
                 accountDtos.stream().map(PersonalAccountDto::getUuid).collect(Collectors.toList()).containsAll(List.of(UUID_1, UUID_3))
         );
-
     }
 
     @Test
@@ -418,6 +418,122 @@ class PersonalAccountsControllerITest {
 
         final HttpResponse<PersonalAccountDto[]> response = RestHelper.sendRequest(
                 restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, PersonalAccountDto[].class
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void getPersonalAccountsCount_requireValidAuthToken() {
+        HttpResponse<LongDto> response = RestHelper.sendRequest(
+                restTemplate, GET_LIST_COUNT_ROUTE, HttpMethod.GET, INVALID_AUTH_HEADERS, LongDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void getPersonalAccountsCount_ShouldReturnCountOfCurrentUserAccounts() {
+        PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(2L).uuid(UUID_2).build();
+        PersonalAccount account3 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_3).build();
+        personalAccountRepository.saveAll(List.of(account1, account2, account3));
+
+        HttpResponse<LongDto> response = RestHelper.sendRequest(
+                restTemplate, GET_LIST_COUNT_ROUTE, HttpMethod.GET, VALID_AUTH_HEADERS, LongDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        Assertions.assertEquals(2, response.getConvertedResponse().getValue());
+    }
+
+    @Test
+    public void getPersonalAccountsCount_ShouldReturnCountAccordingToUnfolderedFilter() {
+        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().build();
+        folder = personalAccountFolderRepository.save(folder);
+
+        final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        final PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).folder(folder).build();
+
+        personalAccountRepository.saveAll(List.of(account1, account2));
+
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_COUNT_ROUTE)
+                .queryParam("unfolderedOnly", true)
+                .toUriString();
+
+        final HttpResponse<LongDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, LongDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, response.getConvertedResponse().getValue());
+    }
+
+    @Test
+    public void getPersonalAccountsCount_ShouldReturnCountAndUnfolderedFilterHasHigherPriorityThenFolderUuidFilter() {
+        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_3).build();
+        folder = personalAccountFolderRepository.save(folder);
+
+        final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        final PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).folder(folder).build();
+
+        personalAccountRepository.saveAll(List.of(account1, account2));
+
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_COUNT_ROUTE)
+                .queryParam("unfolderedOnly", true)
+                .queryParam("folderUuid", UUID_3)
+                .toUriString();
+
+        final HttpResponse<LongDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, LongDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, response.getConvertedResponse().getValue());
+    }
+
+    @Test
+    public void getPersonalAccountsCount_ShouldReturnCountAccordingToFolderUuidFilter() {
+        PersonalAccountFolder folder1 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_4).build();
+        folder1 = personalAccountFolderRepository.save(folder1);
+
+        PersonalAccountFolder folder2 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_5).build();
+        folder2 = personalAccountFolderRepository.save(folder2);
+
+        final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
+        final PersonalAccount account2 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_2).folder(folder1).build();
+        final PersonalAccount account3 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_3).folder(folder2).build();
+
+        personalAccountRepository.saveAll(List.of(account1, account2, account3));
+
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_COUNT_ROUTE)
+                .queryParam("folderUuid", UUID_4)
+                .toUriString();
+
+        final HttpResponse<LongDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, LongDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getConvertedResponse());
+
+        Assertions.assertEquals(1, response.getConvertedResponse().getValue());
+    }
+
+    @Test
+    public void getPersonalAccountsCount_ShouldReturnBadRequestIfFolderNotExists() {
+        final String route = UriComponentsBuilder.fromUriString(GET_LIST_COUNT_ROUTE)
+                .queryParam("folderUuid", UUID_1)
+                .toUriString();
+
+        final HttpResponse<LongDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.GET, VALID_AUTH_HEADERS, LongDto.class
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());

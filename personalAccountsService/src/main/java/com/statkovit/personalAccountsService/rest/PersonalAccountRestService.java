@@ -1,5 +1,6 @@
 package com.statkovit.personalAccountsService.rest;
 
+import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
 
@@ -15,4 +16,6 @@ public interface PersonalAccountRestService {
     void delete(UUID accountUuid);
 
     List<PersonalAccountDto> getList(PersonalAccountListFilters filters);
+
+    LongDto getListCount(PersonalAccountListFilters filters);
 }

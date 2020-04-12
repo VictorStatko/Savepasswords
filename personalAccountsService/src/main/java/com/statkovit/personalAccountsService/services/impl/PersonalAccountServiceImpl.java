@@ -34,6 +34,12 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
         return IterableUtils.toList(personalAccountRepository.findAll(booleanExpression));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public long count(BooleanExpression booleanExpression) {
+        return personalAccountRepository.count(booleanExpression);
+    }
+
     @Transactional
     @Override
     public void delete(UUID accountUuid) {

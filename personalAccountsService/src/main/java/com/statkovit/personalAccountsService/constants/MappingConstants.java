@@ -13,6 +13,7 @@ public final class MappingConstants {
         public static final String UPDATE_ROUTE = CONTROLLER_ROUTE + "/" + UUID_PATH;
         public static final String DELETE_ROUTE = CONTROLLER_ROUTE + "/" + UUID_PATH;
         public static final String GET_LIST_ROUTE = CONTROLLER_ROUTE;
+        public static final String GET_LIST_COUNT_ROUTE = CONTROLLER_ROUTE + "/count";
     }
 
     public static final class FoldersExternalController {

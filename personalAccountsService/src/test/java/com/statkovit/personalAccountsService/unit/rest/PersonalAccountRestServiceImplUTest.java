@@ -2,6 +2,7 @@ package com.statkovit.personalAccountsService.unit.rest;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
+import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
@@ -128,9 +129,9 @@ class PersonalAccountRestServiceImplUTest {
 
         List<PersonalAccountDto> resultDtos = personalAccountRestServiceImpl.getList(new PersonalAccountListFilters());
 
-        Assertions.assertEquals(resultDtos.size(), 2);
-        Assertions.assertEquals(resultDtos.get(0), firstAccountDto);
-        Assertions.assertEquals(resultDtos.get(1), secondAccountDto);
+        Assertions.assertEquals(2, resultDtos.size());
+        Assertions.assertEquals(firstAccountDto, resultDtos.get(0));
+        Assertions.assertEquals(secondAccountDto, resultDtos.get(1));
     }
 
     @Test
@@ -140,6 +141,30 @@ class PersonalAccountRestServiceImplUTest {
         filters.setUnfolderedOnly(false);
 
         personalAccountRestServiceImpl.getList(filters);
+
+        verify(folderValidator, times(1)).validateFolderExistence(UUID_1.toString());
+    }
+
+    @Test
+    void getListCountShouldReturnCountFromService() {
+        BooleanExpression mockExpression = Mockito.mock(BooleanExpression.class);
+
+        when(expressionsBuilder.getListExpression(any(PersonalAccountListFilters.class))).thenReturn(mockExpression);
+
+        when(personalAccountService.count(mockExpression)).thenReturn(99L);
+
+        LongDto result = personalAccountRestServiceImpl.getListCount(new PersonalAccountListFilters());
+
+        Assertions.assertEquals(99L, result.getValue());
+    }
+
+    @Test
+    void getListCountShouldCallFolderExistenceValidatorIfNotUnfolderedAndFolderUuidPresent() {
+        PersonalAccountListFilters filters = new PersonalAccountListFilters();
+        filters.setFolderUuid(UUID_1.toString());
+        filters.setUnfolderedOnly(false);
+
+        personalAccountRestServiceImpl.getListCount(filters);
 
         verify(folderValidator, times(1)).validateFolderExistence(UUID_1.toString());
     }

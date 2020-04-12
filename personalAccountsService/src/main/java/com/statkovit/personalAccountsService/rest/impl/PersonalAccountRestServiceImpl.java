@@ -1,6 +1,7 @@
 package com.statkovit.personalAccountsService.rest.impl;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
+import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
@@ -46,7 +47,6 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
 
     @Override
     public List<PersonalAccountDto> getList(PersonalAccountListFilters filters) {
-
         if (!filters.isUnfolderedOnly() && Objects.nonNull(filters.getFolderUuid())) {
             folderValidator.validateFolderExistence(filters.getFolderUuid());
         }
@@ -58,6 +58,19 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
         return accounts.stream()
                 .map(personalAccountConverter::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public LongDto getListCount(PersonalAccountListFilters filters) {
+        if (!filters.isUnfolderedOnly() && Objects.nonNull(filters.getFolderUuid())) {
+            folderValidator.validateFolderExistence(filters.getFolderUuid());
+        }
+
+        long count = personalAccountService.count(
+                expressionsBuilder.getListExpression(filters)
+        );
+
+        return new LongDto(count);
     }
 
     @Override

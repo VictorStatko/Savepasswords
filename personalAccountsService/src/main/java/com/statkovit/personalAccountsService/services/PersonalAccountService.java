@@ -14,5 +14,7 @@ public interface PersonalAccountService {
 
     List<PersonalAccount> getList(BooleanExpression booleanExpression);
 
+    long count(BooleanExpression booleanExpression);
+
     PersonalAccount findOneByUuid(UUID accountUuid);
 }
