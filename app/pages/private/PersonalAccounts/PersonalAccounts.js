@@ -12,6 +12,8 @@ import AccountList from "components/Private/PersonalAccounts/AccountList";
 import FolderMenu from "components/Private/PersonalAccounts/FolderMenu";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {PageSpinner} from "components/default/spinner/Spinner";
+import {withRouter} from "react-router-dom";
+import queryString from "query-string";
 
 class PersonalAccounts extends React.Component {
 
@@ -32,7 +34,10 @@ class PersonalAccounts extends React.Component {
     };
 
     renderDataOrLoader = () => {
+        const params = queryString.parse(this.props.location.search);
+        const activeFolderUuid = params.folderUuid ? params.folderUuid : null;
 
+        const activeFolder = this.props.folders.find(folder => folder.uuid === activeFolderUuid);
 
         if (this.state.error) {
             return <div className={styles.blockWithoutData}><ServerError/></div>;
@@ -40,10 +45,10 @@ class PersonalAccounts extends React.Component {
             return <Row>
                 <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
                     {this.state.loading ? <PageSpinner className={styles.spinner}/> :
-                        <FolderMenu/>}
+                        <FolderMenu activeFolder={activeFolder}/>}
                 </Col>
                 <Col className={styles.listColumn}>
-                    <Col><h1>Social</h1></Col>
+                    {activeFolder ?  <Col><h2>{activeFolder.name}</h2></Col> : null}
                     <Col className={styles.accountList}>
                         <AccountList parentLoading={this.state.loading}/>
                     </Col>
@@ -74,9 +79,15 @@ class PersonalAccounts extends React.Component {
 
 }
 
-const withConnect = connect(null, {
+const mapStateToProps = (state) => {
+    return {
+        folders: state.personalAccountFolders.folders
+    }
+};
+
+const withConnect = connect(mapStateToProps, {
     fetchPersonalAccounts: personalAccountsOperations.fetchPersonalAccounts,
     fetchFolders: personalAccountFoldersOperations.fetchPersonalAccountFolders
 });
 
-export default compose(withTranslation(), withConnect)(PersonalAccounts);
+export default compose(withTranslation(), withRouter, withConnect)(PersonalAccounts);

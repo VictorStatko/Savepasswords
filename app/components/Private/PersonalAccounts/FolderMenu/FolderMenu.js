@@ -21,13 +21,14 @@ class FolderMenu extends React.Component {
     };
 
     render() {
-        const params = queryString.parse(this.props.location.search);
-        const activeFolderUuid = params.folderUuid ? params.folderUuid : null;
-
+        const activeFolderUuid = this.props.activeFolder ?
+            this.props.activeFolder.uuid ? this.props.activeFolder.uuid : null
+            : undefined;
 
         const listItems = this.props.folders.map((folder) => {
                 return <div key={folder.uuid} className={styles.navItem} onClick={() => this.onFolderClick(folder.uuid)}>
-                    <Icon name='folder' styles={activeFolderUuid === folder.uuid ? `${styles.icon} ${styles.iconActive}` : styles.icon}/>
+                    <Icon name='folder'
+                          styles={activeFolderUuid === folder.uuid ? `${styles.icon} ${styles.iconActive}` : styles.icon}/>
                     <div className={styles.badge}>{folder.accountsCount}</div>
                     <span className={styles.text}>{folder.name}</span>
                 </div>
