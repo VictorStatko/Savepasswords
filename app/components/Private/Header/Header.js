@@ -8,6 +8,7 @@ import DropdownMenu from "components/default/dropdowns";
 import Icon from "components/default/icons";
 import {ellipsisByCharactersCount} from "utils/stringUtils";
 import Sidebar from "components/default/sidebars";
+import LoadingBar from "react-redux-loading-bar";
 
 class Header extends React.Component {
 
@@ -31,15 +32,18 @@ class Header extends React.Component {
         }];
 
         return (
-            <header className={styles.header}>
-                <div className={styles.menu}><Sidebar/></div>
-                <div className={styles.right}>
-                    {ellipsisByCharactersCount(account.email, 30)}
-                    <span className={styles.dropdownIconWrapper}>
+            <React.Fragment>
+                <LoadingBar showFastActions style={{ backgroundColor: 'rgb(8, 106, 255)', height: '2px' }}/>
+                <header className={styles.header}>
+                    <div className={styles.menu}><Sidebar/></div>
+                    <div className={styles.right}>
+                        {ellipsisByCharactersCount(account.email, 30)}
+                        <span className={styles.dropdownIconWrapper}>
                         <DropdownMenu options={dropdownOptions} handleChange={this.onDropdownValueSelected}/>
                     </span>
-                </div>
-            </header>
+                    </div>
+                </header>
+            </React.Fragment>
         );
     }
 

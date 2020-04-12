@@ -6,6 +6,7 @@ import {isNotEmpty} from "utils/stringUtils";
 import {rsaEncrypt} from "utils/encryptionUtils";
 import {IndexedDBService} from "indexedDB";
 import {folderAccountsCountDecreased, folderAccountsCountIncreased} from "../personalAccountFolders/actions";
+import {progressFinished, progressStarted} from "ducks/progressBar/actions";
 
 const indexedDBService = IndexedDBService.getService();
 
@@ -27,6 +28,7 @@ const personalAccountsFetched = accounts => ({
 
 export const createPersonalAccount = (account) => async dispatch => {
     try {
+        dispatch(progressStarted());
         const publicKey = await indexedDBService.loadPublicKey();
 
         if (isNotEmpty(account.password)) {
@@ -42,11 +44,14 @@ export const createPersonalAccount = (account) => async dispatch => {
         dispatch(folderAccountsCountIncreased(account.folderUuid));
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
+    } finally {
+        dispatch(progressFinished());
     }
 };
 
 export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch => {
     try {
+        dispatch(progressStarted());
         const publicKey = await indexedDBService.loadPublicKey();
 
         if (isNotEmpty(newAccount.password)) {
@@ -67,24 +72,36 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
 
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
+    } finally {
+        dispatch(progressFinished());
     }
 };
 
 export const removePersonalAccount = (account) => async dispatch => {
     try {
+        dispatch(progressStarted());
         await fetch(DELETE, `personal-accounts-management/accounts/${account.uuid}`);
         dispatch(personalAccountRemoved(account.uuid));
         dispatch(folderAccountsCountDecreased(account.folderUuid))
     } catch (error) {
         throw processErrorAsNotification(error);
+    } finally {
+        dispatch(progressFinished());
     }
 };
 
-export const fetchPersonalAccounts = () => async dispatch => {
+export const fetchPersonalAccounts = (folderUuid) => async dispatch => {
     try {
-        const fetchResponse = await fetch(GET, "personal-accounts-management/accounts");
+        dispatch(progressStarted());
+        let url;
+        if (folderUuid){
+            url = `personal-accounts-management/accounts?folderUuid=${folderUuid}`;
+        } else {
+            url = `personal-accounts-management/accounts?unfolderedOnly=true`;
+        }
+        const fetchResponse = await fetch(GET, url);
         dispatch(personalAccountsFetched(fetchResponse.data));
-    } catch (error) {
-        throw processErrorAsNotification(error);
+    }  finally {
+     dispatch(progressFinished());
     }
 };

@@ -1,20 +1,21 @@
 import React, {Component} from 'react';
 import styles from './ServerError.module.scss';
 import {withTranslation} from "react-i18next";
+import * as PropTypes from "prop-types";
 
 class ServerError extends Component {
 
     render() {
 
-        const {t} = this.props;
+        const {t, oopsMessage, wrongMessage, descriptionMessage} = this.props;
 
         return (
             <div className={styles.container}>
-                <span className={styles.oops}>{t('serverError.oops')}</span>
+                <span className={styles.oops}>{oopsMessage ? oopsMessage : t('serverError.oops')}</span>
                 <hr/>
-                <span className={styles.wrong}>{t('serverError.wrong')}</span>
+                <span className={styles.wrong}>{wrongMessage ? wrongMessage : t('serverError.wrong')}</span>
                 <hr/>
-                <span className={styles.description}>{t('serverError.description')}</span>
+                <span className={styles.description}>{descriptionMessage ? descriptionMessage : t('serverError.description')}</span>
             </div>
         );
     }
@@ -22,3 +23,9 @@ class ServerError extends Component {
 
 
 export default withTranslation()(ServerError);
+
+ServerError.propTypes = {
+    oopsMessage: PropTypes.string,
+    wrongMessage: PropTypes.string,
+    descriptionMessage: PropTypes.string,
+};

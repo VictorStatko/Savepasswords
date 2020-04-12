@@ -8,3 +8,21 @@
   justify-content: center;
   min-height: 70%;
 }
+
+@media screen and (min-width: 768px) {
+  .menuColumn {
+    border-right: 1px solid rgba(0, 0, 0, .1);
+  }
+
+  .listColumn {
+    margin-top: 1rem;
+  }
+}
+
+.spinner {
+ margin-top: 6rem;
+ }
+
+.hr {
+  margin-bottom: 0;
+}

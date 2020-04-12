@@ -3,9 +3,12 @@ import {routerMiddleware} from 'connected-react-router';
 import createReducer from './reducers';
 import thunk from 'redux-thunk';
 import * as reducers from 'ducks';
+import { loadingBarMiddleware } from 'react-redux-loading-bar';
 
 export default function configureStore(initialState = {}, history) {
-    const middlewares = [routerMiddleware(history), thunk];
+    const middlewares = [routerMiddleware(history), thunk, loadingBarMiddleware({
+        promiseTypeSuffixes: ['STARTED', 'FINISHED', 'FINISHED'],
+    })];
 
     const enhancers = [applyMiddleware(...middlewares)];
 

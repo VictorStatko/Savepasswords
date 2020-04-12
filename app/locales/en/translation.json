@@ -16,6 +16,7 @@
 "global.auth.sessionExpired": "Your session is expired. Please sign in again.",
 "global.badCredentials": "The sign in information is incorrect. Please recheck entered data.",
 "global.appName": "SYP Password Manager",
+"global.recheckData": "Please recheck entered data.",
 
 "signUp.title": "Sign up",
 "signUp.nameLabel": "Please enter your name for contact",
