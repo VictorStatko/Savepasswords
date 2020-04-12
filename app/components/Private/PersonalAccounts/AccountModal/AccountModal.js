@@ -15,6 +15,7 @@ import {toast} from "react-toastify";
 import {IndexedDBService} from "indexedDB";
 import {rsaDecrypt} from "utils/encryptionUtils";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
+import history from "utils/history";
 
 const MAX_LENGTH_URL = 2047;
 const MAX_LENGTH_NAME = 254;
@@ -123,6 +124,13 @@ class AccountModal extends React.Component {
             await this.props.createPersonalAccount({...account});
             toast.success(t('personalAccounts.creationSuccess'));
             this.props.close();
+            let url;
+            if (account.folderUuid){
+                url = `/accounts?folderUuid=${account.folderUuid}`;
+            } else {
+                url = `/accounts`;
+            }
+            history.push(url);
         } catch (error) {
             await setStateAsync(this, {loading: false});
 
@@ -146,6 +154,13 @@ class AccountModal extends React.Component {
             await this.props.updatePersonalAccount({...account}, this.props.account);
             toast.success(t('personalAccounts.updateSuccess'));
             this.props.close();
+            let url;
+            if (account.folderUuid){
+                url = `/accounts?folderUuid=${account.folderUuid}`;
+            } else {
+                url = `/accounts`;
+            }
+            history.push(url);
         } catch (error) {
             await setStateAsync(this, {loading: false});
 

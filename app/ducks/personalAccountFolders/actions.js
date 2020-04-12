@@ -45,8 +45,14 @@ export const createFolder = (folder, errorsAsForm) => async dispatch => {
 export const fetchPersonalAccountFolders = () => async dispatch => {
     try {
         dispatch(progressStarted());
-        const fetchResponse = await fetch(GET, "personal-accounts-management/folders");
-        dispatch(foldersFetched([{uuid: null, name: i18n.t('personalAccountFolders.unfolderedItems'), accountsCount: 999}, ... fetchResponse.data]));
+        const fetchFoldersResponse = await fetch(GET, "personal-accounts-management/folders");
+        const unfolderedItem = {uuid: null, name: i18n.t('personalAccountFolders.unfolderedItems'), accountsCount: 0};
+        dispatch(foldersFetched([unfolderedItem, ... fetchFoldersResponse.data]));
+
+        const fetchUnfolderedCountResponse = await fetch(GET, "personal-accounts-management/accounts/count?unfolderedOnly=true");
+
+        unfolderedItem.accountsCount = fetchUnfolderedCountResponse.data.value;
+        dispatch(folderUpdated(unfolderedItem));
     }  finally {
         dispatch(progressFinished());
     }

@@ -10,11 +10,6 @@ import {progressFinished, progressStarted} from "ducks/progressBar/actions";
 
 const indexedDBService = IndexedDBService.getService();
 
-const personalAccountUpdated = account => ({
-    type: types.PERSONAL_ACCOUNT_UPDATED,
-    account
-});
-
 const personalAccountRemoved = accountUuid => ({
     type: types.PERSONAL_ACCOUNT_REMOVED,
     accountUuid
@@ -39,8 +34,7 @@ export const createPersonalAccount = (account) => async dispatch => {
             account.username = await rsaEncrypt(publicKey, account.username);
         }
 
-        const createResponse = await fetch(POST, "personal-accounts-management/accounts", account);
-        dispatch(personalAccountUpdated(createResponse.data));
+        await fetch(POST, "personal-accounts-management/accounts", account);
         dispatch(folderAccountsCountIncreased(account.folderUuid));
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
@@ -62,8 +56,7 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
             newAccount.username = await rsaEncrypt(publicKey, newAccount.username);
         }
 
-        const updateResponse = await fetch(PUT, `personal-accounts-management/accounts/${newAccount.uuid}`, newAccount);
-        dispatch(personalAccountUpdated(updateResponse.data));
+        await fetch(PUT, `personal-accounts-management/accounts/${newAccount.uuid}`, newAccount);
 
         if (newAccount.folderUuid !== oldAccount.folderUuid) {
             dispatch(folderAccountsCountIncreased(newAccount.folderUuid));
@@ -94,14 +87,14 @@ export const fetchPersonalAccounts = (folderUuid) => async dispatch => {
     try {
         dispatch(progressStarted());
         let url;
-        if (folderUuid){
+        if (folderUuid) {
             url = `personal-accounts-management/accounts?folderUuid=${folderUuid}`;
         } else {
             url = `personal-accounts-management/accounts?unfolderedOnly=true`;
         }
         const fetchResponse = await fetch(GET, url);
         dispatch(personalAccountsFetched(fetchResponse.data));
-    }  finally {
-     dispatch(progressFinished());
+    } finally {
+        dispatch(progressFinished());
     }
 };
