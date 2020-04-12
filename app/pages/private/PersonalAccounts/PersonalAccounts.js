@@ -1,7 +1,7 @@
 import React from 'react';
 import {Col, Row} from "react-bootstrap";
 import styles from "./PersonalAccounts.module.scss";
-import ButtonRow from "components/Private/PersonalAccounts/ButtonRow";
+import ButtonRow from "components/Private/PersonalAccounts/AccountButtonRow";
 import {withTranslation} from "react-i18next";
 import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
@@ -14,6 +14,7 @@ import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {PageSpinner} from "components/default/spinner/Spinner";
 import {withRouter} from "react-router-dom";
 import queryString from "query-string";
+import FolderButtonRow from "components/Private/PersonalAccounts/FolderButtonRow";
 
 class PersonalAccounts extends React.Component {
 
@@ -36,25 +37,43 @@ class PersonalAccounts extends React.Component {
     renderDataOrLoader = () => {
         const params = queryString.parse(this.props.location.search);
         const activeFolderUuid = params.folderUuid ? params.folderUuid : null;
-
         const activeFolder = this.props.folders.find(folder => folder.uuid === activeFolderUuid);
 
         if (this.state.error) {
             return <div className={styles.blockWithoutData}><ServerError/></div>;
-        } else {
-            return <Row>
-                <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
-                    {this.state.loading ? <PageSpinner className={styles.spinner}/> :
-                        <FolderMenu activeFolder={activeFolder}/>}
-                </Col>
-                <Col className={styles.listColumn}>
-                    {activeFolder ?  <Col><h2>{activeFolder.name}</h2></Col> : null}
-                    <Col className={styles.accountList}>
-                        <AccountList parentLoading={this.state.loading}/>
-                    </Col>
-                </Col>
-            </Row>
         }
+
+        return <Row>
+            <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
+                {
+                    this.state.loading
+                        ? <PageSpinner className={styles.spinner}/>
+                        : <FolderMenu activeFolder={activeFolder}/>
+                }
+            </Col>
+            <Col xl={9} lg={8} md={8} className={styles.listColumn}>
+                {
+                    activeFolder
+                        ? <Row>
+                            <Col xs={9}>
+                                <h2>{activeFolder.name}</h2>
+                            </Col>
+                            {
+                                activeFolder.uuid === null
+                                    ? null
+                                    : <Col xs={3} className="d-flex justify-content-end align-items-center">
+                                        <FolderButtonRow/>
+                                    </Col>
+                            }
+                        </Row>
+                        : null
+                }
+                <Col className={styles.accountList}>
+                    <AccountList parentLoading={this.state.loading}/>
+                </Col>
+            </Col>
+        </Row>
+
     };
 
 

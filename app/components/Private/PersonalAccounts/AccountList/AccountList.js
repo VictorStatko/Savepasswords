@@ -62,7 +62,7 @@ class AccountList extends React.Component {
         } else {
 
             const listItems = this.props.accounts.map((account) =>
-                <Col xl={4} lg={6} md={6} key={account.uuid}>
+                <Col xl={4} lg={6} md={6} key={account.uuid} className={styles.column}>
                     <AccountCard account={account}/>
                 </Col>
             );

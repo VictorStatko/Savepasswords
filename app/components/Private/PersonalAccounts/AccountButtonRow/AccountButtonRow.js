@@ -1,12 +1,12 @@
 import React from 'react';
 import {withTranslation} from "react-i18next";
 import Icon from "components/default/icons";
-import styles from "./ButtonRow.module.scss";
+import styles from "./AccountButtonRow.module.scss";
 import AccountModal from "../AccountModal";
 import {Button} from "components/default/buttons/Button/Button";
 import FolderModal from "../FolderModal";
 
-class ButtonRow extends React.Component {
+class AccountButtonRow extends React.Component {
     state = {
         showAddAccount: false,
         showAddFolder: false
@@ -24,10 +24,10 @@ class ButtonRow extends React.Component {
 
         return (
             <React.Fragment>
-                <Button content={<Icon name='add' styles={styles.buttonIcon}/>}
-                         onClick={this.toggleAddAccount}/>
-                <Button content={<Icon name='newFolder' styles={styles.buttonIcon}/>}
-                         onClick={this.toggleAddFolder}/>
+                <Button customStyle={styles.button} content={<Icon name='add' styles={styles.buttonIcon}/>}
+                        onClick={this.toggleAddAccount}/>
+                <Button customStyle={styles.button} content={<Icon name='newFolder' styles={styles.buttonIcon}/>}
+                        onClick={this.toggleAddFolder}/>
                 {this.state.showAddAccount ? <AccountModal close={this.toggleAddAccount}/> : null}
                 {this.state.showAddFolder ? <FolderModal close={this.toggleAddFolder}/> : null}
             </React.Fragment>
@@ -36,4 +36,4 @@ class ButtonRow extends React.Component {
 
 }
 
-export default withTranslation()(ButtonRow);
+export default withTranslation()(AccountButtonRow);

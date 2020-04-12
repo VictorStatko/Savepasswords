@@ -65,7 +65,7 @@ class AccountCard extends React.Component {
                                      src={imageSrc} onError={e => this.onImageNotFound(e)}/>
                             </a>
                         </Col>
-                        <Col xs={8} className="d-flex justify-content-end">
+                        <Col xs={8} className="d-flex justify-content-end align-items-center">
                             <Button customStyle={styles.button}
                                     content={<Icon name='key' styles={styles.buttonIcon}/>}
                                     onClick={this.handleDataModalToggle}/>
