@@ -1,6 +1,8 @@
 package com.statkovit.personalAccountsService.unit.rest;
 
+import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountFolderConverter;
 import com.statkovit.personalAccountsService.rest.impl.PersonalAccountFolderRestServiceImpl;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.folderDto;
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
@@ -59,6 +62,38 @@ class PersonalAccountFolderRestServiceImplUTest {
 
         verify(folderConverter, times(1)).toEntity(same(dto), any(PersonalAccountFolder.class));
     }
+
+    @Test
+    void update_shouldReturnDtoOfSavedFolder() {
+        final PersonalAccountFolder folderBeforeSave = prePopulatedValidFolderBuilder().uuid(UUID_1).build();
+        final PersonalAccountFolderDto dtoBeforeSave = folderDto();
+
+        final PersonalAccountFolderDto dtoAfterSave = PersonalAccountFolderDto.builder().uuid(UUID_1).build();
+        final PersonalAccountFolder folderAfterSave = PersonalAccountFolder.builder().uuid(UUID_1).build();
+
+        when(personalAccountFolderService.getByUuid(UUID_1)).thenReturn(folderBeforeSave);
+
+        when(personalAccountFolderService.save(folderBeforeSave)).thenReturn(folderAfterSave);
+        when(folderConverter.toDto(folderAfterSave)).thenReturn(dtoAfterSave);
+
+        PersonalAccountFolderDto resultDto = personalAccountFolderRestService.update(UUID_1, dtoBeforeSave);
+
+        Assertions.assertEquals(dtoAfterSave, resultDto);
+    }
+
+
+    @Test
+    void update_shouldCallConverterToEntity() {
+        final PersonalAccountFolderDto dtoForUpdate = PersonalAccountFolderDto.builder().uuid(UUID_1).build();
+        final PersonalAccountFolder folderForUpdate = PersonalAccountFolder.builder().uuid(UUID_1).build();
+
+        when(personalAccountFolderService.getByUuid(UUID_1)).thenReturn(folderForUpdate);
+
+        personalAccountFolderRestService.update(UUID_1, dtoForUpdate);
+
+        verify(folderConverter, times(1)).toEntity(dtoForUpdate, folderForUpdate);
+    }
+
 
     @Test
     void getListShouldReturnListOfDtos() {

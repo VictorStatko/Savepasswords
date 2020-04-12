@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,16 @@ public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFold
         folderForSave = personalAccountFolderService.save(folderForSave);
 
         return folderConverter.toDto(folderForSave);
+    }
+
+    @Override
+    public PersonalAccountFolderDto update(UUID folderUuid, PersonalAccountFolderDto dto) {
+        PersonalAccountFolder folderToUpdate = personalAccountFolderService.getByUuid(folderUuid);
+        folderConverter.toEntity(dto, folderToUpdate);
+
+        folderToUpdate = personalAccountFolderService.save(folderToUpdate);
+
+        return folderConverter.toDto(folderToUpdate);
     }
 
     @Override

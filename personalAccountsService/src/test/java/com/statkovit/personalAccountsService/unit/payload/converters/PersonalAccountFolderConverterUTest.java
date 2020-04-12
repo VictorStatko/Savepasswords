@@ -47,7 +47,7 @@ class PersonalAccountFolderConverterUTest {
     }
 
     @Test
-    void toEntityConverterShouldNotUpdateAccountEntityIdForOldAccount() {
+    void toEntityConverterShouldNotUpdateAccountEntityIdForOldFolder() {
         final PersonalAccountFolder folderForUpdate = PersonalAccountFolder.builder()
                 .uuid(UUID_1).accountEntityId(1L).build();
 

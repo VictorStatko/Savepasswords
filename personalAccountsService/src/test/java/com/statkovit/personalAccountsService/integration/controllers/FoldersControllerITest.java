@@ -1,6 +1,7 @@
 package com.statkovit.personalAccountsService.integration.controllers;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.statkovit.personalAccountsService.constants.MappingConstants;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper.HttpResponse;
@@ -22,8 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.CREATE_ROUTE;
-import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.GET_LIST_ROUTE;
+import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.*;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderDtoBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -149,7 +149,6 @@ class FoldersControllerITest {
         assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
     }
 
-
     @Test
     public void createFolder_shouldReturnDtoOfCreatedEntity() {
         PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder().name("name").build();
@@ -184,6 +183,143 @@ class FoldersControllerITest {
 
         response = RestHelper.sendRequest(
                 restTemplate, CREATE_ROUTE, HttpMethod.POST, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void updateFolder_requireValidAuthToken() {
+        PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder().build();
+
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, INVALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void updateFolder_DtoShouldContainName() {
+        folderRepository.save(prePopulatedValidFolderBuilder().uuid(UUID_1).build());
+
+        PersonalAccountFolderDto dto = new PersonalAccountFolderDto();
+
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+
+        dto = prePopulatedValidFolderDtoBuilder().name("name").build();
+
+        response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void updateFolder_DtoCanNotExceedMaxLength() {
+        folderRepository.save(prePopulatedValidFolderBuilder().uuid(UUID_1).build());
+
+        PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder()
+                .name("-".repeat(PersonalAccountFolder.MAX_LENGTH__NAME) + 1)
+                .build();
+
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+
+        dto = prePopulatedValidFolderDtoBuilder()
+                .name("-".repeat(PersonalAccountFolder.MAX_LENGTH__NAME))
+                .build();
+
+        response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void updateFolder_CanNotUpdateIfEntityNotExists() {
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder().uuid(UUID_1).build();
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void updateFolder_shouldReturnDtoOfUpdatedEntity() {
+        folderRepository.save(prePopulatedValidFolderBuilder().uuid(UUID_1).build());
+
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder()
+                .uuid(UUID_1).name("name").build();
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertNotNull(response.getResponseEntity().getBody());
+
+        PersonalAccountFolderDto responseDto = response.getConvertedResponse();
+
+        Assertions.assertEquals(UUID_1, responseDto.getUuid());
+        Assertions.assertEquals("name", responseDto.getName());
+    }
+
+    @Test
+    public void updateFolder_foldersShouldHaveUniqueNameForUserAccount() {
+        PersonalAccountFolder folder1 = prePopulatedValidFolderBuilder().accountEntityId(1L)
+                .uuid(UUID_1)
+                .name("name").build();
+
+        PersonalAccountFolder folder2 = prePopulatedValidFolderBuilder().accountEntityId(1L)
+                .uuid(UUID_2)
+                .name("name1").build();
+
+        folderRepository.saveAll(List.of(folder1, folder2));
+
+        final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        PersonalAccountFolderDto dto = prePopulatedValidFolderDtoBuilder().name("name1").build();
+
+        HttpResponse<PersonalAccountFolderDto> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+
+        dto = prePopulatedValidFolderDtoBuilder().name("name").build();
+
+        response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+
+        dto = prePopulatedValidFolderDtoBuilder().name("name2").build();
+
+        response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.PUT, dto, VALID_AUTH_HEADERS, PersonalAccountFolderDto.class
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
