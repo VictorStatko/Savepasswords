@@ -2,11 +2,14 @@ package com.statkovit.personalAccountsService.integration.controllers;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.statkovit.personalAccountsService.constants.MappingConstants;
+import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper.HttpResponse;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
+import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +22,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.*;
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.prePopulatedValidAccountBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderDtoBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,6 +45,9 @@ class FoldersControllerITest {
 
     @Autowired
     private PersonalAccountFolderRepository folderRepository;
+
+    @Autowired
+    private PersonalAccountRepository personalAccountRepository;
 
     private final WireMockServer wireMockServer = new WireMockServer(9999);
 
@@ -355,5 +363,87 @@ class FoldersControllerITest {
         Assertions.assertTrue(
                 folderDtos.stream().allMatch(dto -> dto.getUuid().equals(UUID_1))
         );
+    }
+
+    @Test
+    public void deleteFolder_requireValidAuthToken() {
+        final String route = DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<Void> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.DELETE, INVALID_AUTH_HEADERS
+        );
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void deleteFolder_requireFolderRemovalOption() {
+        final String route = DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<Void> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.DELETE, VALID_AUTH_HEADERS
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void deleteFolder_CanNotDeleteIfEntityNotExists() {
+        final String route = DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
+
+        HttpResponse<Void> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.DELETE, VALID_AUTH_HEADERS, Void.class
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getResponseEntity().getStatusCode());
+    }
+
+    @Test
+    public void deleteFolder_shouldDeleteAccordingToFoldersOnlyOption() {
+        final PersonalAccountFolder folder = folderRepository.save(
+                prePopulatedValidFolderBuilder().uuid(UUID_1).accountEntityId(1L).build()
+        );
+        final PersonalAccount account = personalAccountRepository.save(
+                prePopulatedValidAccountBuilder().uuid(UUID_2).accountEntityId(1L).folder(folder).build()
+        );
+
+        final String route = UriComponentsBuilder.fromUriString(DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString()))
+                .queryParam("removalOption", FolderRemovalOptions.FOLDER_ONLY)
+                .toUriString();
+
+        HttpResponse<Void> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.DELETE, VALID_AUTH_HEADERS, Void.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertFalse(folderRepository.existsByUuidAndAccountEntityId(UUID_1, 1L));
+
+        Optional<PersonalAccount> accountOptional = personalAccountRepository.findById(account.getId());
+        Assertions.assertTrue(accountOptional.isPresent());
+        Assertions.assertNull(accountOptional.get().getFolder());
+    }
+
+    @Test
+    public void deleteFolder_shouldDeleteAccordingToWithAccountsOption() {
+        final PersonalAccountFolder folder = folderRepository.save(
+                prePopulatedValidFolderBuilder().uuid(UUID_1).accountEntityId(1L).build()
+        );
+        final PersonalAccount account = personalAccountRepository.save(
+                prePopulatedValidAccountBuilder().uuid(UUID_2).accountEntityId(1L).folder(folder).build()
+        );
+
+        final String route = UriComponentsBuilder.fromUriString(DELETE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString()))
+                .queryParam("removalOption", FolderRemovalOptions.WITH_ACCOUNTS)
+                .toUriString();
+
+        HttpResponse<Void> response = RestHelper.sendRequest(
+                restTemplate, route, HttpMethod.DELETE, VALID_AUTH_HEADERS, Void.class
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getResponseEntity().getStatusCode());
+        Assertions.assertFalse(folderRepository.existsByUuidAndAccountEntityId(UUID_1, 1L));
+
+        Optional<PersonalAccount> accountOptional = personalAccountRepository.findById(account.getId());
+        Assertions.assertFalse(accountOptional.isPresent());
     }
 }

@@ -2,15 +2,17 @@ package com.statkovit.personalAccountsService.services.impl;
 
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
+import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,28 +21,15 @@ public class PersonalAccountFolderServiceImpl implements PersonalAccountFolderSe
 
     private final PersonalAccountFolderRepository personalAccountFolderRepository;
     private final SecurityUtils securityUtils;
+    private final PersonalAccountService personalAccountService;
 
+    @Transactional
     @Override
     public PersonalAccountFolder save(PersonalAccountFolder folder) {
-
-        Optional<PersonalAccountFolder> existingFolderOptional = personalAccountFolderRepository.findByNameAndAccountEntityId(
-                folder.getName(), folder.getAccountEntityId()
-        );
-
-        if (existingFolderOptional.isPresent()) {
-            PersonalAccountFolder existingFolder = existingFolderOptional.get();
-
-            if (!existingFolder.getUuid().equals(folder.getUuid())) {
-                throw new LocalizedException(
-                        String.format("Folder with name %s already exists.", folder.getName()),
-                        "exceptions.folderAlreadyExists"
-                );
-            }
-        }
-
         return personalAccountFolderRepository.save(folder);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<PersonalAccountFolder> getFolderListOfCurrentAccount() {
         Long currentAccountEntityId = securityUtils.getCurrentAccountEntityId();
@@ -48,6 +37,7 @@ public class PersonalAccountFolderServiceImpl implements PersonalAccountFolderSe
         return personalAccountFolderRepository.findAllByAccountEntityId(currentAccountEntityId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PersonalAccountFolder getByUuid(UUID uuid) {
         Long accountEntityId = securityUtils.getCurrentAccountEntityId();
@@ -58,5 +48,25 @@ public class PersonalAccountFolderServiceImpl implements PersonalAccountFolderSe
                         "exceptions.personalAccountFolderNotFoundByUuid"
                 )
         );
+    }
+
+    @Transactional
+    @Override
+    public void remove(PersonalAccountFolder folder, FolderRemovalOptions removalOptions) {
+        switch (removalOptions) {
+            case FOLDER_ONLY:
+                folder.getAccounts().forEach(personalAccount -> {
+                    personalAccount.setFolder(null);
+                    personalAccountService.save(personalAccount);
+                });
+                break;
+            case WITH_ACCOUNTS:
+                folder.getAccounts().forEach(personalAccountService::delete);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown removal option");
+        }
+
+        personalAccountFolderRepository.delete(folder);
     }
 }

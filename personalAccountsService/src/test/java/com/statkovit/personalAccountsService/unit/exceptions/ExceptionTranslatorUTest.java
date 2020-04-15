@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.util.Collections;
 
@@ -70,6 +71,18 @@ class ExceptionTranslatorUTest {
         RuntimeException exception = new RuntimeException("custom");
 
         ResponseEntity<ErrorDTO> responseEntity = exceptionTranslator.processGlobalException(exception);
+
+        Assertions.assertNotNull(responseEntity);
+        ErrorDTO errorDTO = responseEntity.getBody();
+        Assertions.assertNotNull(errorDTO);
+    }
+
+
+    @Test
+    void processMissingServletRequestParameterExceptionShouldReturnResponseEntityWithErrorDTO() {
+        MissingServletRequestParameterException exception = new MissingServletRequestParameterException("", "");
+
+        ResponseEntity<ErrorDTO> responseEntity = exceptionTranslator.processMissingServletRequestParameterException(exception);
 
         Assertions.assertNotNull(responseEntity);
         ErrorDTO errorDTO = responseEntity.getBody();

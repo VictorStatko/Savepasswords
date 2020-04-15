@@ -75,6 +75,8 @@ public class PersonalAccountRestServiceImpl implements PersonalAccountRestServic
 
     @Override
     public void delete(UUID accountUuid) {
-        personalAccountService.delete(accountUuid);
+        final PersonalAccount personalAccount = personalAccountService.findOneByUuid(accountUuid);
+
+        personalAccountService.delete(personalAccount);
     }
 }

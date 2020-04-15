@@ -10,7 +10,7 @@ public interface PersonalAccountService {
 
     PersonalAccount save(PersonalAccount personalAccount);
 
-    void delete(UUID accountUuid);
+    void delete(PersonalAccount personalAccount);
 
     List<PersonalAccount> getList(BooleanExpression booleanExpression);
 

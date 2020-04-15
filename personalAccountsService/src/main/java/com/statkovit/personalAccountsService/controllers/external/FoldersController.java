@@ -1,8 +1,10 @@
 package com.statkovit.personalAccountsService.controllers.external;
 
+import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.rest.PersonalAccountFolderRestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +39,12 @@ public class FoldersController {
         List<PersonalAccountFolderDto> folderDtos = folderRestService.getListOfCurrentAccountEntity();
 
         return ResponseEntity.ok(folderDtos);
+    }
+
+    @DeleteMapping(DELETE_ROUTE)
+    public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid, @RequestParam("removalOption") FolderRemovalOptions removalOptions) {
+        folderRestService.delete(uuid, removalOptions);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

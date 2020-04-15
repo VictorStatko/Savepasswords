@@ -42,8 +42,7 @@ public class PersonalAccountServiceImpl implements PersonalAccountService {
 
     @Transactional
     @Override
-    public void delete(UUID accountUuid) {
-        final PersonalAccount personalAccount = findOneByUuid(accountUuid);
+    public void delete(PersonalAccount personalAccount) {
         personalAccountRepository.delete(personalAccount);
     }
 

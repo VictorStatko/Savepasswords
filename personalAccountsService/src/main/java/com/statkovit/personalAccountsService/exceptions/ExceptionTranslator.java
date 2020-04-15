@@ -3,13 +3,11 @@ package com.statkovit.personalAccountsService.exceptions;
 import com.statkolibraries.exceptions.domain.ErrorDTO;
 import com.statkolibraries.exceptions.exceptions.FeignClientException;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
-import com.statkolibraries.exceptions.handlers.FeignExceptionHandler;
-import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
-import com.statkolibraries.exceptions.handlers.LocalizedExceptionHandler;
-import com.statkolibraries.exceptions.handlers.MethodArgumentNotValidExceptionHandler;
+import com.statkolibraries.exceptions.handlers.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -33,6 +31,12 @@ public class ExceptionTranslator {
     public ResponseEntity<ErrorDTO> processFeignClientException(FeignClientException ex) {
         log.error(ex.getMessage(), ex);
         return FeignExceptionHandler.processFeignClientException(ex);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorDTO> processMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        log.error(ex.getMessage(), ex);
+        return MissingServletRequestParameterExceptionHandler.processMissingServletRequestParameterException(ex);
     }
 
     @ExceptionHandler(Exception.class)

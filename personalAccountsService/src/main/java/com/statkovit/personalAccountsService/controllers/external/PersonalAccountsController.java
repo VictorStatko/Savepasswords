@@ -36,7 +36,7 @@ public class PersonalAccountsController {
     }
 
     @DeleteMapping(DELETE_ROUTE)
-    public ResponseEntity<PersonalAccountDto> deletePersonalAccount(@PathVariable UUID uuid) {
+    public ResponseEntity<?> deletePersonalAccount(@PathVariable UUID uuid) {
         personalAccountRestService.delete(uuid);
 
         return ResponseEntity.status(HttpStatus.OK).build();

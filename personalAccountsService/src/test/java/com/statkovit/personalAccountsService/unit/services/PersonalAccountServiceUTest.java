@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,14 +52,9 @@ class PersonalAccountServiceUTest {
     @Test
     void deleteShouldCallRepositoryDeleteMethod() {
         final PersonalAccount accountMock = PersonalAccount.builder()
-                .uuid(UUID_1).accountEntityId(ID_1).build();
+                .uuid(UUID_1).build();
 
-        when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
-
-        when(personalAccountRepository.findByUuidAndAccountEntityId(UUID_1, ID_1))
-                .thenReturn(Optional.of(accountMock));
-
-        personalAccountService.delete(UUID_1);
+        personalAccountService.delete(accountMock);
 
         verify(personalAccountRepository, times(1)).delete(accountMock);
     }

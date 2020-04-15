@@ -1,5 +1,6 @@
 package com.statkovit.personalAccountsService.rest;
 
+import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface PersonalAccountFolderRestService {
     PersonalAccountFolderDto update(UUID folderUuid, PersonalAccountFolderDto dto);
 
     List<PersonalAccountFolderDto> getListOfCurrentAccountEntity();
+
+    void delete(UUID folderUuid, FolderRemovalOptions removalOptions);
 }

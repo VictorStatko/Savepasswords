@@ -1,21 +1,21 @@
 package com.statkovit.personalAccountsService.unit.services;
 
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
+import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
+import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.services.impl.PersonalAccountFolderServiceImpl;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,11 +31,15 @@ class PersonalAccountFolderServiceImplUTest {
     @Mock
     private SecurityUtils securityUtils;
 
+    @Mock
+    private PersonalAccountService personalAccountService;
+
     @InjectMocks
     private PersonalAccountFolderServiceImpl personalAccountFolderService;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private static final UUID UUID_3 = UUID.fromString("00000000-0000-0000-0000-000000000003");
 
     @Test
     void save_shouldCallRepositoryMethod() {
@@ -45,40 +49,6 @@ class PersonalAccountFolderServiceImplUTest {
         personalAccountFolderService.save(folderMock);
 
         verify(personalAccountFolderRepository, times(1)).save(folderMock);
-    }
-
-    @Test
-    void save_shouldSaveOnlyUniqueNamesForUserAccount() {
-        final PersonalAccountFolder existingMock = PersonalAccountFolder.builder()
-                .uuid(UUID_1)
-                .accountEntityId(1L)
-                .name("name")
-                .build();
-
-        when(personalAccountFolderRepository.findByNameAndAccountEntityId("name", 1L)).thenReturn(Optional.of(existingMock));
-        when(personalAccountFolderRepository.findByNameAndAccountEntityId(AdditionalMatchers.not(eq("name")), eq(1L))).thenReturn(Optional.empty());
-
-        final PersonalAccountFolder folderMock1 = PersonalAccountFolder.builder()
-                .accountEntityId(1L)
-                .name("name")
-                .build();
-
-        Assertions.assertThrows(LocalizedException.class, () -> personalAccountFolderService.save(folderMock1));
-
-        final PersonalAccountFolder folderMock2 = PersonalAccountFolder.builder()
-                .accountEntityId(1L)
-                .name("name1")
-                .build();
-
-        Assertions.assertDoesNotThrow(() -> personalAccountFolderService.save(folderMock2));
-
-        final PersonalAccountFolder folderMock3 = PersonalAccountFolder.builder()
-                .accountEntityId(1L)
-                .uuid(UUID_1)
-                .name("name")
-                .build();
-
-        Assertions.assertDoesNotThrow(() -> personalAccountFolderService.save(folderMock3));
     }
 
     @Test
@@ -169,5 +139,43 @@ class PersonalAccountFolderServiceImplUTest {
         );
 
         assertTrue(exception.getCause() instanceof EntityNotFoundException);
+    }
+
+    @Test
+    void removeShouldWorkAccordingToFolderOnlyRemovalOption() {
+        PersonalAccount account1 = PersonalAccount.builder().uuid(UUID_1).build();
+        PersonalAccount account2 = PersonalAccount.builder().uuid(UUID_2).build();
+
+        PersonalAccountFolder folder = PersonalAccountFolder.builder().uuid(UUID_3).accounts(List.of(account1, account2)).build();
+
+        account1.setFolder(folder);
+        account2.setFolder(folder);
+
+        personalAccountFolderService.remove(folder, FolderRemovalOptions.FOLDER_ONLY);
+
+        verify(personalAccountService, times(1)).save(account1);
+        verify(personalAccountService, times(1)).save(account2);
+        verify(personalAccountService, times(0)).delete(account1);
+        verify(personalAccountService, times(0)).delete(account2);
+
+        assertNull(account1.getFolder());
+        assertNull(account2.getFolder());
+
+        verify(personalAccountFolderRepository, times(1)).delete(folder);
+    }
+
+    @Test
+    void removeShouldWorkAccordingToWithAccountsRemovalOption() {
+        PersonalAccount account1 = PersonalAccount.builder().uuid(UUID_1).build();
+        PersonalAccount account2 = PersonalAccount.builder().uuid(UUID_2).build();
+
+        PersonalAccountFolder folder = PersonalAccountFolder.builder().uuid(UUID_3).accounts(List.of(account1, account2)).build();
+
+        personalAccountFolderService.remove(folder, FolderRemovalOptions.WITH_ACCOUNTS);
+
+        verify(personalAccountService, times(1)).delete(account1);
+        verify(personalAccountService, times(1)).delete(account2);
+
+        verify(personalAccountFolderRepository, times(1)).delete(folder);
     }
 }

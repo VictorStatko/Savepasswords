@@ -1,10 +1,12 @@
 package com.statkovit.personalAccountsService.rest.impl;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountFolderConverter;
 import com.statkovit.personalAccountsService.rest.PersonalAccountFolderRestService;
 import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
+import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,15 @@ public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFold
 
     private final PersonalAccountFolderConverter folderConverter;
     private final PersonalAccountFolderService personalAccountFolderService;
+    private final PersonalAccountFolderValidator personalAccountFolderValidator;
 
     @Override
     public PersonalAccountFolderDto create(PersonalAccountFolderDto dto) {
         PersonalAccountFolder folderForSave = new PersonalAccountFolder();
 
         folderConverter.toEntity(dto, folderForSave);
+
+        personalAccountFolderValidator.validateFolderUniqueName(dto.getName(), folderForSave);
 
         folderForSave = personalAccountFolderService.save(folderForSave);
 
@@ -33,7 +38,10 @@ public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFold
     @Override
     public PersonalAccountFolderDto update(UUID folderUuid, PersonalAccountFolderDto dto) {
         PersonalAccountFolder folderToUpdate = personalAccountFolderService.getByUuid(folderUuid);
+
         folderConverter.toEntity(dto, folderToUpdate);
+
+        personalAccountFolderValidator.validateFolderUniqueName(dto.getName(), folderToUpdate);
 
         folderToUpdate = personalAccountFolderService.save(folderToUpdate);
 
@@ -45,5 +53,12 @@ public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFold
         List<PersonalAccountFolder> folders = personalAccountFolderService.getFolderListOfCurrentAccount();
 
         return folders.stream().map(folderConverter::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(UUID folderUuid, FolderRemovalOptions removalOptions) {
+        PersonalAccountFolder folderToRemove = personalAccountFolderService.getByUuid(folderUuid);
+
+        personalAccountFolderService.remove(folderToRemove, removalOptions);
     }
 }

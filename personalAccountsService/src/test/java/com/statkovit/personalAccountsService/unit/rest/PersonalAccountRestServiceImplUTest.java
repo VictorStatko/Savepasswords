@@ -171,8 +171,12 @@ class PersonalAccountRestServiceImplUTest {
 
     @Test
     void deleteShouldCallServiceMethodExactlyOnce() {
+        final PersonalAccount accountForRemove = PersonalAccount.builder().uuid(UUID_1).build();
+
+        when(personalAccountService.findOneByUuid(UUID_1)).thenReturn(accountForRemove);
+
         personalAccountRestServiceImpl.delete(UUID_1);
 
-        verify(personalAccountService, times(1)).delete(UUID_1);
+        verify(personalAccountService, times(1)).delete(accountForRemove);
     }
 }
