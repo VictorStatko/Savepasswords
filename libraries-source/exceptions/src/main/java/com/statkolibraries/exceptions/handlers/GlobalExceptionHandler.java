@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 public class GlobalExceptionHandler {
 
+    private GlobalExceptionHandler(){}
+
     public static final String REQUEST_ERROR_KEY = "global.requestError";
 
     public static ResponseEntity<ErrorDTO> processException(Exception ex) {

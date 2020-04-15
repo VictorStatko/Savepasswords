@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 public class FeignExceptionHandler {
+    private FeignExceptionHandler(){}
     public static ResponseEntity<ErrorDTO> processFeignClientException(FeignClientException ex) {
         HttpStatus status = ex.getHttpStatus();
 
