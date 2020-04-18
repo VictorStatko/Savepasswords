@@ -76,5 +76,13 @@
  "personalAccountFolders.creationSuccess": "Folder was created successfully",
  "personalAccountFolders.updateSuccess": "Folder was updated successfully",
  "personalAccountFolders.unfolderedItems": "Unfoldered items",
+ "personalAccountFolders.removeConfirmation.header": "Folder removing confirmation",
+ "personalAccountFolders.removeSuccess": "Folder was removed successfully",
+ "personalAccountFolders.removeConfirmation.question": "Are you sure you want to remove all data about the following folder?",
+ "personalAccountsFolders.removeConfirmation.note": "Please note that data cannot be restored.",
+ "personalAccountsFolders.removeConfirmation.selectOption": "Please select removal option:",
+ "personalAccountsFolders.removeConfirmation.folderName": "Folder name:",
+ "personalAccountsFolders.removeConfirmation.option.folderOnly": "Remove folder without accounts (accounts will be moved to unfoldered items)",
+ "personalAccountsFolders.removeConfirmation.option.withAccounts": "Remove folder and all its accounts",
  "exceptions.folderAlreadyExists": "Personal account folder with specified name already exists."
 }

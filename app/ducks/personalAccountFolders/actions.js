@@ -1,5 +1,5 @@
 import fetch from "utils/fetch";
-import {GET, POST, PUT} from "utils/appConstants";
+import {DELETE, FOLDER_REMOVAL_OPTIONS, GET, POST, PUT} from "utils/appConstants";
 import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import * as types from "./types";
 import i18n from 'i18n';
@@ -10,19 +10,26 @@ const folderUpdated = folder => ({
     folder
 });
 
+const folderRemoved = folderUuid => ({
+    type: types.FOLDER_REMOVED,
+    folderUuid
+});
+
 const foldersFetched = folders => ({
     type: types.FOLDERS_FETCH_SUCCESS,
     folders
 });
 
-export const folderAccountsCountIncreased = folderUuid => ({
+export const folderAccountsCountIncreased = (folderUuid, count) => ({
     type: types.FOLDER_ACCOUNT_SIZE_INCREASED,
-    folderUuid
+    folderUuid,
+    count
 });
 
-export const folderAccountsCountDecreased = folderUuid => ({
+export const folderAccountsCountDecreased = (folderUuid, count) => ({
     type: types.FOLDER_ACCOUNT_SIZE_DECREASED,
-    folderUuid
+    folderUuid,
+    count
 });
 
 export const createFolder = (folder, errorsAsForm) => async dispatch => {
@@ -54,6 +61,23 @@ export const updateFolder = (folder) => async dispatch => {
         dispatch(progressFinished());
     }
 };
+
+export const removeFolder = (folder, removalOption) => async dispatch => {
+    try {
+        dispatch(progressStarted());
+        await fetch(DELETE, `personal-accounts-management/folders/${folder.uuid}?removalOption=${removalOption}`);
+        dispatch(folderRemoved(folder.uuid));
+
+        if (removalOption === FOLDER_REMOVAL_OPTIONS.FOLDER_ONLY && folder.accountsCount > 0) {
+            dispatch(folderAccountsCountIncreased(null, folder.accountsCount))
+        }
+    } catch (error) {
+        throw processErrorAsNotification(error);
+    } finally {
+        dispatch(progressFinished());
+    }
+};
+
 
 export const fetchPersonalAccountFolders = () => async dispatch => {
     try {

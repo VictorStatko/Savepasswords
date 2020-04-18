@@ -19,11 +19,16 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
         return {...state, ...{folders: folders}};
     },
 
+    [types.FOLDER_REMOVED]: (state, {folderUuid}) => {
+        const folders = state.folders.filter(folder => folder.uuid !== folderUuid);
+        return {...state, ...{folders: folders}};
+    },
+
     [types.FOLDERS_FETCH_SUCCESS]: (state, {folders}) => {
         return {...state, ...{folders: folders}};
     },
 
-    [types.FOLDER_ACCOUNT_SIZE_DECREASED]: (state, {folderUuid}) => {
+    [types.FOLDER_ACCOUNT_SIZE_DECREASED]: (state, {folderUuid, count}) => {
         if (!folderUuid) {
             folderUuid = null;
         }
@@ -31,12 +36,12 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
         const folders = state.folders.slice();
         const index = folders.findIndex(listFolder => listFolder.uuid === folderUuid);
 
-        folders[index].accountsCount = folders[index].accountsCount - 1;
+        folders[index].accountsCount = folders[index].accountsCount - count;
 
         return {...state, ...{folders: folders}};
     },
 
-    [types.FOLDER_ACCOUNT_SIZE_INCREASED]: (state, {folderUuid}) => {
+    [types.FOLDER_ACCOUNT_SIZE_INCREASED]: (state, {folderUuid, count}) => {
         if (!folderUuid) {
             folderUuid = null;
         }
@@ -44,7 +49,7 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
         const folders = state.folders.slice();
         const index = folders.findIndex(listFolder => listFolder.uuid === folderUuid);
 
-        folders[index].accountsCount = folders[index].accountsCount + 1;
+        folders[index].accountsCount = folders[index].accountsCount + count;
 
         return {...state, ...{folders: folders}};
     },

@@ -35,7 +35,7 @@ export const createPersonalAccount = (account) => async dispatch => {
         }
 
         await fetch(POST, "personal-accounts-management/accounts", account);
-        dispatch(folderAccountsCountIncreased(account.folderUuid));
+        dispatch(folderAccountsCountIncreased(account.folderUuid, 1));
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
     } finally {
@@ -59,8 +59,8 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
         await fetch(PUT, `personal-accounts-management/accounts/${newAccount.uuid}`, newAccount);
 
         if (newAccount.folderUuid !== oldAccount.folderUuid) {
-            dispatch(folderAccountsCountIncreased(newAccount.folderUuid));
-            dispatch(folderAccountsCountDecreased(oldAccount.folderUuid));
+            dispatch(folderAccountsCountIncreased(newAccount.folderUuid, 1));
+            dispatch(folderAccountsCountDecreased(oldAccount.folderUuid, 1));
         }
 
     } catch (error) {
@@ -75,7 +75,7 @@ export const removePersonalAccount = (account) => async dispatch => {
         dispatch(progressStarted());
         await fetch(DELETE, `personal-accounts-management/accounts/${account.uuid}`);
         dispatch(personalAccountRemoved(account.uuid));
-        dispatch(folderAccountsCountDecreased(account.folderUuid))
+        dispatch(folderAccountsCountDecreased(account.folderUuid, 1))
     } catch (error) {
         throw processErrorAsNotification(error);
     } finally {

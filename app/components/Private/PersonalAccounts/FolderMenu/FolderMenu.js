@@ -6,7 +6,6 @@ import {compose} from "redux";
 import {withTranslation} from "react-i18next";
 import history from "utils/history";
 import {withRouter} from "react-router-dom";
-import queryString from "query-string";
 
 class FolderMenu extends React.Component {
 
