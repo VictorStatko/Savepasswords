@@ -23,21 +23,40 @@ Spinner.defaultProps = {
 
 export class PageSpinner extends Component {
 
+    state = {
+        showSpinner: false,
+    };
+
+    componentDidMount = () => {
+        this.timer = setTimeout(
+            () => this.setState({showSpinner: true}),
+            this.props.delay
+        );
+    };
+
+    componentWillUnmount() {
+        clearTimeout(this.timer);
+    }
+
     render() {
         const {className} = this.props;
 
         return (
-            <div className={styles.pageSpinnerContainer}>
-            <Spinner className={`${styles.pageLoading} ${className}`}/>
-            </div>
+            this.state.showSpinner && <React.Fragment>
+                <div className={styles.pageSpinnerContainer}>
+                    <Spinner className={`${styles.pageLoading} ${className}`}/>
+                </div>
+            </React.Fragment>
         );
     }
 }
 
 PageSpinner.propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    delay: PropTypes.number
 };
 
 PageSpinner.defaultProps = {
-    className: null
+    className: null,
+    delay: 1
 };

@@ -49,7 +49,7 @@ class AccountList extends React.Component {
         const {t} = this.props;
 
         if (this.state.loading || this.props.parentLoading) {
-            return <PageSpinner className={styles.spinner}/>;
+            return <PageSpinner delay={150} className={styles.spinner}/>;
         }
 
         if (this.state.folderExistenceError) {

@@ -47,7 +47,7 @@ class PersonalAccounts extends React.Component {
             <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
                 {
                     this.state.loading
-                        ? <PageSpinner className={styles.spinner}/>
+                        ? <PageSpinner delay={150} className={styles.spinner}/>
                         : <FolderMenu activeFolder={activeFolder}/>
                 }
             </Col>
