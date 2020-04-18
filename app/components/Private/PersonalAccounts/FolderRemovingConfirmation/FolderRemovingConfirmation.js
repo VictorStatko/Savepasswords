@@ -7,7 +7,6 @@ import {Button, DeclineButton, PrimaryButton} from "components/default/buttons/B
 import {toast} from "react-toastify";
 import {FOLDER_REMOVAL_OPTIONS} from "utils/appConstants";
 import Radio from "components/default/radio";
-import history from "utils/history";
 
 class FolderRemovingConfirmation extends React.Component {
     state = {
@@ -21,7 +20,6 @@ class FolderRemovingConfirmation extends React.Component {
         try {
             await this.props.delete(this.state.removalOption);
             toast.success(t('personalAccountFolders.removeSuccess'));
-            history.push('/accounts');
         } catch (error) {
             this.setState({loading: false});
         }

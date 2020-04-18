@@ -20,8 +20,18 @@ const personalAccountsFetched = accounts => ({
     accounts
 });
 
+const personalAccountUpdated = account => ({
+    type: types.PERSONAL_ACCOUNT_UPDATED,
+    account
+});
 
-export const createPersonalAccount = (account) => async dispatch => {
+const personalAccountsPaginationPageChanged = newPage => ({
+    type: types.PERSONAL_ACCOUNT_PAGINATION_PAGE_CHANGED,
+    newPage
+});
+
+
+export const createPersonalAccount = (account, inSelectedFolder) => async dispatch => {
     try {
         dispatch(progressStarted());
         const publicKey = await indexedDBService.loadPublicKey();
@@ -34,8 +44,13 @@ export const createPersonalAccount = (account) => async dispatch => {
             account.username = await rsaEncrypt(publicKey, account.username);
         }
 
-        await fetch(POST, "personal-accounts-management/accounts", account);
-        dispatch(folderAccountsCountIncreased(account.folderUuid, 1));
+        const response = await fetch(POST, "personal-accounts-management/accounts", account);
+        const newAccount = response.data;
+        dispatch(folderAccountsCountIncreased(newAccount.folderUuid, 1));
+
+        if (inSelectedFolder) {
+            dispatch(personalAccountUpdated(newAccount));
+        }
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
     } finally {
@@ -58,9 +73,15 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
 
         await fetch(PUT, `personal-accounts-management/accounts/${newAccount.uuid}`, newAccount);
 
-        if (newAccount.folderUuid !== oldAccount.folderUuid) {
+        console.log(newAccount.folderUuid);
+        console.log(oldAccount.folderUuid);
+
+        if (newAccount.folderUuid != oldAccount.folderUuid) {
             dispatch(folderAccountsCountIncreased(newAccount.folderUuid, 1));
             dispatch(folderAccountsCountDecreased(oldAccount.folderUuid, 1));
+            dispatch(personalAccountRemoved(newAccount.uuid));
+        } else {
+            dispatch(personalAccountUpdated(newAccount));
         }
 
     } catch (error) {
@@ -97,4 +118,8 @@ export const fetchPersonalAccounts = (folderUuid) => async dispatch => {
     } finally {
         dispatch(progressFinished());
     }
+};
+
+export const changePaginationPage = (newPage) => dispatch => {
+    dispatch(personalAccountsPaginationPageChanged(newPage));
 };

@@ -15,6 +15,11 @@ const folderRemoved = folderUuid => ({
     folderUuid
 });
 
+const folderSelected = folderUuid => ({
+    type: types.FOLDER_SELECTED,
+    folderUuid
+});
+
 const foldersFetched = folders => ({
     type: types.FOLDERS_FETCH_SUCCESS,
     folders
@@ -78,6 +83,10 @@ export const removeFolder = (folder, removalOption) => async dispatch => {
     }
 };
 
+export const selectFolder = (folderUuid) => dispatch => {
+    const uuidToDispatch = folderUuid ? folderUuid : null;
+    dispatch(folderSelected(uuidToDispatch));
+};
 
 export const fetchPersonalAccountFolders = () => async dispatch => {
     try {

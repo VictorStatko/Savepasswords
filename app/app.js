@@ -22,10 +22,13 @@ const initialState = loadState();
 export const store = configureStore(initialState, history);
 
 store.subscribe(throttle(() => {
-    saveState({
-        account: store.getState().account
-    });
-}, 1000));
+    const state = {account: store.getState().account};
+    if (store.getState().account && store.getState().account.isLoggedIn) {
+        state.personalAccountFolders = {selectedFolderUuid: store.getState().personalAccountFolders.selectedFolderUuid};
+        state.personalAccounts = {pagination: {...store.getState().personalAccounts.pagination}}
+    }
+    saveState(state);
+}, 500));
 
 const MOUNT_NODE = document.getElementById('app');
 

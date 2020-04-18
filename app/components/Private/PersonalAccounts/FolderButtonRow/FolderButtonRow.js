@@ -26,6 +26,7 @@ class FolderButtonRow extends React.Component {
 
     onFolderDelete = async (removalOption) => {
         await this.props.removeFolder(this.props.folder, removalOption);
+        await this.props.selectFolder(null);
     };
 
     render() {
@@ -48,7 +49,8 @@ class FolderButtonRow extends React.Component {
 }
 
 const withConnect = connect(null, {
-    removeFolder: personalAccountFoldersOperations.removeFolder
+    removeFolder: personalAccountFoldersOperations.removeFolder,
+    selectFolder: personalAccountFoldersOperations.selectFolder
 });
 
 export default compose(withTranslation(), withConnect)(FolderButtonRow);

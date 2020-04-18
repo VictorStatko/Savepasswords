@@ -13,7 +13,6 @@ import FolderMenu from "components/Private/PersonalAccounts/FolderMenu";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {PageSpinner} from "components/default/spinner/Spinner";
 import {withRouter} from "react-router-dom";
-import queryString from "query-string";
 import FolderButtonRow from "components/Private/PersonalAccounts/FolderButtonRow";
 
 class PersonalAccounts extends React.Component {
@@ -26,6 +25,7 @@ class PersonalAccounts extends React.Component {
     componentDidMount = async () => {
         try {
             await this.props.fetchFolders();
+            await this.props.fetchPersonalAccounts(this.props.selectedFolderUuid);
         } catch (e) {
             console.error(e);
             await setStateAsync(this, {error: true});
@@ -34,42 +34,52 @@ class PersonalAccounts extends React.Component {
         }
     };
 
-    renderDataOrLoader = () => {
-        const params = queryString.parse(this.props.location.search);
-        const activeFolderUuid = params.folderUuid ? params.folderUuid : null;
-        const activeFolder = this.props.folders.find(folder => folder.uuid === activeFolderUuid);
+    componentDidUpdate = async (prevProps) => {
+        if (this.props.selectedFolderUuid != prevProps.selectedFolderUuid) {
+            await setStateAsync(this, {error: false, loading: true});
+            try {
+                await this.props.fetchPersonalAccounts(this.props.selectedFolderUuid);
+            } catch (e) {
+                console.error(e);
+                await setStateAsync(this, {error: true});
+            } finally {
+                await setStateAsync(this, {loading: false});
+            }
+        }
+    };
 
+    renderDataOrLoader = () => {
         if (this.state.error) {
             return <div className={styles.blockWithoutData}><ServerError/></div>;
         }
 
+        if (this.state.loading) {
+            return <PageSpinner delay={150} className={styles.spinner}/>;
+        }
+
+        const activeFolder = this.props.folders.find(folder => folder.uuid === this.props.selectedFolderUuid);
+
         return <Row>
             <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
-                {
-                    this.state.loading
-                        ? <PageSpinner delay={150} className={styles.spinner}/>
-                        : <FolderMenu activeFolder={activeFolder}/>
-                }
+                <FolderMenu/>
             </Col>
             <Col xl={9} lg={8} md={8} className={styles.listColumn}>
                 {
-                    activeFolder
-                        ? <Row>
-                            <Col xs={9}>
-                                <h2>{activeFolder.name}</h2>
-                            </Col>
-                            {
-                                activeFolder.uuid === null
-                                    ? null
-                                    : <Col xs={3} className="d-flex justify-content-end align-items-center">
-                                        <FolderButtonRow folder={activeFolder}/>
-                                    </Col>
-                            }
-                        </Row>
-                        : null
+                    <Row>
+                        <Col xs={9}>
+                            <h2>{activeFolder.name}</h2>
+                        </Col>
+                        {
+                            activeFolder.uuid === null
+                                ? null
+                                : <Col xs={3} className="d-flex justify-content-end align-items-center">
+                                    <FolderButtonRow folder={activeFolder}/>
+                                </Col>
+                        }
+                    </Row>
                 }
                 <Col className={styles.accountList}>
-                    <AccountList parentLoading={this.state.loading}/>
+                    <AccountList/>
                 </Col>
             </Col>
         </Row>
@@ -100,7 +110,8 @@ class PersonalAccounts extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        folders: state.personalAccountFolders.folders
+        folders: state.personalAccountFolders.folders,
+        selectedFolderUuid: state.personalAccountFolders.selectedFolderUuid
     }
 };
 

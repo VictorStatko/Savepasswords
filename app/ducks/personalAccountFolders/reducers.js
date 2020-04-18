@@ -2,7 +2,7 @@ import createReducer from "utils/createReducerUtils";
 import {SIGN_OUT} from "ducks/account/types";
 import * as types from "./types";
 
-const INITIAL_STATE = {folders: []};
+const INITIAL_STATE = {folders: [], selectedFolderUuid: null};
 
 const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
     [SIGN_OUT]: () => (INITIAL_STATE),
@@ -21,7 +21,12 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
 
     [types.FOLDER_REMOVED]: (state, {folderUuid}) => {
         const folders = state.folders.filter(folder => folder.uuid !== folderUuid);
-        return {...state, ...{folders: folders}};
+        return {...state, ...{folders: folders, selectedFolderUuid: null}};
+    },
+
+    [types.FOLDER_SELECTED]: (state, {folderUuid}) => {
+        const folder = state.folders.find(folder => folder.uuid === folderUuid);
+        return {...state, ...{selectedFolderUuid: folder.uuid}};
     },
 
     [types.FOLDERS_FETCH_SUCCESS]: (state, {folders}) => {
