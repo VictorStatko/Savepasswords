@@ -58,7 +58,7 @@ class AccountCard extends React.Component {
         return (
             <React.Fragment>
                 <div className={styles.card}>
-                    <Row>
+                    <Row className={styles.imageRow}>
                         <Col xs={4}>
                             <a href={`//${url}`} target="_blank" className={hrefClass} onClick={this.onHrefClick}>
                                 <img className={styles.image} onDragStart={this.preventDragHandler}

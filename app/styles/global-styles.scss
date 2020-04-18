@@ -1,14 +1,16 @@
+@import './colors.scss';
 
 html {
   height: 100%;
 }
 
- body {
-   height: 100%;
- }
+body {
+  height: 100%;
+}
 
 div#app {
   height: 100%;
+  overflow-x: hidden;
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, button, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
@@ -33,7 +35,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 }
 
 body {
-  font-family: Roboto,Arial,sans-serif;
+  font-family: Roboto, Arial, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -66,9 +68,8 @@ h6 {
   font-size: 0.9rem;
 }
 
-.modal-backdrop
-{
-  opacity:0.2 !important;
+.modal-backdrop {
+  opacity: 0.2 !important;
 }
 
 .modal-title {
@@ -84,4 +85,62 @@ h6 {
 .modal-footer {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+}
+
+.rc-pagination {
+  display: flex;
+  padding-left: 18px;
+}
+
+.rc-pagination-item, .rc-pagination-next, .rc-pagination-prev, .rc-pagination-jump-next, .rc-pagination-jump-prev {
+  border: none;
+  background-color: $super-light-gray;
+  box-shadow: 0 1px 2px RGBA(0, 0, 0, 0.2);
+  height: 35px;
+  width: 35px;
+  border-radius: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s;
+  margin: 0.25rem;
+}
+
+.rc-pagination-item:hover a {
+  color: black;
+  outline: none;
+}
+
+.rc-pagination-item:hover, .rc-pagination-jump-next:hover, .rc-pagination-jump-prev:hover, .rc-pagination-prev:hover, .rc-pagination-next:hover {
+  outline: none;
+  background-color: $light-gray;
+}
+
+.rc-pagination-item:focus, .rc-pagination-jump-next:focus, .rc-pagination-jump-prev:focus, .rc-pagination-prev:focus, .rc-pagination-next:focus {
+  outline: none;
+  border: none;
+}
+
+.rc-pagination-item-active, .rc-pagination-item-active:hover, {
+  color: white;
+  background-color: $light-blue;
+  box-shadow: 0 1px 2px RGBA(0, 0, 0, 0.4);
+}
+
+.rc-pagination-item-active:hover a {
+  color: white;
+  background-color: $light-blue;
+}
+
+.rc-pagination-jump-next:after, .rc-pagination-jump-prev:after {
+  color: $gray;
+}
+
+.rc-pagination-jump-next:hover:after, .rc-pagination-jump-prev:hover:after {
+  content: "•••";
+  color: $gray;
+}
+
+.rc-pagination-disabled:hover {
+  background-color: $super-light-gray;
 }

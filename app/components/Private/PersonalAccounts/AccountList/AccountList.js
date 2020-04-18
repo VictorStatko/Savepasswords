@@ -6,12 +6,16 @@ import {connect} from "react-redux";
 import {compose} from "redux";
 import NoData from "components/default/noData";
 import styles from "./AccountList.module.scss";
-import {setStateAsync} from "utils/stateUtils";
 import {personalAccountsOperations} from "ducks/personalAccounts";
 import {PageSpinner} from "components/default/spinner";
 import ServerError from "components/default/serverError/ServerError";
 import queryString from 'query-string';
 import {withRouter} from "react-router-dom";
+import Pagination from "components/default/pagination";
+import {getMaxValidPageNumber, sliceItemsByPage} from "utils/paginationUtils";
+import history from "utils/history";
+
+const ITEMS_PER_PAGE = 9;
 
 class AccountList extends React.Component {
 
@@ -21,21 +25,23 @@ class AccountList extends React.Component {
         await this.fetchAccounts();
     };
 
+    //TODO FETCH BY PAGE
     fetchAccounts = async () => {
-        await setStateAsync(this, {error: false, loading: true, folderExistenceError: false});
+        this.setState({error: false, loading: true, folderExistenceError: false});
 
-        let params = queryString.parse(this.props.location.search);
+        const query = queryString.parse(this.props.location.search);
+
         try {
-            await this.props.fetchPersonalAccounts(params.folderUuid);
+            await this.props.fetchPersonalAccounts(query.folderUuid);
         } catch (e) {
             console.error(e);
             if (e.data && e.data.error && e.data.error === 'exceptions.personalAccountFolderNotFoundByUuid') {
-                await setStateAsync(this, {folderExistenceError: true});
+                this.setState({folderExistenceError: true});
             } else {
-                await setStateAsync(this, {error: true});
+                this.setState({error: true});
             }
         } finally {
-            await setStateAsync(this, {loading: false});
+            this.setState({loading: false});
         }
     };
 
@@ -45,8 +51,19 @@ class AccountList extends React.Component {
         }
     };
 
+    onPageChange = page => {
+        const query = queryString.parse(this.props.location.search);
+        query.page = page;
+
+        history.push({
+                pathname: this.props.location.pathname,
+                search: queryString.stringify(query)
+            }
+        );
+    };
+
     renderDataOrLoader = () => {
-        const {t} = this.props;
+        const {t, accounts} = this.props;
 
         if (this.state.loading || this.props.parentLoading) {
             return <PageSpinner delay={150} className={styles.spinner}/>;
@@ -60,8 +77,21 @@ class AccountList extends React.Component {
         if (this.state.error) {
             return <div className={styles.blockWithoutData}><ServerError/></div>;
         } else {
+            const pageFromQuery = queryString.parse(this.props.location.search).page;
+            const pageInt = pageFromQuery ? Number.parseInt(pageFromQuery) : 1;
+            const maxValidPageNumber = getMaxValidPageNumber(pageInt, accounts.length, ITEMS_PER_PAGE);
 
-            const listItems = this.props.accounts.map((account) =>
+            if (maxValidPageNumber < pageInt) {
+                this.onPageChange(maxValidPageNumber);
+                return;
+            }
+
+            if (pageInt < 1) {
+                this.onPageChange(1);
+                return;
+            }
+
+            const listItems = sliceItemsByPage(accounts, pageInt, ITEMS_PER_PAGE).map((account) =>
                 <Col xl={4} lg={6} md={6} key={account.uuid} className={styles.column}>
                     <AccountCard account={account}/>
                 </Col>
@@ -69,7 +99,17 @@ class AccountList extends React.Component {
 
             return (
                 <React.Fragment>
-                    {listItems.length > 0 ? <Row>{listItems}</Row> : <div className={styles.noData}><NoData/></div>}
+                    {listItems.length > 0 ?
+                        <React.Fragment>
+                            <Row className={styles.paginationRow}>
+                                <Pagination
+                                    total={accounts.length} current={pageInt}
+                                    pageSize={ITEMS_PER_PAGE} onChange={this.onPageChange}
+                                />
+                            </Row>
+                            <Row>{listItems}</Row>
+                        </React.Fragment> :
+                        <div className={styles.noData}><NoData/></div>}
                 </React.Fragment>
             );
         }
