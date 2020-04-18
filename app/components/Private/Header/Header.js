@@ -33,7 +33,7 @@ class Header extends React.Component {
 
         return (
             <React.Fragment>
-                <LoadingBar style={{ backgroundColor: 'rgb(8, 106, 255)', height: '2px' }} updateTime={100}/>
+                <LoadingBar style={{ backgroundColor: 'rgb(8, 106, 255)', height: '2px' }} updateTime={150}/>
                 <header className={styles.header}>
                     <div className={styles.menu}><Sidebar/></div>
                     <div className={styles.right}>
