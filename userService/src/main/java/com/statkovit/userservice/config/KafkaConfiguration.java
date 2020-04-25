@@ -1,6 +1,6 @@
 package com.statkovit.userservice.config;
 
-import com.statkolibraries.kafkaUtils.enums.KafkaTopics;
+import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkovit.userservice.properties.CustomProperties;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -55,7 +55,7 @@ public class KafkaConfiguration {
 
     @Bean
     public NewTopic usersTopic() {
-        return TopicBuilder.name(KafkaTopics.USERS.getTopicName())
+        return TopicBuilder.name(KafkaTopics.Users.TOPIC_NAME)
                 .partitions(4)
                 .replicas(2)
                 .build();

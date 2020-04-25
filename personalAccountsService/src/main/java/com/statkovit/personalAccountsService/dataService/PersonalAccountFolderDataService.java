@@ -1,4 +1,4 @@
-package com.statkovit.personalAccountsService.rest;
+package com.statkovit.personalAccountsService.dataService;
 
 import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
@@ -6,7 +6,7 @@ import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import java.util.List;
 import java.util.UUID;
 
-public interface PersonalAccountFolderRestService {
+public interface PersonalAccountFolderDataService {
 
     PersonalAccountFolderDto create(PersonalAccountFolderDto dto);
 

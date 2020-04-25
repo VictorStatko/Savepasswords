@@ -171,6 +171,20 @@ services:
     volumes:
       - /home/victor/development/data/docker/personal-accounts-postgres/data:/var/lib/postgresql/data
 
+  personal-accounts-redis:
+    ports:
+      - "5004:6379"
+    image: redis:5.0.6
+    command: redis-server --requirepass ${PERSONAL_ACCOUNTS_SERVICE_REDIS_PASSWORD}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h personal-accounts-redis -p 6379 -a ${PERSONAL_ACCOUNTS_SERVICE_REDIS_PASSWORD} --no-auth-warning ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - /home/victor/development/data/docker/personal-accounts-redis/data:/data
+
   personal-accounts-service:
     ports:
     - "8890:8890"
@@ -183,6 +197,8 @@ services:
         condition: service_healthy
       personal-accounts-postgres:
         condition: service_healthy
+      personal-accounts-redis:
+        condition: service_healthy
       kafka3:
         condition: service_started
     environment:
@@ -191,7 +207,10 @@ services:
       - POSTGRES_CONNECTION_URL=${PERSONAL_ACCOUNTS_SERVICE_POSTGRES_CONNECTION_URL}
       - POSTGRES_USER=${PERSONAL_ACCOUNTS_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${PERSONAL_ACCOUNTS_SERVICE_POSTGRES_PASSWORD}
+      - REDIS_CLUSTERS=${PERSONAL_ACCOUNTS_SERVICE_REDIS_CLUSTERS}
+      - REDIS_PASSWORD=${PERSONAL_ACCOUNTS_SERVICE_REDIS_PASSWORD}
       - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - KAFKA_BROKERS_URLS=${KAFKA_BROKERS_URLS}
 
   zookeeper1:
     image: bitnami/zookeeper:3.5.6

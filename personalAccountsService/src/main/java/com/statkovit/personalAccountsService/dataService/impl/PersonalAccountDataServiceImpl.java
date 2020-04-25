@@ -1,4 +1,4 @@
-package com.statkovit.personalAccountsService.rest.impl;
+package com.statkovit.personalAccountsService.dataService.impl;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.payload.LongDto;
@@ -6,7 +6,7 @@ import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
 import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
-import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
+import com.statkovit.personalAccountsService.dataService.PersonalAccountDataService;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PersonalAccountRestServiceImpl implements PersonalAccountRestService {
+public class PersonalAccountDataServiceImpl implements PersonalAccountDataService {
 
     private final PersonalAccountService personalAccountService;
     private final PersonalAccountConverter personalAccountConverter;

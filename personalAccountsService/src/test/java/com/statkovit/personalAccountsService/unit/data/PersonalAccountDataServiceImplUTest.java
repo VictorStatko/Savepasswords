@@ -1,4 +1,4 @@
-package com.statkovit.personalAccountsService.unit.rest;
+package com.statkovit.personalAccountsService.unit.data;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
@@ -7,7 +7,7 @@ import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
 import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
-import com.statkovit.personalAccountsService.rest.impl.PersonalAccountRestServiceImpl;
+import com.statkovit.personalAccountsService.dataService.impl.PersonalAccountDataServiceImpl;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountRestServiceImplUTest {
+class PersonalAccountDataServiceImplUTest {
 
     @Mock
     private PersonalAccountService personalAccountService;
@@ -43,7 +43,7 @@ class PersonalAccountRestServiceImplUTest {
 
 
     @InjectMocks
-    private PersonalAccountRestServiceImpl personalAccountRestServiceImpl;
+    private PersonalAccountDataServiceImpl personalAccountRestServiceImpl;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");

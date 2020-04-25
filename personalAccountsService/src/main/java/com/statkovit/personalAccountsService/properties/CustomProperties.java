@@ -14,9 +14,31 @@ public class CustomProperties {
 
     private Aes aes;
 
+    private Kafka kafka;
+
     @Getter
     @Setter
     public static final class Aes {
         private String key;
+    }
+
+    @Getter
+    @Setter
+    public static final class Kafka {
+        private Outbox outbox;
+        private Producer producer;
+
+
+        @Getter
+        @Setter
+        public static final class Outbox {
+            private Long fixedRateInMs;
+        }
+
+        @Getter
+        @Setter
+        public static final class Producer {
+            private String transactionIdPrefix;
+        }
     }
 }

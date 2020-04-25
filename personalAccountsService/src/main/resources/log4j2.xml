@@ -29,11 +29,15 @@
 
     <Loggers>
         <!-- LOG everything at INFO level -->
-        <Root level="DEBUG">
+        <Root level="warn">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
         </Root>
         <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug"/>
+        <Logger name="com.statkovit.personalAccountsService" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile" />
+        </Logger>
     </Loggers>
 
 </Configuration>

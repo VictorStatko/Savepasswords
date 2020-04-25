@@ -1,10 +1,14 @@
-package com.statkovit.userservice.kafka;
+package com.statkovit.authorizationservice.kafka;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.kafkaUtils.CustomKafkaHeaders;
-import com.statkovit.userservice.domain.OutboxEvent;
-import com.statkovit.userservice.repository.OutboxEventRepository;
-import com.statkovit.userservice.util.TransactionUtils;
+import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
+import com.statkovit.authorizationservice.domain.OutboxEvent;
+import com.statkovit.authorizationservice.repositories.OutboxEventRepository;
+import com.statkovit.authorizationservice.utils.TransactionUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -21,13 +25,15 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class KafkaOutboxEventSender {
 
     private static final int MAX_EVENT_COUNT_FOR_PROCESSING = 30;
 
     private final OutboxEventRepository outboxEventRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, KafkaMessage> kafkaTemplate;
     private final TransactionUtils transactionUtils;
+    private final ObjectMapper objectMapper;
 
     /**
      * Garanties: No data will be deleted from 'Outbox' table before successful producing of messages
@@ -45,8 +51,17 @@ public class KafkaOutboxEventSender {
         if (CollectionUtils.isNotEmpty(outboxEvents)) {
             kafkaTemplate.executeInTransaction(kafkaOperations -> {
                 outboxEvents.forEach(event -> {
-                    MessageBuilder<String> messageBuilder = MessageBuilder
-                            .withPayload(event.getPayload())
+                    KafkaMessage kafkaMessage;
+
+                    try {
+                        kafkaMessage = objectMapper.readValue(event.getPayload(), KafkaMessage.class);
+                    } catch (JsonProcessingException e) {
+                        log.error(e);
+                        return;
+                    }
+
+                    MessageBuilder<KafkaMessage> messageBuilder = MessageBuilder
+                            .withPayload(kafkaMessage)
                             .setHeader(KafkaHeaders.TOPIC, event.getTopic())
                             .setHeader(CustomKafkaHeaders.IDEMPOTENCY_KEY, event.getIdempotencyKey());
 
@@ -58,7 +73,7 @@ public class KafkaOutboxEventSender {
                         messageBuilder.setHeader(KafkaHeaders.PARTITION_ID, event.getPartition());
                     }
 
-                    final Message<String> message = messageBuilder.build();
+                    final Message<KafkaMessage> message = messageBuilder.build();
 
                     kafkaOperations.send(message);
                 });
@@ -70,7 +85,10 @@ public class KafkaOutboxEventSender {
             transactionUtils.executeInTransactionWithoutResult(
                     () -> outboxEventRepository.deleteAllByIdIsLessThanEqual(outboxEvents.get(outboxEvents.size() - 1).getId())
             );
+
+            log.debug("Successfully sent {} kafka events.", outboxEvents.size());
         }
 
     }
 }
+

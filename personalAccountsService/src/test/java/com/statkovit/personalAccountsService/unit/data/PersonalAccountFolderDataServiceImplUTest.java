@@ -1,10 +1,10 @@
-package com.statkovit.personalAccountsService.unit.rest;
+package com.statkovit.personalAccountsService.unit.data;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountFolderConverter;
-import com.statkovit.personalAccountsService.rest.impl.PersonalAccountFolderRestServiceImpl;
+import com.statkovit.personalAccountsService.dataService.impl.PersonalAccountFolderDataServiceImpl;
 import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
 import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PersonalAccountFolderRestServiceImplUTest {
+class PersonalAccountFolderDataServiceImplUTest {
 
     @Mock
     private PersonalAccountFolderConverter folderConverter;
@@ -37,7 +37,7 @@ class PersonalAccountFolderRestServiceImplUTest {
     private PersonalAccountFolderValidator folderValidator;
 
     @InjectMocks
-    private PersonalAccountFolderRestServiceImpl personalAccountFolderRestService;
+    private PersonalAccountFolderDataServiceImpl personalAccountFolderRestService;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");

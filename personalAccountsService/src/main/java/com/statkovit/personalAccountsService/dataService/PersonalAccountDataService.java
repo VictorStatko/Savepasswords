@@ -1,4 +1,4 @@
-package com.statkovit.personalAccountsService.rest;
+package com.statkovit.personalAccountsService.dataService;
 
 import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
@@ -7,7 +7,7 @@ import com.statkovit.personalAccountsService.payload.filters.PersonalAccountList
 import java.util.List;
 import java.util.UUID;
 
-public interface PersonalAccountRestService {
+public interface PersonalAccountDataService {
 
     PersonalAccountDto create(PersonalAccountDto personalAccountDto);
 

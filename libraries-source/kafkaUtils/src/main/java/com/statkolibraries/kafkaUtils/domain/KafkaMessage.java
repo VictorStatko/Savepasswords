@@ -2,17 +2,20 @@ package com.statkolibraries.kafkaUtils.domain;
 
 import com.statkolibraries.kafkaUtils.enums.KafkaActions;
 
-public class KafkaMessage<T> {
+public class KafkaMessage {
     private KafkaActions action;
 
-    private T payload;
+    private String payload;
+
+    public KafkaMessage() {
+    }
 
     public KafkaMessage(KafkaActions action) {
         this.action = action;
     }
 
-    public KafkaMessage(KafkaActions action, T payload) {
-        this(action);
+    public KafkaMessage(KafkaActions action, String payload) {
+        this.action = action;
         this.payload = payload;
     }
 
@@ -24,11 +27,11 @@ public class KafkaMessage<T> {
         this.action = action;
     }
 
-    public T getPayload() {
+    public String getPayload() {
         return payload;
     }
 
-    public void setPayload(T payload) {
+    public void setPayload(String payload) {
         this.payload = payload;
     }
 }

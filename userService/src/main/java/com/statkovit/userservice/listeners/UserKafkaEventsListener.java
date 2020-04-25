@@ -1,11 +1,10 @@
 package com.statkovit.userservice.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkolibraries.kafkaUtils.enums.KafkaActions;
-import com.statkolibraries.kafkaUtils.enums.KafkaTopics;
 import com.statkovit.userservice.domain.OutboxEvent;
-import com.statkovit.userservice.dto.UserDto;
 import com.statkovit.userservice.events.UserCreatedEvent;
 import com.statkovit.userservice.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +26,10 @@ public class UserKafkaEventsListener {
     @Transactional
     @SneakyThrows(IOException.class)
     public void onUserCreated(UserCreatedEvent userCreatedEvent) {
-        KafkaMessage<UserDto> kafkaMessage = new KafkaMessage<>(KafkaActions.USER_CREATED, userCreatedEvent.getUserDto());
+        KafkaMessage kafkaMessage = new KafkaMessage(KafkaActions.USER_CREATED, "qq");
 
         OutboxEvent outboxEvent = new OutboxEvent(
-                KafkaTopics.USERS.getTopicName(),
+                KafkaTopics.Users.TOPIC_NAME,
                 objectMapper.writeValueAsString(kafkaMessage),
                 userCreatedEvent.getUserUuid().toString()
         );

@@ -2,7 +2,7 @@ package com.statkovit.personalAccountsService.controllers.external;
 
 import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
-import com.statkovit.personalAccountsService.rest.PersonalAccountFolderRestService;
+import com.statkovit.personalAccountsService.dataService.PersonalAccountFolderDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import static com.statkovit.personalAccountsService.constants.MappingConstants.F
 @RequiredArgsConstructor
 public class FoldersController {
 
-    private final PersonalAccountFolderRestService folderRestService;
+    private final PersonalAccountFolderDataService folderRestService;
 
     @PostMapping(CREATE_ROUTE)
     public ResponseEntity<PersonalAccountFolderDto> createFolder(@Valid @RequestBody PersonalAccountFolderDto dto) {

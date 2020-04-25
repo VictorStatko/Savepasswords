@@ -1,4 +1,4 @@
-package com.statkovit.authorizationservice.configuration;
+package com.statkovit.personalAccountsService.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

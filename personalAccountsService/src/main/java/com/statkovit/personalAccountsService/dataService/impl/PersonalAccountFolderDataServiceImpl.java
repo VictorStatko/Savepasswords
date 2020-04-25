@@ -1,10 +1,10 @@
-package com.statkovit.personalAccountsService.rest.impl;
+package com.statkovit.personalAccountsService.dataService.impl;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountFolderConverter;
-import com.statkovit.personalAccountsService.rest.PersonalAccountFolderRestService;
+import com.statkovit.personalAccountsService.dataService.PersonalAccountFolderDataService;
 import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
 import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PersonalAccountFolderRestServiceImpl implements PersonalAccountFolderRestService {
+public class PersonalAccountFolderDataServiceImpl implements PersonalAccountFolderDataService {
 
     private final PersonalAccountFolderConverter folderConverter;
     private final PersonalAccountFolderService personalAccountFolderService;

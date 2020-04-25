@@ -3,7 +3,7 @@ package com.statkovit.personalAccountsService.controllers.external;
 import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
-import com.statkovit.personalAccountsService.rest.PersonalAccountRestService;
+import com.statkovit.personalAccountsService.dataService.PersonalAccountDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,39 +19,39 @@ import static com.statkovit.personalAccountsService.constants.MappingConstants.P
 @RequiredArgsConstructor
 public class PersonalAccountsController {
 
-    private final PersonalAccountRestService personalAccountRestService;
+    private final PersonalAccountDataService personalAccountDataService;
 
     @PostMapping(CREATE_ROUTE)
     public ResponseEntity<PersonalAccountDto> createPersonalAccount(@Valid @RequestBody PersonalAccountDto dto) {
-        dto = personalAccountRestService.create(dto);
+        dto = personalAccountDataService.create(dto);
 
         return ResponseEntity.ok(dto);
     }
 
     @PutMapping(UPDATE_ROUTE)
     public ResponseEntity<PersonalAccountDto> updatePersonalAccount(@PathVariable UUID uuid, @Valid @RequestBody PersonalAccountDto dto) {
-        dto = personalAccountRestService.update(uuid, dto);
+        dto = personalAccountDataService.update(uuid, dto);
 
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping(DELETE_ROUTE)
     public ResponseEntity<?> deletePersonalAccount(@PathVariable UUID uuid) {
-        personalAccountRestService.delete(uuid);
+        personalAccountDataService.delete(uuid);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping(GET_LIST_ROUTE)
     public ResponseEntity<List<PersonalAccountDto>> getPersonalAccounts(PersonalAccountListFilters filters) {
-        List<PersonalAccountDto> accountDtos = personalAccountRestService.getList(filters);
+        List<PersonalAccountDto> accountDtos = personalAccountDataService.getList(filters);
 
         return ResponseEntity.ok(accountDtos);
     }
 
     @GetMapping(GET_LIST_COUNT_ROUTE)
     public ResponseEntity<LongDto> getPersonalAccountsCount(PersonalAccountListFilters filters) {
-        LongDto count = personalAccountRestService.getListCount(filters);
+        LongDto count = personalAccountDataService.getListCount(filters);
 
         return ResponseEntity.ok(count);
     }
