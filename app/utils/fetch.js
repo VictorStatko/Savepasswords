@@ -52,7 +52,7 @@ export default async (method, path, data, headers) => {
                 }
 
                 try {
-                    const res = await transport.post(`${BACKEND_URL}${'auth/token'}`,
+                    const res = await axios.post(`${BACKEND_URL}${'auth/token'}`,
                         queryString.stringify({
                             "refresh_token": refreshToken,
                             "grant_type": "refresh_token",
