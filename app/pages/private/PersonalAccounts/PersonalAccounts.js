@@ -14,6 +14,7 @@ import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {PageSpinner} from "components/default/spinner/Spinner";
 import {withRouter} from "react-router-dom";
 import FolderButtonRow from "components/Private/PersonalAccounts/FolderButtonRow";
+import AccountSearch from "components/Private/PersonalAccounts/AccountSearch";
 
 class PersonalAccounts extends React.Component {
 
@@ -66,16 +67,23 @@ class PersonalAccounts extends React.Component {
             <Col xl={9} lg={8} md={8} className={styles.listColumn}>
                 {
                     <Row>
-                        <Col xs={9}>
+                        <Col>
                             <h2>{activeFolder.name}</h2>
                         </Col>
-                        {
-                            activeFolder.uuid === null
-                                ? null
-                                : <Col xs={3} className="d-flex justify-content-end align-items-center">
-                                    <FolderButtonRow folder={activeFolder}/>
-                                </Col>
-                        }
+                        <Col md={12} lg="auto" className={`d-flex ${styles.actionsRow}`}>
+                            <Col
+                                className={`d-flex ${activeFolder.uuid === null ? 'justify-content-center' : 'justify-content-start'} justify-content-lg-end align-items-center ${styles.searchColumn}`}>
+                                <AccountSearch/>
+                            </Col>
+                            {
+                                activeFolder.uuid === null
+                                    ? null :
+                                    <Col xs={3}
+                                         className={`d-flex justify-content-end align-items-center ${styles.buttonColumn}`}>
+                                        <FolderButtonRow folder={activeFolder}/>
+                                    </Col>
+                            }
+                        </Col>
                     </Row>
                 }
                 <Col className={styles.accountList}>

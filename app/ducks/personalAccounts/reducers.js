@@ -2,9 +2,10 @@ import createReducer from "utils/createReducerUtils";
 import * as types from "./types";
 import {SIGN_IN, SIGN_OUT} from "ducks/account/types";
 import {recreatePagination, slicePage} from "utils/paginationUtils";
-import {FOLDER_REMOVED, FOLDER_SELECTED} from "../personalAccountFolders/types";
+import {FOLDER_REMOVED, FOLDER_SELECTED} from "ducks/personalAccountFolders/types";
+import {isBlank, isEmpty} from "utils/stringUtils";
 
-const INITIAL_STATE_PAGINATION = {page: 1, size: 9, total: 0};
+const INITIAL_STATE_PAGINATION = {page: 1, size: 9, total: 0, search: ""};
 const INITIAL_STATE = {accounts: [], pagination: {...INITIAL_STATE_PAGINATION}};
 
 const personalAccountsReducer = createReducer(INITIAL_STATE)({
@@ -21,7 +22,7 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
             accounts[index] = account;
         }
 
-        const filteredAccounts = filterAccounts(accounts, null);
+        const filteredAccounts = filterAccounts(accounts, state.pagination.search);
         const newPagination = recreatePagination(filteredAccounts, state.pagination);
         const pagedAccounts = slicePage(filteredAccounts, newPagination);
 
@@ -31,7 +32,7 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
     [types.PERSONAL_ACCOUNT_REMOVED]: (state, {accountUuid}) => {
         const accounts = state.accounts.slice().filter(account => account.uuid !== accountUuid);
 
-        const filteredAccounts = filterAccounts(accounts, null);
+        const filteredAccounts = filterAccounts(accounts, state.pagination.search);
         const newPagination = recreatePagination(filteredAccounts, state.pagination);
         const pagedAccounts = slicePage(filteredAccounts, newPagination);
 
@@ -39,7 +40,7 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
     },
 
     [types.PERSONAL_ACCOUNTS_FETCH_SUCCESS]: (state, {accounts}) => {
-        const filteredAccounts = filterAccounts(accounts, null);
+        const filteredAccounts = filterAccounts(accounts, state.pagination.search);
         const newPagination = recreatePagination(filteredAccounts, state.pagination);
         const pagedAccounts = slicePage(filteredAccounts, newPagination);
 
@@ -50,9 +51,20 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
         const pagination = {...state.pagination};
         pagination.page = newPage;
 
-        const filteredAccounts = filterAccounts(state.accounts, null);
+        const filteredAccounts = filterAccounts(state.accounts, pagination.search);
         const newPagination = recreatePagination(filteredAccounts, pagination);
-        const pagedAccounts = slicePage(filteredAccounts, pagination);
+        const pagedAccounts = slicePage(filteredAccounts, newPagination);
+
+        return {...state, ...{pagination: newPagination, pagedAccounts: pagedAccounts}};
+    },
+
+    [types.PERSONAL_ACCOUNT_SEARCH_CHANGED]: (state, {search}) => {
+        const pagination = {...state.pagination};
+        pagination.search = search;
+
+        const filteredAccounts = filterAccounts(state.accounts, pagination.search);
+        const newPagination = recreatePagination(filteredAccounts, pagination);
+        const pagedAccounts = slicePage(filteredAccounts, newPagination);
 
         return {...state, ...{pagination: newPagination, pagedAccounts: pagedAccounts}};
     },
@@ -66,8 +78,17 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
     },
 });
 
-function filterAccounts(accounts, sort) {
-    return accounts.slice();
+function filterAccounts(accounts, search) {
+    let newAccounts = accounts.slice();
+    if (isBlank(search)) {
+        return newAccounts;
+    }
+
+    const trimSearch = search.trim();
+    return newAccounts.filter(account => {
+        return (!isEmpty(account.name) && account.name.includes(trimSearch))
+            || (!isEmpty(account.url) && account.url.includes(trimSearch))
+    });
 }
 
 

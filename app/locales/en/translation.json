@@ -6,6 +6,7 @@
 "global.close": "Close",
 "global.cancel": "Cancel",
 "global.back": "Back",
+"global.search": "Search",
 "global.requestError": "An error occurred while accessing the server. Please retry or contact your system administrator.",
 "global.internalError": "An internal error occurred. Please reload page or contact your system administrator.",
 "global.serverValidationError": "An error occurred during server validation of form. Please check the entered data.",

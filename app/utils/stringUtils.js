@@ -2,6 +2,10 @@ export function isEmpty(str) {
     return (!str || 0 === str.length);
 }
 
+export function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+}
+
 export function isNotEmpty(str) {
     return (str && 0 !== str.length);
 }

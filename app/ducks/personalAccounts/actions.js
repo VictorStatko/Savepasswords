@@ -30,6 +30,11 @@ const personalAccountsPaginationPageChanged = newPage => ({
     newPage
 });
 
+const personalAccountsSearchChanged = search => ({
+    type: types.PERSONAL_ACCOUNT_SEARCH_CHANGED,
+    search
+});
+
 
 export const createPersonalAccount = (account, inSelectedFolder) => async dispatch => {
     try {
@@ -122,4 +127,8 @@ export const fetchPersonalAccounts = (folderUuid) => async dispatch => {
 
 export const changePaginationPage = (newPage) => dispatch => {
     dispatch(personalAccountsPaginationPageChanged(newPage));
+};
+
+export const changeSearch = (search) => dispatch => {
+    dispatch(personalAccountsSearchChanged(search));
 };
