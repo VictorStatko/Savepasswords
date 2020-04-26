@@ -1,6 +1,6 @@
 package com.statkovit.authorizationservice.configuration;
 
-import com.statkovit.authorizationservice.services.impl.CustomUserDetailsService;
+import com.statkovit.authorizationservice.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

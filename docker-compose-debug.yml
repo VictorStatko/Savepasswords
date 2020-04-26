@@ -29,13 +29,6 @@ services:
     build:
       target: debug
 
-  user-service:
-    ports:
-      - "8889:8889"
-      - "5009:5009"
-    build:
-      target: debug
-
   personal-accounts-service:
     ports:
       - "8890:8890"

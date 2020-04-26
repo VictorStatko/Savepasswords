@@ -1,6 +1,7 @@
 package com.statkovit.personalAccountsService.configuration;
 
 import com.statkolibraries.kafkaUtils.CustomKafkaHeaders;
+import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkovit.personalAccountsService.kafka.RedisKafkaManager;
 import com.statkovit.personalAccountsService.properties.CustomProperties;
@@ -54,7 +55,7 @@ public class KafkaConfiguration {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         props.put(
                 ProducerConfig.TRANSACTIONAL_ID_CONFIG,
                 customProperties.getKafka().getProducer().getTransactionIdPrefix()
@@ -80,7 +81,7 @@ public class KafkaConfiguration {
     @Bean
     public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties());
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, IsolationLevel.READ_COMMITTED.toString().toLowerCase(Locale.ROOT));
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
@@ -101,7 +102,7 @@ public class KafkaConfiguration {
     public ConcurrentKafkaListenerContainerFactory<String, KafkaMessage> kafkaListenerContainerFactory() {
         DeadLetterPublishingRecoverer recoverer = new CustomDeadLetterPublishingRecoverer(
                 kafkaTemplate(),
-                (r, e) -> new TopicPartition(r.topic() + ".failures", r.partition())
+                (r, e) -> new TopicPartition(r.topic() + KafkaTopics.FAILURES_POSTFIX, r.partition())
         );
 
         ErrorHandler errorHandler = new SeekToCurrentErrorHandler(
@@ -128,10 +129,10 @@ public class KafkaConfiguration {
 
             if (Objects.isNull(header)) {
                 log.warn("Kafka message can't be processed (Idempotency key is not exists). Message: {}", consumerRecord);
-                return false;
+                return true;
             }
 
-            boolean messageAlreadyConsumed = redisKafkaManager.isMessageConsumed(
+            boolean messageAlreadyConsumed = redisKafkaManager.isMessageConsumedSafely(
                     new String(header.value(), StandardCharsets.UTF_8)
             );
 
@@ -152,18 +153,23 @@ public class KafkaConfiguration {
 
         @Override
         protected void publish(ProducerRecord<Object, Object> outRecord, KafkaOperations<Object, Object> kafkaTemplate) {
+
             try {
                 kafkaTemplate.send(outRecord).get();
-                Headers headers = outRecord.headers();
-                Header header = headers.lastHeader(CustomKafkaHeaders.IDEMPOTENCY_KEY);
-                redisKafkaManager.messageConsumed(
-                        new String(header.value(), StandardCharsets.UTF_8)
-                );
-                log.warn("Sent kafka message to Dead-letter queue. Message: {}", outRecord);
             } catch (Exception e) {
-                log.error("Dead-letter publication failed. Message: {}", outRecord);
+                log.error(e.getMessage(), e);
                 throw new RuntimeException(e);
             }
+
+            Headers headers = outRecord.headers();
+            Header header = headers.lastHeader(CustomKafkaHeaders.IDEMPOTENCY_KEY);
+
+            redisKafkaManager.messageConsumedSafely(
+                    new String(header.value(), StandardCharsets.UTF_8)
+            );
+
+            log.warn("Sent kafka message to Dead-letter queue. Message: {}", outRecord);
+
         }
 
         @Override

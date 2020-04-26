@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
-import com.statkolibraries.kafkaUtils.enums.KafkaActions;
-import com.statkovit.authorizationservice.domain.OutboxEvent;
-import com.statkovit.authorizationservice.kafka.events.AccountCreatedEvent;
+import com.statkolibraries.kafkaUtils.enums.AccountKafkaActions;
+import com.statkovit.authorizationservice.entities.OutboxEvent;
+import com.statkovit.authorizationservice.events.AccountCreatedEvent;
 import com.statkovit.authorizationservice.repositories.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -30,7 +30,7 @@ public class KafkaAccountEventsListener {
     @SneakyThrows(IOException.class)
     public void onAccountCreated(AccountCreatedEvent accountCreatedEvent) {
         KafkaMessage kafkaMessage = new KafkaMessage(
-                KafkaActions.ACCOUNT_CREATED, objectMapper.writeValueAsString(accountCreatedEvent.getAccount())
+                AccountKafkaActions.ACCOUNT_CREATED, objectMapper.writeValueAsString(accountCreatedEvent.getAccount())
         );
 
         OutboxEvent outboxEvent = new OutboxEvent(

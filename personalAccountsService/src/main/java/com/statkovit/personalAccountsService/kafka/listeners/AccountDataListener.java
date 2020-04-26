@@ -5,7 +5,7 @@ import com.statkolibraries.kafkaUtils.CustomKafkaHeaders;
 import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkovit.personalAccountsService.configuration.KafkaConfiguration;
-import com.statkovit.personalAccountsService.dataService.AccountDataDataService;
+import com.statkovit.personalAccountsService.domainService.AccountDataDomainService;
 import com.statkovit.personalAccountsService.kafka.RedisKafkaManager;
 import com.statkovit.personalAccountsService.payload.AccountDataDto;
 import com.statkovit.personalAccountsService.utils.ObjectMapperUtils;
@@ -24,7 +24,7 @@ public class AccountDataListener {
 
     private final RedisKafkaManager redisKafkaManager;
     private final ObjectMapperUtils objectMapperUtils;
-    private final AccountDataDataService accountDataDataService;
+    private final AccountDataDomainService accountDataDomainService;
     private final ObjectMapper objectMapper;
 
     @KafkaListener(
@@ -41,11 +41,11 @@ public class AccountDataListener {
         switch (message.getAction()) {
             case ACCOUNT_CREATED:
                 AccountDataDto dataDto = objectMapper.readValue(message.getPayload(), AccountDataDto.class);
-                accountDataDataService.create(dataDto);
+                accountDataDomainService.create(dataDto);
                 break;
         }
 
-        redisKafkaManager.messageConsumed(idempotencyKey);
+        redisKafkaManager.messageConsumedSafely(idempotencyKey);
     }
 
     private void logMessageReceive(KafkaMessage message, String idempotencyKey) {

@@ -16,7 +16,6 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1/auth/accounts",
-                        "/api/v1/auth/accounts/argon",
                         "/api/v1/auth/accounts/client-encryption-salt"
                 )
                 .permitAll()

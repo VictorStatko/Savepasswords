@@ -1,6 +1,6 @@
 package com.statkovit.authorizationservice.repositories;
 
-import com.statkovit.authorizationservice.domain.Role;
+import com.statkovit.authorizationservice.entities.Role;
 import com.statkovit.authorizationservice.enums.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,0 @@
-spring:
-  cloud:
-    config:
-      name: user-service
-      uri: ${SPRING_CLOUD_CONFIG_URL:http://localhost:8088}
-  main:
-    allow-bean-definition-overriding: true

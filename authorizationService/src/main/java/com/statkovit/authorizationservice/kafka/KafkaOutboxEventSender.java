@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.kafkaUtils.CustomKafkaHeaders;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
-import com.statkovit.authorizationservice.domain.OutboxEvent;
+import com.statkovit.authorizationservice.entities.OutboxEvent;
 import com.statkovit.authorizationservice.repositories.OutboxEventRepository;
 import com.statkovit.authorizationservice.utils.TransactionUtils;
 import lombok.RequiredArgsConstructor;

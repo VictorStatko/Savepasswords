@@ -114,46 +114,6 @@ services:
     volumes:
       - /home/victor/development/data/docker/auth-postgres/data:/var/lib/postgresql/data
 
-  user-postgres:
-    ports:
-      - "5000:5432"
-    image: postgres:11.5
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${USER_SERVICE_POSTGRES_USER} -d ${USER_SERVICE_POSTGRES_DB} -h user-postgres -p 5432"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-    environment:
-      - POSTGRES_PASSWORD=${USER_SERVICE_POSTGRES_PASSWORD}
-      - POSTGRES_USER=${USER_SERVICE_POSTGRES_USER}
-      - POSTGRES_DB=${USER_SERVICE_POSTGRES_DB}
-    volumes:
-      - /home/victor/development/data/docker/user-postgres/data:/var/lib/postgresql/data
-
-  user-service:
-    ports:
-      - "8889:8889"
-    build:
-      context: ./userService
-      dockerfile: docker/Dockerfile
-      target: run
-    depends_on:
-      configuration-service:
-        condition: service_healthy
-      user-postgres:
-        condition: service_healthy
-      kafka3:
-        condition: service_started
-    environment:
-      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
-      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
-      - POSTGRES_CONNECTION_URL=${USER_SERVICE_POSTGRES_CONNECTION_URL}
-      - POSTGRES_USER=${USER_SERVICE_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${USER_SERVICE_POSTGRES_PASSWORD}
-      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
-      - KAFKA_BROKERS_URLS=${KAFKA_BROKERS_URLS}
-
   personal-accounts-postgres:
     ports:
       - "5002:5432"

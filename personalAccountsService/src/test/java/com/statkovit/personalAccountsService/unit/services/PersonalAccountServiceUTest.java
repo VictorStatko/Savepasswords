@@ -4,7 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
-import com.statkovit.personalAccountsService.services.impl.PersonalAccountServiceImpl;
+import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ class PersonalAccountServiceUTest {
     private SecurityUtils securityUtils;
 
     @InjectMocks
-    private PersonalAccountServiceImpl personalAccountService;
+    private PersonalAccountService personalAccountService;
 
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");

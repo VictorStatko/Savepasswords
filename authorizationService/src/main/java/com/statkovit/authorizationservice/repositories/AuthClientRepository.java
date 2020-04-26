@@ -1,6 +1,6 @@
 package com.statkovit.authorizationservice.repositories;
 
-import com.statkovit.authorizationservice.domain.AuthClientDetail;
+import com.statkovit.authorizationservice.entities.AuthClientDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

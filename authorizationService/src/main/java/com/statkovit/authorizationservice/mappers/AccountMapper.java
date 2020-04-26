@@ -1,6 +1,6 @@
 package com.statkovit.authorizationservice.mappers;
 
-import com.statkovit.authorizationservice.domain.Account;
+import com.statkovit.authorizationservice.entities.Account;
 import com.statkovit.authorizationservice.payload.AccountDto;
 import com.statkovit.authorizationservice.payload.ExtendedAccountDto;
 import lombok.RequiredArgsConstructor;

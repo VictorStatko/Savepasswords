@@ -1,6 +1,6 @@
 package com.statkovit.personalAccountsService.payload.converters;
 
-import com.statkovit.personalAccountsService.domain.duplication.AccountData;
+import com.statkovit.personalAccountsService.domain.AccountData;
 import com.statkovit.personalAccountsService.payload.AccountDataDto;
 import com.statkovit.personalAccountsService.payload.mappers.AccountDataMapper;
 import lombok.RequiredArgsConstructor;

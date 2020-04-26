@@ -25,6 +25,9 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @Log4j2
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
+    private static final String PERMIT_ALL = "permitAll()";
+    private static final String IS_AUTHENTICATED = "isAuthenticated()";
+
     private final UserDetailsService userDetailsService;
     private final ClientDetailsService authClientDetailsService;
     private final PasswordEncoder encoder;
@@ -37,14 +40,12 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients
-                .withClientDetails(authClientDetailsService);
+        clients.withClientDetails(authClientDetailsService);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints
-                .tokenStore(tokenStore)
+        endpoints.tokenStore(tokenStore)
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .exceptionTranslator(exceptionTranslator)
@@ -53,9 +54,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
-        security
-                .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()")
+        security.tokenKeyAccess(PERMIT_ALL)
+                .checkTokenAccess(IS_AUTHENTICATED)
                 .passwordEncoder(encoder)
                 .allowFormAuthenticationForClients();
     }

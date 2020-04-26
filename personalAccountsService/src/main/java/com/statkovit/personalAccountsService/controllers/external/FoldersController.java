@@ -1,8 +1,8 @@
 package com.statkovit.personalAccountsService.controllers.external;
 
+import com.statkovit.personalAccountsService.domainService.PersonalAccountFolderDomainService;
 import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
-import com.statkovit.personalAccountsService.dataService.PersonalAccountFolderDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,32 +18,32 @@ import static com.statkovit.personalAccountsService.constants.MappingConstants.F
 @RequiredArgsConstructor
 public class FoldersController {
 
-    private final PersonalAccountFolderDataService folderRestService;
+    private final PersonalAccountFolderDomainService folderDomainService;
 
     @PostMapping(CREATE_ROUTE)
     public ResponseEntity<PersonalAccountFolderDto> createFolder(@Valid @RequestBody PersonalAccountFolderDto dto) {
-        dto = folderRestService.create(dto);
+        dto = folderDomainService.create(dto);
 
         return ResponseEntity.ok(dto);
     }
 
     @PutMapping(UPDATE_ROUTE)
     public ResponseEntity<PersonalAccountFolderDto> updateFolder(@PathVariable UUID uuid, @Valid @RequestBody PersonalAccountFolderDto dto) {
-        dto = folderRestService.update(uuid, dto);
+        dto = folderDomainService.update(uuid, dto);
 
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping(GET_LIST_ROUTE)
     public ResponseEntity<List<PersonalAccountFolderDto>> getFolderListOfCurrentAccountEntity() {
-        List<PersonalAccountFolderDto> folderDtos = folderRestService.getListOfCurrentAccountEntity();
+        List<PersonalAccountFolderDto> folderDtos = folderDomainService.getListOfCurrentAccountEntity();
 
         return ResponseEntity.ok(folderDtos);
     }
 
     @DeleteMapping(DELETE_ROUTE)
     public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid, @RequestParam("removalOption") FolderRemovalOptions removalOptions) {
-        folderRestService.delete(uuid, removalOptions);
+        folderDomainService.delete(uuid, removalOptions);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
