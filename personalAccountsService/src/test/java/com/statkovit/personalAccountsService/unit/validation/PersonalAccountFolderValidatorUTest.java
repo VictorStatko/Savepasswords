@@ -40,16 +40,7 @@ class PersonalAccountFolderValidatorUTest {
 
 
         Exception exception = assertThrows(LocalizedException.class, () ->
-                folderValidator.validateFolderExistence(UUID_1.toString())
-        );
-
-        assertTrue(exception.getCause() instanceof EntityNotFoundException);
-    }
-
-    @Test
-    void validateFolderExistence_shouldThrowExceptionIfFolderUuidInvalid() {
-        Exception exception = assertThrows(LocalizedException.class, () ->
-                folderValidator.validateFolderExistence("invalidUuid")
+                folderValidator.validateFolderExistence(UUID_1)
         );
 
         assertTrue(exception.getCause() instanceof EntityNotFoundException);
@@ -62,7 +53,7 @@ class PersonalAccountFolderValidatorUTest {
 
 
         assertDoesNotThrow(() ->
-                folderValidator.validateFolderExistence(UUID_1.toString())
+                folderValidator.validateFolderExistence(UUID_1)
         );
 
     }

@@ -5,9 +5,11 @@ import com.statkovit.personalAccountsService.constants.MappingConstants;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.enums.FolderRemovalOptions;
+import com.statkovit.personalAccountsService.helpers.ClearDatabase;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper.HttpResponse;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
+import com.statkovit.personalAccountsService.repository.AccountDataRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -28,6 +29,7 @@ import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.statkovit.personalAccountsService.constants.MappingConstants.FoldersExternalController.*;
+import static com.statkovit.personalAccountsService.helpers.domain.AccountDataDomainHelper.prePopulatedValidAccountDataBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.prePopulatedValidAccountBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderDtoBuilder;
@@ -36,7 +38,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = NONE)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ClearDatabase
 @ActiveProfiles("integration-test")
 class FoldersControllerITest {
 
@@ -48,6 +50,9 @@ class FoldersControllerITest {
 
     @Autowired
     private PersonalAccountRepository personalAccountRepository;
+
+    @Autowired
+    private AccountDataRepository accountDataRepository;
 
     private final WireMockServer wireMockServer = new WireMockServer(9999);
 
@@ -96,6 +101,22 @@ class FoldersControllerITest {
                 )
         );
         wireMockServer.start();
+
+        accountDataRepository.saveAndFlush(
+                prePopulatedValidAccountDataBuilder()
+                        .id(1L)
+                        .email("email1@test.com")
+                        .uuid(UUID_1)
+                        .build()
+        );
+
+        accountDataRepository.saveAndFlush(
+                prePopulatedValidAccountDataBuilder()
+                        .id(2L)
+                        .email("email2@test.com")
+                        .uuid(UUID_2)
+                        .build()
+        );
     }
 
 

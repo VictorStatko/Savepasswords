@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "account_data")
 @Getter
 @Setter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 public class AccountData {
 
@@ -34,15 +34,15 @@ public class AccountData {
 
     @NotNull
     @Column(name = "version")
-    public Long version;
+    private Long version;
 
     @NotEmpty
     @Column(name = "email")
-    public String email;
+    private String email;
 
     @NotEmpty
     @Column(name = "public_key")
-    public String publicKey;
+    private String publicKey;
 
     @Override
     public boolean equals(Object o) {

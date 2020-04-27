@@ -1,5 +1,6 @@
 package com.statkovit.personalAccountsService.integration.repositories;
 
+import com.statkovit.personalAccountsService.helpers.ClearDatabase;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +18,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @EnableJpaAuditing
 @ActiveProfiles("integration-test")
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ClearDatabase
 public abstract class BaseRepositoryTest {
 
     @MockBean

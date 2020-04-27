@@ -8,6 +8,7 @@ import com.statkovit.personalAccountsService.services.PersonalAccountFolderServi
 import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,12 +16,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PersonalAccountFolderDomainService {
 
     private final PersonalAccountFolderConverter folderConverter;
     private final PersonalAccountFolderService personalAccountFolderService;
     private final PersonalAccountFolderValidator personalAccountFolderValidator;
 
+    @Transactional
     public PersonalAccountFolderDto create(PersonalAccountFolderDto dto) {
         PersonalAccountFolder folderForSave = new PersonalAccountFolder();
 
@@ -33,6 +36,7 @@ public class PersonalAccountFolderDomainService {
         return folderConverter.toDto(folderForSave);
     }
 
+    @Transactional
     public PersonalAccountFolderDto update(UUID folderUuid, PersonalAccountFolderDto dto) {
         PersonalAccountFolder folderToUpdate = personalAccountFolderService.getByUuid(folderUuid);
 
@@ -51,6 +55,7 @@ public class PersonalAccountFolderDomainService {
         return folders.stream().map(folderConverter::toDto).collect(Collectors.toList());
     }
 
+    @Transactional
     public void delete(UUID folderUuid, FolderRemovalOptions removalOptions) {
         PersonalAccountFolder folderToRemove = personalAccountFolderService.getByUuid(folderUuid);
 

@@ -2,6 +2,14 @@ embedded:
   postgresql:
     enabled: true
     docker-image: postgres:11.5
+  redis:
+    enabled: true
+    docker-image: redis:5.0.6
+  kafka:
+    enabled: true
+    docker-image: confluentinc/cp-kafka:5.4.0
+  zookeeper:
+    enabled: true
 
 spring:
   application:
@@ -14,15 +22,28 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+    open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+  redis:
+    clusters: ${embedded.redis.host}:${embedded.redis.port}
+    password: ${embedded.redis.password}
   liquibase:
     change-log: classpath:/db/changelog.xml
+  kafka:
+    bootstrap-servers: ${embedded.kafka.brokerList}
+    consumer:
+      group-id: personalAccountsService-consumer
 
 custom:
+  kafka:
+    outbox:
+      fixedRateInMs: 500
+    producer:
+      transactionIdPrefix: personalAccountsService-producer
   aes:
     key: NEtTNUN4cGlVVzZpcXNmd3FzamhHZXppUVYwTnpWUDNPUUJGcEdKVmZSTmp5Y0xxUGlnUjdxdnRacDVDOGprWA==
 

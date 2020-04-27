@@ -7,3 +7,13 @@ spring:
 embedded:
   postgresql:
     enabled: false
+  redis:
+    enabled: false
+  kafka:
+    enabled: false
+    file-system-bind:
+      enabled: false
+  zookeeper:
+    enabled: false
+    file-system-bind:
+      enabled: false

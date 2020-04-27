@@ -1,8 +1,10 @@
 package com.statkovit.personalAccountsService.integration.repositories;
 
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
+import com.statkovit.personalAccountsService.repository.AccountDataRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.statkovit.personalAccountsService.helpers.domain.AccountDataDomainHelper.prePopulatedValidAccountDataBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 
 
@@ -20,8 +23,30 @@ class PersonalAccountFolderRepositoryITest extends BaseRepositoryTest {
     @Autowired
     private PersonalAccountFolderRepository personalAccountFolderRepository;
 
+    @Autowired
+    private AccountDataRepository accountDataRepository;
+
     private static final UUID UUID_1 = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
+
+    @BeforeEach
+    void setUp() {
+        accountDataRepository.saveAndFlush(
+                prePopulatedValidAccountDataBuilder()
+                        .id(1L)
+                        .email("email1@test.com")
+                        .uuid(UUID_1)
+                        .build()
+        );
+
+        accountDataRepository.saveAndFlush(
+                prePopulatedValidAccountDataBuilder()
+                        .id(2L)
+                        .email("email2@test.com")
+                        .uuid(UUID_2)
+                        .build()
+        );
+    }
 
     @Test
     void save_nameCanNotBeNull() {

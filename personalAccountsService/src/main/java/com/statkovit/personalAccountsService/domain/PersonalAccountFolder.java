@@ -17,7 +17,7 @@ import java.util.List;
 @SequenceGenerator(name = "default_gen", sequenceName = "personal_account_folder_id_seq", allocationSize = 1)
 @Getter
 @Setter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 public class PersonalAccountFolder extends BaseAccountEntity {
 

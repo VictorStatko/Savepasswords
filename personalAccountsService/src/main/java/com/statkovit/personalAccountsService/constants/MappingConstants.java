@@ -12,6 +12,8 @@ public final class MappingConstants {
         public static final String CREATE_ROUTE = CONTROLLER_ROUTE;
         public static final String UPDATE_ROUTE = CONTROLLER_ROUTE + "/" + UUID_PATH;
         public static final String DELETE_ROUTE = CONTROLLER_ROUTE + "/" + UUID_PATH;
+        public static final String GET_SHARING_LIST_ROUTE = CONTROLLER_ROUTE + "/sharing";
+        public static final String GET_ACCOUNT_DATA_FOR_SHARING_ROUTE = CONTROLLER_ROUTE + "/sharing/account-data";
         public static final String GET_LIST_ROUTE = CONTROLLER_ROUTE;
         public static final String GET_LIST_COUNT_ROUTE = CONTROLLER_ROUTE + "/count";
     }

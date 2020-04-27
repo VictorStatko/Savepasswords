@@ -6,10 +6,13 @@ import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkolibraries.exceptions.handlers.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 @Log4j2
@@ -37,6 +40,31 @@ public class ExceptionTranslator {
     public ResponseEntity<ErrorDTO> processMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         log.error(ex.getMessage(), ex);
         return MissingServletRequestParameterExceptionHandler.processMissingServletRequestParameterException(ex);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorDTO> processConstraintViolationException(ConstraintViolationException ex) {
+        log.error(ex.getMessage(), ex);
+        return ConstraintViolationExceptionHandler.processConstraintViolationException(ex);
+    }
+
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<ErrorDTO> processTransactionSystemException(Exception ex) {
+        final Throwable cause = ((TransactionSystemException) ex).getRootCause();
+
+        if (cause instanceof LocalizedException) {
+            return processLocalizedException((LocalizedException) cause);
+        }
+
+        if (cause instanceof FeignClientException) {
+            return processFeignClientException((FeignClientException) cause);
+        }
+
+        if (cause instanceof ConstraintViolationException) {
+            return processConstraintViolationException((ConstraintViolationException) cause);
+        }
+
+        return processGlobalException(ex);
     }
 
     @ExceptionHandler(Exception.class)

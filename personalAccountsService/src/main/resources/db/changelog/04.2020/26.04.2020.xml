@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="Victor Statko" id="2020-04-25_18-00" runAlways="false">
+    <addColumn tableName="personal_account">
+        <column name="parent_personal_account_id" type="bigint"/>
+    </addColumn>
+
+    <addForeignKeyConstraint constraintName="fk__personal_account__parent_personal_account_id"
+                             baseTableName="personal_account"
+                             baseColumnNames="parent_personal_account_id"
+                             referencedTableName="personal_account"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

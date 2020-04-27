@@ -6,12 +6,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 
 @Configuration
 @EnableJpaAuditing
 @RequiredArgsConstructor
+@EnableTransactionManagement
 public class JpaConfiguration {
 
     private final EntityManagerFactory entityManagerFactory;

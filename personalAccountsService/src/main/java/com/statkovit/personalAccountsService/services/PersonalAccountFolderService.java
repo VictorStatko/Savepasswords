@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PersonalAccountFolderService {
 
     private final PersonalAccountFolderRepository personalAccountFolderRepository;
@@ -26,14 +27,12 @@ public class PersonalAccountFolderService {
         return personalAccountFolderRepository.save(folder);
     }
 
-    @Transactional(readOnly = true)
     public List<PersonalAccountFolder> getFolderListOfCurrentAccount() {
         Long currentAccountEntityId = securityUtils.getCurrentAccountEntityId();
 
         return personalAccountFolderRepository.findAllByAccountEntityId(currentAccountEntityId);
     }
 
-    @Transactional(readOnly = true)
     public PersonalAccountFolder getByUuid(UUID uuid) {
         Long accountEntityId = securityUtils.getCurrentAccountEntityId();
 

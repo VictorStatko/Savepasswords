@@ -6,6 +6,7 @@ import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRep
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
@@ -14,23 +15,16 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
 public class PersonalAccountFolderValidator {
 
     private final PersonalAccountFolderRepository personalAccountFolderRepository;
     private final SecurityUtils securityUtils;
 
-    @Transactional(readOnly = true)
-    public void validateFolderExistence(String folderUuid) {
+    public void validateFolderExistence(UUID folderUuid) {
         final Long currentAccountEntityId = securityUtils.getCurrentAccountEntityId();
-        UUID uuid;
 
-        try {
-            uuid = UUID.fromString(folderUuid);
-        } catch (IllegalArgumentException e) {
-            throw getFolderNotFoundException(folderUuid);
-        }
-
-        final boolean folderExists = personalAccountFolderRepository.existsByUuidAndAccountEntityId(uuid, currentAccountEntityId);
+        final boolean folderExists = personalAccountFolderRepository.existsByUuidAndAccountEntityId(folderUuid, currentAccountEntityId);
 
         if (!folderExists) {
             throw getFolderNotFoundException(folderUuid);
@@ -38,14 +32,13 @@ public class PersonalAccountFolderValidator {
 
     }
 
-    private LocalizedException getFolderNotFoundException(String folderUuid) {
+    private LocalizedException getFolderNotFoundException(UUID folderUuid) {
         return new LocalizedException(
                 new EntityNotFoundException("Personal account folder with uuid = " + folderUuid + " has not been found."),
                 "exceptions.personalAccountFolderNotFoundByUuid"
         );
     }
 
-    @Transactional(readOnly = true)
     public void validateFolderUniqueName(String name, PersonalAccountFolder currentFolder) {
         Optional<PersonalAccountFolder> existingFolderOptional = personalAccountFolderRepository.findByNameAndAccountEntityId(
                 name, currentFolder.getAccountEntityId()

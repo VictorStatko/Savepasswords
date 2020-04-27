@@ -1,11 +1,12 @@
 package com.statkovit.personalAccountsService.unit.payload.converters;
 
+import com.statkovit.personalAccountsService.domain.AccountData;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.encryptors.PersonalAccountsEncryptor;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
-import com.statkovit.personalAccountsService.payload.mappers.PersonalAccountMapper;
+import com.statkovit.personalAccountsService.services.AccountDataService;
 import com.statkovit.personalAccountsService.services.PersonalAccountFolderService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import org.junit.jupiter.api.Assertions;
@@ -20,6 +21,8 @@ import java.util.UUID;
 
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.account;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.accountDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +33,6 @@ class PersonalAccountConverterUTest {
     private static final Long ID_1 = 1L;
 
     @Mock
-    private PersonalAccountMapper personalAccountMapper;
-
-    @Mock
     private PersonalAccountsEncryptor personalAccountsEncryptor;
 
     @Mock
@@ -40,6 +40,9 @@ class PersonalAccountConverterUTest {
 
     @Mock
     private PersonalAccountFolderService folderService;
+
+    @Mock
+    private AccountDataService accountDataService;
 
     @InjectMocks
     private PersonalAccountConverter personalAccountConverter;
@@ -50,18 +53,20 @@ class PersonalAccountConverterUTest {
         final PersonalAccountDto dtoForUpdate = accountDto();
 
         Mockito.when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_1);
+        Mockito.when(accountDataService.internalGetById(ID_1)).thenReturn(new AccountData().toBuilder().id(ID_1).build());
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
         Assertions.assertEquals(ID_1, accountForUpdate.getAccountEntityId());
+        Assertions.assertEquals(ID_1, accountForUpdate.getDuplicatedAccountEntity().getId());
     }
 
     @Test
     void toEntityConverterShouldNotUpdateAccountEntityIdForOldAccount() {
-        final PersonalAccount accountForUpdate = PersonalAccount.builder()
+        final PersonalAccount accountForUpdate = new PersonalAccount().toBuilder()
                 .uuid(UUID_1).accountEntityId(ID_1).build();
 
-        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+        final PersonalAccountDto dtoForUpdate = new PersonalAccountDto().toBuilder()
                 .uuid(UUID_1).build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
@@ -70,26 +75,39 @@ class PersonalAccountConverterUTest {
     }
 
     @Test
-    void toEntityConverterShouldCallEntityMapper() {
-        final PersonalAccount accountForUpdate = PersonalAccount.builder()
-                .uuid(UUID_1).build();
+    void toEntityConverterShouldUpdateMainFields() {
+        Mockito.when(accountDataService.internalGetById(any())).thenReturn(new AccountData());
 
-        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
-                .uuid(UUID_1).build();
+        final PersonalAccount accountForUpdate = new PersonalAccount().toBuilder().build();
+
+        final PersonalAccountDto dtoForUpdate = new PersonalAccountDto().toBuilder()
+                .uuid(UUID_1)
+                .url("url")
+                .name("name")
+                .username("username")
+                .password("password")
+                .description("description")
+                .build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
-        verify(personalAccountMapper, times(1)).toEntity(dtoForUpdate, accountForUpdate);
+        Assertions.assertNull(accountForUpdate.getUuid());
+        Assertions.assertEquals("url", accountForUpdate.getUrl());
+        Assertions.assertEquals("name", accountForUpdate.getName());
+        Assertions.assertEquals("username", accountForUpdate.getUsername());
+        Assertions.assertEquals("password", accountForUpdate.getPassword());
+        Assertions.assertEquals("description", accountForUpdate.getDescription());
     }
-
 
     @Test
     void toEntityConverterShouldEncryptFields() {
-        final PersonalAccount accountForUpdate = PersonalAccount.builder()
+        final PersonalAccount accountForUpdate = new PersonalAccount().toBuilder()
                 .uuid(UUID_1).build();
 
-        final PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+        final PersonalAccountDto dtoForUpdate = new PersonalAccountDto().toBuilder()
                 .uuid(UUID_1).build();
+
+        Mockito.when(accountDataService.internalGetById(any())).thenReturn(new AccountData());
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
@@ -98,10 +116,12 @@ class PersonalAccountConverterUTest {
 
     @Test
     void toEntityConverterShouldSetNewFolder() {
-        PersonalAccount accountForUpdate = PersonalAccount.builder()
+        Mockito.when(accountDataService.internalGetById(any())).thenReturn(new AccountData());
+
+        PersonalAccount accountForUpdate = new PersonalAccount().toBuilder()
                 .uuid(UUID_1).build();
 
-        PersonalAccountDto dtoForUpdate = PersonalAccountDto.builder()
+        PersonalAccountDto dtoForUpdate = new PersonalAccountDto().toBuilder()
                 .uuid(UUID_1).folderUuid(UUID_2).build();
 
         PersonalAccountFolder folder = PersonalAccountFolder.builder()
@@ -114,8 +134,8 @@ class PersonalAccountConverterUTest {
         Assertions.assertNotNull(accountForUpdate.getFolder());
         Assertions.assertEquals(UUID_2, accountForUpdate.getFolder().getUuid());
 
-        accountForUpdate = PersonalAccount.builder().uuid(UUID_1).folder(folder).build();
-        dtoForUpdate = PersonalAccountDto.builder().uuid(UUID_1).folderUuid(null).build();
+        accountForUpdate = new PersonalAccount().toBuilder().uuid(UUID_1).folder(folder).build();
+        dtoForUpdate = new PersonalAccountDto().toBuilder().uuid(UUID_1).folderUuid(null).build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
 
@@ -123,33 +143,40 @@ class PersonalAccountConverterUTest {
     }
 
     @Test
-    void toDtoConverterShouldReturnEntityFromEntityMapper() {
-        final PersonalAccount accountForMapping = PersonalAccount.builder()
-                .uuid(UUID_1).build();
-
-        final PersonalAccountDto dtoAfterMapping = PersonalAccountDto.builder()
-                .uuid(UUID_1).build();
-
-        Mockito.when(personalAccountMapper.toDto(accountForMapping)).thenReturn(dtoAfterMapping);
-
-        final PersonalAccountDto resultDto = personalAccountConverter.toDto(accountForMapping);
-
-        Assertions.assertEquals(resultDto, dtoAfterMapping);
-    }
-
-    @Test
     void toDtoConverterShouldDecryptFieldsUsingAccountSalt() {
-        final PersonalAccount accountForMapping = PersonalAccount.builder()
-                .uuid(UUID_1).fieldsEncryptionSalt("random").build();
-
-        final PersonalAccountDto dtoAfterMapping = PersonalAccountDto.builder()
-                .uuid(UUID_1).build();
-
-        Mockito.when(personalAccountMapper.toDto(accountForMapping)).thenReturn(dtoAfterMapping);
+        final PersonalAccount accountForMapping = new PersonalAccount().toBuilder()
+                .uuid(UUID_1).duplicatedAccountEntity(new AccountData()).fieldsEncryptionSalt("random").build();
 
         final PersonalAccountDto resultDto = personalAccountConverter.toDto(accountForMapping);
 
         verify(personalAccountsEncryptor, times(1)).decryptFields(accountForMapping.getFieldsEncryptionSalt(), resultDto);
+    }
+
+    @Test
+    void toDtoConverterShouldConvertMainFields() {
+        PersonalAccount account = new PersonalAccount().toBuilder()
+                .uuid(UUID_1)
+                .password("password")
+                .username("username")
+                .url("url")
+                .name("name")
+                .description("description")
+                .duplicatedAccountEntity(AccountData.builder().publicKey("publicKey").build())
+                .folder(PersonalAccountFolder.builder().uuid(UUID_2).build())
+                .build();
+
+        PersonalAccountDto dto = personalAccountConverter.toDto(account);
+
+        assertNotNull(dto);
+
+        assertEquals(account.getUuid(), dto.getUuid());
+        assertEquals(account.getPassword(), dto.getPassword());
+        assertEquals(account.getUsername(), dto.getUsername());
+        assertEquals(account.getUrl(), dto.getUrl());
+        assertEquals(account.getName(), dto.getName());
+        assertEquals(account.getDescription(), dto.getDescription());
+        assertEquals(account.getFolder().getUuid(), dto.getFolderUuid());
+        assertEquals(account.getDuplicatedAccountEntity().getPublicKey(), dto.getEncryptionPublicKey());
     }
 
 }

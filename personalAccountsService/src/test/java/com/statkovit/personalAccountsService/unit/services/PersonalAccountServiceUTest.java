@@ -1,9 +1,11 @@
 package com.statkovit.personalAccountsService.unit.services;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
+import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
+import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsQueryBuilder;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import org.junit.jupiter.api.Test;
@@ -14,12 +16,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +32,9 @@ class PersonalAccountServiceUTest {
     @Mock
     private SecurityUtils securityUtils;
 
+    @Mock
+    private PersonalAccountsQueryBuilder expressionsBuilder;
+
     @InjectMocks
     private PersonalAccountService personalAccountService;
 
@@ -38,7 +42,6 @@ class PersonalAccountServiceUTest {
     private static final UUID UUID_2 = UUID.fromString("00000000-0000-0000-0000-000000000002");
     private static final Long ID_1 = 1L;
     private static final Long ID_2 = 2L;
-    private static final Long ID_3 = 3L;
 
     @Test
     void saveShouldCallRepositoryMethod() {
@@ -52,6 +55,7 @@ class PersonalAccountServiceUTest {
     @Test
     void deleteShouldCallRepositoryDeleteMethod() {
         final PersonalAccount accountMock = PersonalAccount.builder()
+                .sharedAccounts(new ArrayList<>())
                 .uuid(UUID_1).build();
 
         personalAccountService.delete(accountMock);
@@ -61,57 +65,49 @@ class PersonalAccountServiceUTest {
 
     @Test
     void getListShouldReturnAccountsFromRepository() {
+        JPAQuery<PersonalAccount> query = Mockito.mock(JPAQuery.class);
+        PersonalAccountListFilters filters = new PersonalAccountListFilters();
+
         PersonalAccount firstAccount = PersonalAccount.builder()
                 .uuid(UUID_1).accountEntityId(ID_1).build();
 
         PersonalAccount secondAccount = PersonalAccount.builder()
                 .uuid(UUID_2).accountEntityId(ID_1).build();
 
-        BooleanExpression expression = Mockito.mock(BooleanExpression.class);
-
         List<PersonalAccount> allAccounts = List.of(firstAccount, secondAccount);
 
-        when(personalAccountRepository.findAll(expression)).thenReturn(allAccounts);
+        when(expressionsBuilder.createListQuery(same(filters))).thenReturn(query);
+        when(query.fetch()).thenReturn(allAccounts);
 
-
-        List<PersonalAccount> result = personalAccountService.getList(expression);
+        List<PersonalAccount> result = personalAccountService.getList(filters);
         assertEquals(2, result.size());
         assertTrue(result.containsAll(allAccounts));
     }
 
     @Test
     void getListCountShouldReturnCountFromRepository() {
-        BooleanExpression expression = Mockito.mock(BooleanExpression.class);
+        JPAQuery<PersonalAccount> query = Mockito.mock(JPAQuery.class);
+        PersonalAccountListFilters filters = new PersonalAccountListFilters();
 
-        when(personalAccountRepository.count(expression)).thenReturn(99L);
+        when(expressionsBuilder.createListQuery(same(filters))).thenReturn(query);
+        when(query.fetchCount()).thenReturn(99L);
 
-
-        long result = personalAccountService.count(expression);
+        long result = personalAccountService.count(filters);
 
         assertEquals(99L, result);
     }
 
     @Test
     void findOneByUuidShouldReturnAccountIfCorrectData() {
-        PersonalAccount firstAccount = PersonalAccount.builder()
-                .uuid(UUID_1).accountEntityId(ID_1).build();
+        JPAQuery<PersonalAccount> query = Mockito.mock(JPAQuery.class);
 
         PersonalAccount secondAccount = PersonalAccount.builder()
                 .uuid(UUID_2).accountEntityId(ID_2).build();
 
-        List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
         when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_2);
-
-        when(personalAccountRepository.findByUuidAndAccountEntityId(any(UUID.class), anyLong()))
-                .then(invocation -> {
-                    UUID uuid = invocation.getArgument(0);
-                    Long accountEntityId = invocation.getArgument(1);
-                    return accounts.stream().filter(account ->
-                            uuid.equals(account.getUuid())
-                                    && accountEntityId.equals(account.getAccountEntityId())
-                    ).findFirst();
-                });
+        when(expressionsBuilder.createUuidAccountEntityIdQuery(UUID_2, ID_2)).thenReturn(query);
+        when(query.fetchOne()).thenReturn(secondAccount);
 
         final PersonalAccount result = personalAccountService.findOneByUuid(UUID_2);
         assertNotNull(result);
@@ -120,25 +116,12 @@ class PersonalAccountServiceUTest {
 
     @Test
     void findOneByUuidShouldThrowLocalizedExceptionIfIncorrectData() {
-        PersonalAccount firstAccount = PersonalAccount.builder()
-                .uuid(UUID_1).accountEntityId(ID_1).build();
-
-        PersonalAccount secondAccount = PersonalAccount.builder()
-                .uuid(UUID_2).accountEntityId(ID_2).build();
-
-        List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
+        JPAQuery<PersonalAccount> query = Mockito.mock(JPAQuery.class);
 
         when(securityUtils.getCurrentAccountEntityId()).thenReturn(ID_2);
+        when(expressionsBuilder.createUuidAccountEntityIdQuery(UUID_1, 2L)).thenReturn(query);
 
-        when(personalAccountRepository.findByUuidAndAccountEntityId(any(UUID.class), anyLong()))
-                .then(invocation -> {
-                    UUID uuid = invocation.getArgument(0);
-                    Long accountEntityId = invocation.getArgument(1);
-                    return accounts.stream().filter(account ->
-                            uuid.equals(account.getUuid())
-                                    && accountEntityId.equals(account.getAccountEntityId())
-                    ).findFirst();
-                });
+        when(query.fetchOne()).thenReturn(null);
 
         Exception exception = assertThrows(LocalizedException.class, () ->
                 personalAccountService.findOneByUuid(UUID_1)

@@ -14,7 +14,7 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 public abstract class BaseIndexedEntity extends BaseAuditingEntity {
 

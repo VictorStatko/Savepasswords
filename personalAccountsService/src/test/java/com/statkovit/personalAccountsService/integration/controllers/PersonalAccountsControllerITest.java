@@ -4,11 +4,12 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.statkovit.personalAccountsService.constants.MappingConstants;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
-import com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper;
+import com.statkovit.personalAccountsService.helpers.ClearDatabase;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper;
 import com.statkovit.personalAccountsService.helpers.rest.RestHelper.HttpResponse;
 import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
+import com.statkovit.personalAccountsService.repository.AccountDataRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountFolderRepository;
 import com.statkovit.personalAccountsService.repository.PersonalAccountRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -30,13 +31,15 @@ import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.statkovit.personalAccountsService.constants.MappingConstants.PersonalAccountsExternalController.*;
+import static com.statkovit.personalAccountsService.helpers.domain.AccountDataDomainHelper.prePopulatedValidAccountDataBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.prePopulatedValidAccountBuilder;
 import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountDomainHelper.prePopulatedValidAccountDtoBuilder;
+import static com.statkovit.personalAccountsService.helpers.domain.PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = NONE)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ClearDatabase
 @ActiveProfiles("integration-test")
 class PersonalAccountsControllerITest {
 
@@ -48,6 +51,9 @@ class PersonalAccountsControllerITest {
 
     @Autowired
     private PersonalAccountFolderRepository personalAccountFolderRepository;
+
+    @Autowired
+    private AccountDataRepository accountDataRepository;
 
     private final WireMockServer wireMockServer = new WireMockServer(9999);
 
@@ -98,6 +104,23 @@ class PersonalAccountsControllerITest {
                 )
         );
         wireMockServer.start();
+
+        accountDataRepository.saveAndFlush(
+                prePopulatedValidAccountDataBuilder()
+                        .id(1L)
+                        .email("email1@test.com")
+                        .uuid(UUID_1)
+                        .build()
+        );
+
+        accountDataRepository.saveAndFlush(
+                prePopulatedValidAccountDataBuilder()
+                        .id(2L)
+                        .email("email2@test.com")
+                        .uuid(UUID_2)
+                        .build()
+        );
+
     }
 
 
@@ -154,6 +177,7 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void createPersonalAccount_ShouldReturnCreatedEntityDto() {
+
         PersonalAccountDto dto = PersonalAccountDto.builder().url("url").build();
 
         HttpResponse<PersonalAccountDto> response = RestHelper.sendRequest(
@@ -239,7 +263,7 @@ class PersonalAccountsControllerITest {
         PersonalAccount account = prePopulatedValidAccountBuilder().accountEntityId(1L)
                 .uuid(UUID_1).url("oldUrl").build();
 
-        personalAccountRepository.save(account);
+        personalAccountRepository.saveAndFlush(account);
 
         final String route = UPDATE_ROUTE.replace(MappingConstants.UUID_PATH, UUID_1.toString());
 
@@ -326,7 +350,7 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void getPersonalAccounts_ShouldReturnListAccordingToUnfolderedFilter() {
-        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().build();
+        PersonalAccountFolder folder = prePopulatedValidFolderBuilder().build();
         folder = personalAccountFolderRepository.save(folder);
 
         final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
@@ -353,7 +377,7 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void getPersonalAccounts_ShouldReturnListAndUnfolderedFilterHasHigherPriorityThenFolderUuidFilter() {
-        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_3).build();
+        PersonalAccountFolder folder = prePopulatedValidFolderBuilder().uuid(UUID_3).build();
         folder = personalAccountFolderRepository.save(folder);
 
         final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
@@ -381,10 +405,10 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void getPersonalAccounts_ShouldReturnListAccordingToFolderUuidFilter() {
-        PersonalAccountFolder folder1 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_4).build();
+        PersonalAccountFolder folder1 = prePopulatedValidFolderBuilder().accountEntityId(1L).uuid(UUID_4).build();
         folder1 = personalAccountFolderRepository.save(folder1);
 
-        PersonalAccountFolder folder2 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_5).build();
+        PersonalAccountFolder folder2 = prePopulatedValidFolderBuilder().accountEntityId(1L).uuid(UUID_5).build();
         folder2 = personalAccountFolderRepository.save(folder2);
 
         final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
@@ -451,7 +475,7 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void getPersonalAccountsCount_ShouldReturnCountAccordingToUnfolderedFilter() {
-        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().build();
+        PersonalAccountFolder folder = prePopulatedValidFolderBuilder().build();
         folder = personalAccountFolderRepository.save(folder);
 
         final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
@@ -475,7 +499,7 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void getPersonalAccountsCount_ShouldReturnCountAndUnfolderedFilterHasHigherPriorityThenFolderUuidFilter() {
-        PersonalAccountFolder folder = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_3).build();
+        PersonalAccountFolder folder = prePopulatedValidFolderBuilder().uuid(UUID_3).build();
         folder = personalAccountFolderRepository.save(folder);
 
         final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();
@@ -500,10 +524,10 @@ class PersonalAccountsControllerITest {
 
     @Test
     public void getPersonalAccountsCount_ShouldReturnCountAccordingToFolderUuidFilter() {
-        PersonalAccountFolder folder1 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_4).build();
+        PersonalAccountFolder folder1 = prePopulatedValidFolderBuilder().uuid(UUID_4).build();
         folder1 = personalAccountFolderRepository.save(folder1);
 
-        PersonalAccountFolder folder2 = PersonalAccountFolderDomainHelper.prePopulatedValidFolderBuilder().uuid(UUID_5).build();
+        PersonalAccountFolder folder2 = prePopulatedValidFolderBuilder().uuid(UUID_5).build();
         folder2 = personalAccountFolderRepository.save(folder2);
 
         final PersonalAccount account1 = prePopulatedValidAccountBuilder().accountEntityId(1L).uuid(UUID_1).build();

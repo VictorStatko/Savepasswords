@@ -1,21 +1,20 @@
 package com.statkovit.personalAccountsService.unit.domain;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.statkovit.personalAccountsService.domain.PersonalAccount;
 import com.statkovit.personalAccountsService.domainService.PersonalAccountDomainService;
 import com.statkovit.personalAccountsService.payload.LongDto;
 import com.statkovit.personalAccountsService.payload.PersonalAccountDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountConverter;
 import com.statkovit.personalAccountsService.payload.filters.PersonalAccountListFilters;
-import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsExpressionsBuilder;
+import com.statkovit.personalAccountsService.repository.expressions.PersonalAccountsQueryBuilder;
 import com.statkovit.personalAccountsService.services.PersonalAccountService;
 import com.statkovit.personalAccountsService.validation.PersonalAccountFolderValidator;
+import com.statkovit.personalAccountsService.validation.PersonalAccountValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -36,10 +35,13 @@ class PersonalAccountDomainServiceUTest {
     private PersonalAccountConverter personalAccountConverter;
 
     @Mock
-    private PersonalAccountsExpressionsBuilder expressionsBuilder;
+    private PersonalAccountsQueryBuilder expressionsBuilder;
 
     @Mock
     private PersonalAccountFolderValidator folderValidator;
+
+    @Mock
+    private PersonalAccountValidator accountValidator;
 
 
     @InjectMocks
@@ -104,7 +106,6 @@ class PersonalAccountDomainServiceUTest {
 
     @Test
     void getListShouldReturnListOfDtos() {
-        BooleanExpression mockExpression = Mockito.mock(BooleanExpression.class);
         PersonalAccount firstAccount = PersonalAccount.builder().uuid(UUID_1).build();
         PersonalAccountDto firstAccountDto = PersonalAccountDto.builder().uuid(UUID_1).build();
         PersonalAccount secondAccount = PersonalAccount.builder().uuid(UUID_2).build();
@@ -112,9 +113,7 @@ class PersonalAccountDomainServiceUTest {
 
         List<PersonalAccount> accounts = List.of(firstAccount, secondAccount);
 
-        when(expressionsBuilder.getListExpression(any(PersonalAccountListFilters.class))).thenReturn(mockExpression);
-
-        when(personalAccountService.getList(mockExpression)).thenReturn(accounts);
+        when(personalAccountService.getList(any(PersonalAccountListFilters.class))).thenReturn(accounts);
 
         when(personalAccountConverter.toDto(any(PersonalAccount.class))).thenAnswer(invocation -> {
             PersonalAccount param = invocation.getArgument(0);
@@ -137,21 +136,17 @@ class PersonalAccountDomainServiceUTest {
     @Test
     void getListShouldCallFolderExistenceValidatorIfNotUnfolderedAndFolderUuidPresent() {
         PersonalAccountListFilters filters = new PersonalAccountListFilters();
-        filters.setFolderUuid(UUID_1.toString());
+        filters.setFolderUuid(UUID_1);
         filters.setUnfolderedOnly(false);
 
         personalAccountRestServiceImpl.getList(filters);
 
-        verify(folderValidator, times(1)).validateFolderExistence(UUID_1.toString());
+        verify(folderValidator, times(1)).validateFolderExistence(UUID_1);
     }
 
     @Test
     void getListCountShouldReturnCountFromService() {
-        BooleanExpression mockExpression = Mockito.mock(BooleanExpression.class);
-
-        when(expressionsBuilder.getListExpression(any(PersonalAccountListFilters.class))).thenReturn(mockExpression);
-
-        when(personalAccountService.count(mockExpression)).thenReturn(99L);
+        when(personalAccountService.count(any())).thenReturn(99L);
 
         LongDto result = personalAccountRestServiceImpl.getListCount(new PersonalAccountListFilters());
 
@@ -161,12 +156,12 @@ class PersonalAccountDomainServiceUTest {
     @Test
     void getListCountShouldCallFolderExistenceValidatorIfNotUnfolderedAndFolderUuidPresent() {
         PersonalAccountListFilters filters = new PersonalAccountListFilters();
-        filters.setFolderUuid(UUID_1.toString());
+        filters.setFolderUuid(UUID_1);
         filters.setUnfolderedOnly(false);
 
         personalAccountRestServiceImpl.getListCount(filters);
 
-        verify(folderValidator, times(1)).validateFolderExistence(UUID_1.toString());
+        verify(folderValidator, times(1)).validateFolderExistence(UUID_1);
     }
 
     @Test

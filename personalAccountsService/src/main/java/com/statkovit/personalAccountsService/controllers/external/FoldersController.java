@@ -6,9 +6,10 @@ import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,19 +17,20 @@ import static com.statkovit.personalAccountsService.constants.MappingConstants.F
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class FoldersController {
 
     private final PersonalAccountFolderDomainService folderDomainService;
 
     @PostMapping(CREATE_ROUTE)
-    public ResponseEntity<PersonalAccountFolderDto> createFolder(@Valid @RequestBody PersonalAccountFolderDto dto) {
+    public ResponseEntity<PersonalAccountFolderDto> createFolder(@RequestBody PersonalAccountFolderDto dto) {
         dto = folderDomainService.create(dto);
 
         return ResponseEntity.ok(dto);
     }
 
     @PutMapping(UPDATE_ROUTE)
-    public ResponseEntity<PersonalAccountFolderDto> updateFolder(@PathVariable UUID uuid, @Valid @RequestBody PersonalAccountFolderDto dto) {
+    public ResponseEntity<PersonalAccountFolderDto> updateFolder(@PathVariable UUID uuid, @RequestBody PersonalAccountFolderDto dto) {
         dto = folderDomainService.update(uuid, dto);
 
         return ResponseEntity.ok(dto);
@@ -42,7 +44,7 @@ public class FoldersController {
     }
 
     @DeleteMapping(DELETE_ROUTE)
-    public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid, @RequestParam("removalOption") FolderRemovalOptions removalOptions) {
+    public ResponseEntity<?> deleteFolder(@PathVariable UUID uuid, @RequestParam("removalOption") @NotNull FolderRemovalOptions removalOptions) {
         folderDomainService.delete(uuid, removalOptions);
 
         return ResponseEntity.status(HttpStatus.OK).build();

@@ -1,9 +1,11 @@
 package com.statkovit.personalAccountsService.unit.payload.converters;
 
+import com.statkovit.personalAccountsService.domain.AccountData;
 import com.statkovit.personalAccountsService.domain.PersonalAccountFolder;
 import com.statkovit.personalAccountsService.payload.PersonalAccountFolderDto;
 import com.statkovit.personalAccountsService.payload.converters.PersonalAccountFolderConverter;
 import com.statkovit.personalAccountsService.payload.mappers.PersonalAccountFolderMapper;
+import com.statkovit.personalAccountsService.services.AccountDataService;
 import com.statkovit.personalAccountsService.utils.SecurityUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,9 @@ class PersonalAccountFolderConverterUTest {
     @Mock
     private SecurityUtils securityUtils;
 
+    @Mock
+    private AccountDataService accountDataService;
+
     @InjectMocks
     private PersonalAccountFolderConverter personalAccountFolderConverter;
 
@@ -40,10 +45,12 @@ class PersonalAccountFolderConverterUTest {
         final PersonalAccountFolderDto dtoForUpdate = folderDto();
 
         Mockito.when(securityUtils.getCurrentAccountEntityId()).thenReturn(1L);
+        Mockito.when(accountDataService.internalGetById(1L)).thenReturn(new AccountData().toBuilder().id(1L).build());
 
         personalAccountFolderConverter.toEntity(dtoForUpdate, accountFolderForUpdate);
 
         Assertions.assertEquals(1L, accountFolderForUpdate.getAccountEntityId());
+        Assertions.assertEquals(1L, accountFolderForUpdate.getDuplicatedAccountEntity().getId());
     }
 
     @Test
