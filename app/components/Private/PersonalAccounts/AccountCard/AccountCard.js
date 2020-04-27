@@ -11,10 +11,10 @@ import {connect} from "react-redux";
 import {personalAccountsOperations} from "ducks/personalAccounts";
 import {compose} from "redux";
 import AccountModal from "../AccountModal";
+import AccountSharingModal from "../AccountSharingModal";
 
 class AccountCard extends React.Component {
-    state = {
-    };
+    state = {};
 
     handleDataModalToggle = () => {
         this.setState({dataModal: !this.state.dataModal});
@@ -22,6 +22,10 @@ class AccountCard extends React.Component {
 
     handleDeleteModalToggle = () => {
         this.setState({deleteModal: !this.state.deleteModal});
+    };
+
+    handleShareModalToggle = () => {
+        this.setState({shareModal: !this.state.shareModal});
     };
 
     handleDeleteConfirm = async () => {
@@ -44,7 +48,7 @@ class AccountCard extends React.Component {
     };
 
     render() {
-        const {deleteModal, dataModal} = this.state;
+        const {deleteModal, dataModal, shareModal} = this.state;
 
         const {name} = this.props.account;
         let {url} = this.props.account;
@@ -70,6 +74,9 @@ class AccountCard extends React.Component {
                                     content={<Icon name='key' styles={styles.buttonIcon}/>}
                                     onClick={this.handleDataModalToggle}/>
                             <Button customStyle={styles.button}
+                                    content={<Icon name='share' styles={styles.buttonIcon}/>}
+                                    onClick={this.handleShareModalToggle}/>
+                            <Button customStyle={styles.button}
                                     content={<Icon name='delete' styles={styles.buttonIcon}/>}
                                     onClick={this.handleDeleteModalToggle}/>
                         </Col>
@@ -87,6 +94,10 @@ class AccountCard extends React.Component {
                 }
                 {dataModal ?
                     <AccountModal close={this.handleDataModalToggle} account={this.props.account}/>
+                    : null
+                }
+                {shareModal ?
+                    <AccountSharingModal close={this.handleShareModalToggle} account={this.props.account}/>
                     : null
                 }
             </React.Fragment>

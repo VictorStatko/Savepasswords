@@ -80,7 +80,7 @@ class SignInForm extends Component {
             valid = false;
         } else if (!isEmailValid(email)) {
             this.setState({
-                emailError: t('signIn.validation.email')
+                emailError: t('global.validation.email')
             });
             valid = false;
         } else if (!isStringMaxLengthValid(email, MAX_LENGTH_EMAIL)) {

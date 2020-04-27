@@ -3,7 +3,7 @@ import fetch from "utils/fetch";
 import {DELETE, GET, POST, PUT} from "utils/appConstants";
 import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import {isNotEmpty} from "utils/stringUtils";
-import {rsaEncrypt} from "utils/encryptionUtils";
+import {pemStringToPublicCryptoKey, rsaEncrypt} from "utils/encryptionUtils";
 import {IndexedDBService} from "indexedDB";
 import {folderAccountsCountDecreased, folderAccountsCountIncreased} from "../personalAccountFolders/actions";
 import {progressFinished, progressStarted} from "ducks/progressBar/actions";
@@ -33,6 +33,12 @@ const personalAccountsPaginationPageChanged = newPage => ({
 const personalAccountsSearchChanged = search => ({
     type: types.PERSONAL_ACCOUNT_SEARCH_CHANGED,
     search
+});
+
+const personalAccountShared = (sharedAccount, parentAccountUuid) => ({
+    type: types.PERSONAL_ACCOUNT_SHARED,
+    sharedAccount,
+    parentAccountUuid
 });
 
 
@@ -120,6 +126,48 @@ export const fetchPersonalAccounts = (folderUuid) => async dispatch => {
         }
         const fetchResponse = await fetch(GET, url);
         dispatch(personalAccountsFetched(fetchResponse.data));
+    } finally {
+        dispatch(progressFinished());
+    }
+};
+
+export const sharePersonalAccount = (parentAccount, emailToShare) => async dispatch => {
+    try {
+        dispatch(progressStarted());
+        const accountDataResponse = await fetch(GET, `personal-accounts-management/accounts/sharing/account-data?accountEmail=${emailToShare}`);
+
+        let account = {...parentAccount};
+        account.folderUuid = null;
+        account.encryptionPublicKey = accountDataResponse.data.publicKey;
+        account.sharedAccounts = [];
+        account.uuid = null;
+
+        console.log(accountDataResponse.data);
+
+        const publicKey = await pemStringToPublicCryptoKey(
+            accountDataResponse.data.publicKey,
+            {
+                isExtractable: false,
+                name: 'RSA-OAEP',
+                hash: 'SHA-512',
+                usage: '[encrypt, wrapKey]'
+            }
+        );
+
+        if (isNotEmpty(account.password)) {
+            account.password = await rsaEncrypt(publicKey, account.password);
+        }
+
+        if (isNotEmpty(account.username)) {
+            account.username = await rsaEncrypt(publicKey, account.username);
+        }
+
+        const response = await fetch(POST, `personal-accounts-management/accounts?type=shared&fromPersonalAccountUuid=${parentAccount.uuid}&toUserAccountUuid=${accountDataResponse.data.entityUuid}`, account);
+        const newSharedAccount = response.data;
+
+        dispatch(personalAccountShared(newSharedAccount, parentAccount.uuid));
+    } catch (error) {
+        throw processErrorAsFormOrNotification(error);
     } finally {
         dispatch(progressFinished());
     }

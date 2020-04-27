@@ -22,7 +22,7 @@ class AccountList extends React.Component {
         const {accounts, pagination} = this.props;
 
         const listItems = accounts.map((account) =>
-            <Col xl={4} lg={6} md={6} key={account.uuid} className={styles.column}>
+            <Col xl={4} lg={6} md={12} key={account.uuid} className={styles.column}>
                 <AccountCard account={account}/>
             </Col>
         );

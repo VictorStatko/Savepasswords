@@ -39,6 +39,23 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
         return {...state, ...{accounts: accounts, pagination: newPagination, pagedAccounts: pagedAccounts}};
     },
 
+    [types.PERSONAL_ACCOUNT_SHARED]: (state, {sharedAccount, parentAccountUuid}) => {
+        const accounts = state.accounts.slice();
+        const index = accounts.findIndex(listAccount => listAccount.uuid === parentAccountUuid);
+
+        if (!accounts[index].sharedAccounts) {
+            accounts[index].sharedAccounts = [];
+        }
+
+        accounts[index].sharedAccounts.push(sharedAccount);
+
+        const filteredAccounts = filterAccounts(accounts, state.pagination.search);
+        const newPagination = recreatePagination(filteredAccounts, state.pagination);
+        const pagedAccounts = slicePage(filteredAccounts, newPagination);
+
+        return {...state, ...{accounts: accounts, pagination: newPagination, pagedAccounts: pagedAccounts}};
+    },
+
     [types.PERSONAL_ACCOUNTS_FETCH_SUCCESS]: (state, {accounts}) => {
         const filteredAccounts = filterAccounts(accounts, state.pagination.search);
         const newPagination = recreatePagination(filteredAccounts, state.pagination);
