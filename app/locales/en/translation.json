@@ -65,6 +65,7 @@
 "personalAccounts.removeSuccess": "Account was removed successfully",
 "personalAccounts.updateSuccess": "Account was updated successfully",
 "personalAccounts.sharingSuccess": "Account was shared successfully",
+"personalAccounts.sharingRemoveSuccess": "Account sharing was removed successfully",
 "personalAccounts.removeConfirmation.header": "Account removing confirmation",
 "personalAccounts.removeConfirmation.question": "Are you sure you want to remove all data about the following account?",
 "personalAccounts.removeConfirmation.note": "Please note that data cannot be restored.",

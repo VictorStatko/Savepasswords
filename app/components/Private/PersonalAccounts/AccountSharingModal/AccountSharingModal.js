@@ -15,12 +15,13 @@ import {rsaDecrypt} from "utils/encryptionUtils";
 import {IndexedDBService} from "indexedDB";
 import {toast} from "react-toastify";
 import {Spinner} from "components/default/spinner/Spinner";
+import AlreadySharedAccount from "./AlreadySharedAccount";
 
 const indexedDBService = IndexedDBService.getService();
 
 class AccountSharingModal extends React.Component {
     state = {
-        loading: false,
+        addLoading: false,
         email: "",
         emailError: "",
         globalError: "",
@@ -88,8 +89,8 @@ class AccountSharingModal extends React.Component {
         }
 
         try {
-            this.setState({loading: true});
-            await this.props.shareAccount(this.state.account, this.state.email);
+            this.setState({addLoading: true});
+            await this.props.shareAccount({...this.state.account}, this.state.email);
             this.setState({
                 email: ""
             });
@@ -103,32 +104,18 @@ class AccountSharingModal extends React.Component {
                 console.error(error);
             }
         } finally {
-            this.setState({loading: false});
+            this.setState({addLoading: false});
         }
     }
 
     render() {
-        const {t, close} = this.props;
-        const {loading, email, emailError, globalError} = this.state;
+        const {t, close, account} = this.props;
+        const {addLoading, email, emailError, globalError} = this.state;
 
-        let listItems = null;
-
-        if (this.props.account.sharedAccounts && this.props.account.sharedAccounts.length > 0) {
-            listItems = this.props.account.sharedAccounts.map((sharedAccount, index) =>
-                <React.Fragment key={sharedAccount.uuid}>
-                    <Row>
-                        <Col xs={9} lg={10}
-                             className={`d-flex justify-content-start align-items-center ${styles.leftColumn}`}>
-                            <div className={styles.sharedEmail}>{sharedAccount.ownerEmail}</div>
-                        </Col>
-                        <Col xs={3} lg={2} className={`d-flex justify-content-end align-items-center ${styles.rightColumn}`}>
-                            <Button content={<Icon name='delete' styles={styles.buttonIcon}/>} onClick={close}/>
-                        </Col>
-                    </Row>
-                    {this.props.account.sharedAccounts[index + 1] ? <hr/> : null}
-                </React.Fragment>
-            );
-        }
+        const listItems = account.sharedAccounts && account.sharedAccounts.length > 0 ? account.sharedAccounts.map((sharedAccount, index) =>
+            <AlreadySharedAccount sharedAccount={sharedAccount} parentAccount={account}
+                                  key={sharedAccount.uuid} index={index}/>
+        ) : null;
 
         return (
             <Modal show centered backdrop='static'>
@@ -141,16 +128,16 @@ class AccountSharingModal extends React.Component {
                     </Modal.Header>
                     <Modal.Body className={styles.modalBody}>
                         <div className={styles.accountDataContainer}>
-                            {isEmpty(this.props.account.name) ? null :
+                            {isEmpty(account.name) ? null :
                                 <React.Fragment>
                                     <span> {t('personalAccounts.sharingModal.accountName')} </span><span
-                                    className={styles.accountData}>{this.props.account.name}</span><br/>
+                                    className={styles.accountData}>{account.name}</span><br/>
                                 </React.Fragment>
                             }
-                            {isEmpty(this.props.account.url) ? null :
+                            {isEmpty(account.url) ? null :
                                 <React.Fragment>
                                     <span>{t('personalAccounts.sharingModal.accountUrl')} </span><span
-                                    className={styles.accountData}>{this.props.account.url}</span><br/>
+                                    className={styles.accountData}>{account.url}</span><br/>
                                 </React.Fragment>
                             }
                         </div>
@@ -161,7 +148,7 @@ class AccountSharingModal extends React.Component {
                                            onChange={this.handleEmailChange}/>
                             </Col>
                             <Col xs={3} lg={2} className={`d-flex justify-content-end ${styles.rightColumn}`}>
-                                <Button content={loading ? <Spinner className={styles.spinner}/> :
+                                <Button content={addLoading ? <Spinner className={styles.spinner}/> :
                                     <Icon name='add' styles={styles.buttonIcon}/>}
                                         customStyle={styles.addButton} onClick={this.onAddButtonClick}/>
                             </Col>

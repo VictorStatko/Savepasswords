@@ -41,6 +41,11 @@ const personalAccountShared = (sharedAccount, parentAccountUuid) => ({
     parentAccountUuid
 });
 
+const personalAccountSharingRemoved = (parentAccountUuid, sharedAccountUuid) => ({
+    type: types.PERSONAL_ACCOUNT_SHARING_REMOVED,
+    parentAccountUuid,
+    sharedAccountUuid
+});
 
 export const createPersonalAccount = (account, inSelectedFolder) => async dispatch => {
     try {
@@ -136,11 +141,12 @@ export const sharePersonalAccount = (parentAccount, emailToShare) => async dispa
         dispatch(progressStarted());
         const accountDataResponse = await fetch(GET, `personal-accounts-management/accounts/sharing/account-data?accountEmail=${emailToShare}`);
 
-        let account = {...parentAccount};
-        account.folderUuid = null;
-        account.encryptionPublicKey = accountDataResponse.data.publicKey;
-        account.sharedAccounts = [];
-        account.uuid = null;
+        const parentUuid = parentAccount.uuid;
+
+        parentAccount.folderUuid = null;
+        parentAccount.encryptionPublicKey = accountDataResponse.data.publicKey;
+        parentAccount.sharedAccounts = [];
+        parentAccount.uuid = null;
 
         console.log(accountDataResponse.data);
 
@@ -154,24 +160,36 @@ export const sharePersonalAccount = (parentAccount, emailToShare) => async dispa
             }
         );
 
-        if (isNotEmpty(account.password)) {
-            account.password = await rsaEncrypt(publicKey, account.password);
+        if (isNotEmpty(parentAccount.password)) {
+            parentAccount.password = await rsaEncrypt(publicKey, parentAccount.password);
         }
 
-        if (isNotEmpty(account.username)) {
-            account.username = await rsaEncrypt(publicKey, account.username);
+        if (isNotEmpty(parentAccount.username)) {
+            parentAccount.username = await rsaEncrypt(publicKey, parentAccount.username);
         }
 
-        const response = await fetch(POST, `personal-accounts-management/accounts?type=shared&fromPersonalAccountUuid=${parentAccount.uuid}&toUserAccountUuid=${accountDataResponse.data.entityUuid}`, account);
+        const response = await fetch(POST, `personal-accounts-management/accounts?type=shared&fromPersonalAccountUuid=${parentUuid}&toUserAccountUuid=${accountDataResponse.data.entityUuid}`, parentAccount);
         const newSharedAccount = response.data;
 
-        dispatch(personalAccountShared(newSharedAccount, parentAccount.uuid));
+        dispatch(personalAccountShared(newSharedAccount, parentUuid));
     } catch (error) {
         throw processErrorAsFormOrNotification(error);
     } finally {
         dispatch(progressFinished());
     }
 };
+
+export const removePersonalAccountSharing = (parentAccount, sharedAccount) => async dispatch => {
+    try {
+        dispatch(progressStarted());
+        await fetch(DELETE, `personal-accounts-management/accounts/${sharedAccount.uuid}`);
+        dispatch(personalAccountSharingRemoved(parentAccount.uuid, sharedAccount.uuid));
+    } catch (error) {
+        throw processErrorAsNotification(error);
+    } finally {
+        dispatch(progressFinished());
+    }
+}
 
 export const changePaginationPage = (newPage) => dispatch => {
     dispatch(personalAccountsPaginationPageChanged(newPage));

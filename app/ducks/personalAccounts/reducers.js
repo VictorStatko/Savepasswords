@@ -13,7 +13,7 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
     [SIGN_IN]: () => (INITIAL_STATE),
 
     [types.PERSONAL_ACCOUNT_UPDATED]: (state, {account}) => {
-        const accounts = state.accounts.slice();
+        const accounts = JSON.parse(JSON.stringify(state.accounts));
 
         const index = accounts.findIndex(listAccount => listAccount.uuid === account.uuid);
         if (index === -1) {
@@ -30,7 +30,7 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
     },
 
     [types.PERSONAL_ACCOUNT_REMOVED]: (state, {accountUuid}) => {
-        const accounts = state.accounts.slice().filter(account => account.uuid !== accountUuid);
+        const accounts = JSON.parse(JSON.stringify(state.accounts)).filter(account => account.uuid !== accountUuid);
 
         const filteredAccounts = filterAccounts(accounts, state.pagination.search);
         const newPagination = recreatePagination(filteredAccounts, state.pagination);
@@ -40,7 +40,7 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
     },
 
     [types.PERSONAL_ACCOUNT_SHARED]: (state, {sharedAccount, parentAccountUuid}) => {
-        const accounts = state.accounts.slice();
+        const accounts = JSON.parse(JSON.stringify(state.accounts));
         const index = accounts.findIndex(listAccount => listAccount.uuid === parentAccountUuid);
 
         if (!accounts[index].sharedAccounts) {
@@ -48,6 +48,19 @@ const personalAccountsReducer = createReducer(INITIAL_STATE)({
         }
 
         accounts[index].sharedAccounts.push(sharedAccount);
+
+        const filteredAccounts = filterAccounts(accounts, state.pagination.search);
+        const newPagination = recreatePagination(filteredAccounts, state.pagination);
+        const pagedAccounts = slicePage(filteredAccounts, newPagination);
+
+        return {...state, ...{accounts: accounts, pagination: newPagination, pagedAccounts: pagedAccounts}};
+    },
+
+    [types.PERSONAL_ACCOUNT_SHARING_REMOVED]: (state, {parentAccountUuid, sharedAccountUuid}) => {
+        const accounts = JSON.parse(JSON.stringify(state.accounts));
+        const index = accounts.findIndex(listAccount => listAccount.uuid === parentAccountUuid);
+
+        accounts[index].sharedAccounts = accounts[index].sharedAccounts.filter(account => account.uuid !== sharedAccountUuid);
 
         const filteredAccounts = filterAccounts(accounts, state.pagination.search);
         const newPagination = recreatePagination(filteredAccounts, state.pagination);
