@@ -146,6 +146,7 @@ class AccountSharingModal extends React.Component {
                                 <TextInput id="email" placeholder={t('personalAccounts.sharingModal.emailPlaceholder')}
                                            error={!isEmpty(globalError) ? globalError : emailError} value={email}
                                            onChange={this.handleEmailChange}/>
+                                <input type="text" style={{display: 'none'}}/>
                             </Col>
                             <Col xs={3} lg={2} className={`d-flex justify-content-end ${styles.rightColumn}`}>
                                 <Button content={addLoading ? <Spinner className={styles.spinner}/> :

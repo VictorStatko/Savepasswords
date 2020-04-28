@@ -11,7 +11,9 @@ import {personalAccountSharingsOperations} from "ducks/personalAccountsSharings"
 class FolderMenu extends React.Component {
 
     onFolderClick = (uuid) => {
-        this.props.selectFolder(uuid);
+        if (this.props.selectedSharingFromAccountEntityUuid || uuid != this.props.selectedFolderUuid) {
+            this.props.selectFolder(uuid);
+        }
     };
 
     onSharingClick = (selectedSharingFromAccountEntityUuid) => {
@@ -37,11 +39,15 @@ class FolderMenu extends React.Component {
         const sharingItems = this.props.sharings.map((sharing) => {
                 return <div key={sharing.sharingFromAccountEntityUuid} className={styles.navItem}
                             onClick={() => this.onSharingClick(sharing.sharingFromAccountEntityUuid)}>
-                    <Icon name='folder'
-                          styles={activeSharingFromAccountEntityUuid === sharing.sharingFromAccountEntityUuid ? `${styles.icon} ${styles.iconActive}` : styles.icon}/>
-                    <div className={styles.badge}>{sharing.sharedAccountsCount}</div>
-                    <span
-                        className={styles.text}>{t('personalAccounts.sharing.sharedFrom')} {sharing.sharingFromEmail}</span>
+                    <Icon name='folder' styles={
+                        activeSharingFromAccountEntityUuid === sharing.sharingFromAccountEntityUuid ? `${styles.icon} ${styles.iconActive}` : styles.icon
+                    }/>
+                    <div className={styles.badge}>
+                        {sharing.sharedAccountsCount}
+                    </div>
+                    <span className={styles.text}>
+                        {t('personalAccounts.sharing.sharedFrom')} {sharing.sharingFromEmail}
+                    </span>
                 </div>
             }
         );
