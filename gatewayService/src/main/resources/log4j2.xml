@@ -28,12 +28,16 @@
     </Appenders>
 
     <Loggers>
-        <!-- LOG everything at INFO level -->
-        <Root level="info">
+        <!-- LOG everything at warn level -->
+        <Root level="warn">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
         </Root>
         <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile" />
+        </Logger>
+        <Logger name="com.statkovit.gatewayservice" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile" />
         </Logger>

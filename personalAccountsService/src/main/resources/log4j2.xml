@@ -28,7 +28,7 @@
     </Appenders>
 
     <Loggers>
-        <!-- LOG everything at INFO level -->
+        <!-- LOG everything at warn level -->
         <Root level="warn">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
