@@ -1,11 +1,7 @@
 import Dexie from 'dexie';
-import {store} from "app";
-import {userLoggedOut} from "./ducks/account/actions";
-import {LocalStorageService} from "./localStorage";
 import {toast} from "react-toastify";
 import i18n from "./i18n";
 
-const localStorageService = LocalStorageService.getService();
 const indexedDB = new Dexie('syp');
 indexedDB.version(1).stores({privateKeys: '++keyId', publicKeys: '++keyId'});
 
@@ -38,10 +34,7 @@ export const IndexedDBService = (function () {
         const keyRecord = await indexedDB.publicKeys.get(0);
 
         if (!keyRecord || !keyRecord.key) {
-            localStorageService.clearToken();
-            await _clearKeys();
-            store.dispatch(userLoggedOut());
-            toast.error(i18n.t('global.auth.sessionExpired'));
+            toast.error(i18n.t('exceptions.clientEncryptionError'));
             throw new Error('Public key not found');
         }
 
@@ -52,10 +45,7 @@ export const IndexedDBService = (function () {
         const keyRecord = await indexedDB.privateKeys.get(0);
 
         if (!keyRecord || !keyRecord.key) {
-            localStorageService.clearToken();
-            await _clearKeys();
-            store.dispatch(userLoggedOut());
-            toast.error(i18n.t('global.auth.sessionExpired'));
+            toast.error(i18n.t('exceptions.clientEncryptionError'));
             throw new Error('Private key not found');
         }
         return keyRecord.key;

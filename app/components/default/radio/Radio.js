@@ -22,7 +22,7 @@ export default Radio;
 
 Radio.propTypes = {
     checked: PropTypes.bool.isRequired,
-    value: PropTypes.object.isRequired,
+    value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
     label: PropTypes.string

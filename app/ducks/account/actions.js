@@ -3,7 +3,6 @@ import fetch from "utils/fetch";
 import {processErrorAsFormOrNotification, processErrorAsNotification} from "utils/errorHandlingUtils";
 import queryString from "query-string";
 import * as types from "./types";
-import {LocalStorageService} from "localStorage";
 import {IndexedDBService} from 'indexedDB';
 import {
     decryptPrivateKeyFromPemString,
@@ -18,7 +17,6 @@ import argon2 from "argon2-browser";
 import {toast} from "react-toastify";
 import i18n from "i18n";
 
-const localStorageService = LocalStorageService.getService();
 const indexedDBService = IndexedDBService.getService();
 
 const userLoggedIn = () => ({
@@ -82,7 +80,6 @@ export const trySignUp = (payload) => async dispatch => {
 export const signOut = () => async dispatch => {
     try {
         await fetch(POST, "auth/logout");
-        localStorageService.clearToken();
         await indexedDBService.clearKeys();
         dispatch(userLoggedOut());
     } catch (error) {
@@ -107,14 +104,7 @@ export const trySignIn = (payload) => async dispatch => {
         payload.grant_type = "password";
         payload.client_id = "webclient";
 
-        const loginResponse = await fetch(POST, "auth/token", queryString.stringify(payload), {'Content-Type': 'application/x-www-form-urlencoded'});
-
-        localStorageService.setToken(
-            {
-                access_token: loginResponse.data.access_token,
-                refresh_token: loginResponse.data.refresh_token
-            }
-        );
+        await fetch(POST, "auth/token", queryString.stringify(payload), {'Content-Type': 'application/x-www-form-urlencoded'});
 
         const userDataResponse = await fetch(GET, "auth/accounts/current");
 
@@ -144,7 +134,6 @@ export const trySignIn = (payload) => async dispatch => {
         dispatch(userLoggedIn());
         dispatch(userDataFetched(userDataResponse.data));
     } catch (error) {
-        localStorageService.clearToken();
         await indexedDBService.clearKeys();
         dispatch(userLogInFail());
         throw processErrorAsFormOrNotification(error);
