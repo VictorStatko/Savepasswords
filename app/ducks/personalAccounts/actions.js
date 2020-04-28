@@ -78,19 +78,42 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
     try {
         dispatch(progressStarted());
         const publicKey = await indexedDBService.loadPublicKey();
+        const newPasswordDecrypted = newAccount.password;
+        const newUsernameDecrypted = newAccount.username;
 
         if (isNotEmpty(newAccount.password)) {
-            newAccount.password = await rsaEncrypt(publicKey, newAccount.password);
+            newAccount.password = await rsaEncrypt(publicKey, newPasswordDecrypted);
         }
 
         if (isNotEmpty(newAccount.username)) {
-            newAccount.username = await rsaEncrypt(publicKey, newAccount.username);
+            newAccount.username = await rsaEncrypt(publicKey, newUsernameDecrypted);
+        }
+
+        if (newAccount.sharedAccounts && newAccount.sharedAccounts.length > 0) {
+
+            newAccount.sharedAccounts = JSON.parse(JSON.stringify(newAccount.sharedAccounts));
+
+            for (const sharedAccount of newAccount.sharedAccounts) {
+                sharedAccount.url = newAccount.url;
+                sharedAccount.name = newAccount.name;
+                sharedAccount.description = newAccount.description;
+
+                const accountPublicKey = await pemStringToPublicCryptoKey(
+                    sharedAccount.encryptionPublicKey,
+                    {
+                        isExtractable: false,
+                        name: 'RSA-OAEP',
+                        hash: 'SHA-512',
+                        usage: '[encrypt, wrapKey]'
+                    }
+                );
+
+                sharedAccount.password = await rsaEncrypt(accountPublicKey, newPasswordDecrypted);
+                sharedAccount.username = await rsaEncrypt(accountPublicKey, newUsernameDecrypted);
+            }
         }
 
         await fetch(PUT, `personal-accounts-management/accounts/${newAccount.uuid}`, newAccount);
-
-        console.log(newAccount.folderUuid);
-        console.log(oldAccount.folderUuid);
 
         if (newAccount.folderUuid != oldAccount.folderUuid) {
             dispatch(folderAccountsCountIncreased(newAccount.folderUuid, 1));
