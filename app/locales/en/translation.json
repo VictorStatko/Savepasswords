@@ -69,6 +69,7 @@
 "personalAccounts.removeConfirmation.header": "Account removing confirmation",
 "personalAccounts.removeConfirmation.question": "Are you sure you want to remove all data about the following account?",
 "personalAccounts.removeConfirmation.note": "Please note that data cannot be restored.",
+"personalAccounts.removeConfirmation.sharedNote": "Please note that data will be removed only on your side, not on the owner side.",
 "personalAccounts.removeConfirmation.accountName": "Account name:",
 "personalAccounts.removeConfirmation.accountUrl": "Account URL:",
 "exceptions.personalAccountNotFoundByUuid": "Personal account with requested uuid is not found in the system.",
@@ -77,7 +78,9 @@
  "personalAccounts.sharingModal.header": "Account sharing",
  "personalAccounts.sharingModal.accountName": "Account name:",
  "personalAccounts.sharingModal.accountUrl": "Account URL:",
- "personalAccounts.sharingModal.emailPlaceholder": "Email of user for sharing:",
+ "personalAccounts.sharingModal.emailPlaceholder": "Email of user for sharing",
+
+ "personalAccounts.sharing.sharedFrom": "Shared from ",
 
  "exceptions.accountDataNotFoundByEmail": "Personal account with this email is not found in the system.",
  "exceptions.selfSharingNotAllowed": "You can’t share your personal account with yourself.",

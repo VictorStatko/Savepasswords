@@ -26,7 +26,7 @@ class AccountRemovingConfirmation extends React.Component {
     };
 
     render() {
-        const {t} = this.props;
+        const {t, isShared} = this.props;
         const {url, name} = this.props;
         const {loading} = this.state;
 
@@ -41,7 +41,7 @@ class AccountRemovingConfirmation extends React.Component {
                 <Modal.Body>
                     <div>
                         <div>{t('personalAccounts.removeConfirmation.question')}</div>
-                        <div className={styles.warning}>{t('personalAccounts.removeConfirmation.note')}</div>
+                        <div className={styles.warning}>{isShared ? t('personalAccounts.removeConfirmation.sharedNote') : t('personalAccounts.removeConfirmation.note')}</div>
                         {isEmpty(name) ? null :
                             <React.Fragment>
                                 {t('personalAccounts.removeConfirmation.accountName')}

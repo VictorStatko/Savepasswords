@@ -7,6 +7,7 @@ import {pemStringToPublicCryptoKey, rsaEncrypt} from "utils/encryptionUtils";
 import {IndexedDBService} from "indexedDB";
 import {folderAccountsCountDecreased, folderAccountsCountIncreased} from "../personalAccountFolders/actions";
 import {progressFinished, progressStarted} from "ducks/progressBar/actions";
+import {sharingAccountsCountIncreased, sharingAccountsCountUpdated} from "../personalAccountsSharings/actions";
 
 const indexedDBService = IndexedDBService.getService();
 
@@ -130,12 +131,16 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
     }
 };
 
-export const removePersonalAccount = (account) => async dispatch => {
+export const removePersonalAccount = (account, sharedFromUuid) => async dispatch => {
     try {
         dispatch(progressStarted());
         await fetch(DELETE, `personal-accounts-management/accounts/${account.uuid}`);
         dispatch(personalAccountRemoved(account.uuid));
-        dispatch(folderAccountsCountDecreased(account.folderUuid, 1))
+        if (!sharedFromUuid) {
+            dispatch(folderAccountsCountDecreased(account.folderUuid, 1))
+        } else {
+            dispatch(sharingAccountsCountIncreased(sharedFromUuid))
+        }
     } catch (error) {
         throw processErrorAsNotification(error);
     } finally {
@@ -143,17 +148,22 @@ export const removePersonalAccount = (account) => async dispatch => {
     }
 };
 
-export const fetchPersonalAccounts = (folderUuid) => async dispatch => {
+export const fetchPersonalAccounts = (folderUuid, selectedSharingFromAccountEntityUuid) => async dispatch => {
     try {
         dispatch(progressStarted());
         let url;
         if (folderUuid) {
             url = `personal-accounts-management/accounts?folderUuid=${folderUuid}`;
+        } else if (selectedSharingFromAccountEntityUuid) {
+            url = `personal-accounts-management/accounts?parentPersonalAccountAccountEntityUuid=${selectedSharingFromAccountEntityUuid}`;
         } else {
             url = `personal-accounts-management/accounts?unfolderedOnly=true`;
         }
         const fetchResponse = await fetch(GET, url);
         dispatch(personalAccountsFetched(fetchResponse.data));
+        if (!folderUuid && selectedSharingFromAccountEntityUuid) {
+            dispatch(sharingAccountsCountUpdated(selectedSharingFromAccountEntityUuid, fetchResponse.data.length));
+        }
     } finally {
         dispatch(progressFinished());
     }

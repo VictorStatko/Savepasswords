@@ -242,7 +242,7 @@ class AccountModal extends React.Component {
     };
 
     render() {
-        const {t, close} = this.props;
+        const {t, close, isShared} = this.props;
         const {account, urlError, nameError, serverError, folderUuidError, infoAccount, newAccount, editAccount, loading} = this.state;
 
         return (
@@ -268,7 +268,7 @@ class AccountModal extends React.Component {
                             <PrimaryButton type="submit" disabled={loading} content={t('global.save')}
                                            loading={loading}/>
                             : null}
-                        {infoAccount ?
+                        {infoAccount && !isShared ?
                             <PrimaryButton content={t('global.edit')} onClick={this.onEditButtonClick}/> : null}
                         <DeclineButton content={infoAccount ? t('global.close') : t('global.cancel')} onClick={close}/>
                     </Modal.Footer>

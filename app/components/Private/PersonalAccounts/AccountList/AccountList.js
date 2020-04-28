@@ -19,11 +19,11 @@ class AccountList extends React.Component {
     };
 
     render() {
-        const {accounts, pagination} = this.props;
+        const {accounts, pagination,  selectedSharingFromAccountEntityUuid} = this.props;
 
         const listItems = accounts.map((account) =>
             <Col xl={4} lg={6} md={12} key={account.uuid} className={styles.column}>
-                <AccountCard account={account}/>
+                <AccountCard account={account} sharedFromUuid={selectedSharingFromAccountEntityUuid}/>
             </Col>
         );
         return (
@@ -48,7 +48,8 @@ class AccountList extends React.Component {
 const mapStateToProps = (state) => {
     return {
         accounts: state.personalAccounts.pagedAccounts,
-        pagination: state.personalAccounts.pagination
+        pagination: state.personalAccounts.pagination,
+        selectedSharingFromAccountEntityUuid: state.personalAccountSharings.selectedSharingFromAccountEntityUuid
     }
 };
 

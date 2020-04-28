@@ -15,6 +15,7 @@ import {PageSpinner} from "components/default/spinner/Spinner";
 import {withRouter} from "react-router-dom";
 import FolderButtonRow from "components/Private/PersonalAccounts/FolderButtonRow";
 import AccountSearch from "components/Private/PersonalAccounts/AccountSearch";
+import {personalAccountSharingsOperations} from "ducks/personalAccountsSharings";
 
 class PersonalAccounts extends React.Component {
 
@@ -26,7 +27,8 @@ class PersonalAccounts extends React.Component {
     componentDidMount = async () => {
         try {
             await this.props.fetchFolders();
-            await this.props.fetchPersonalAccounts(this.props.selectedFolderUuid);
+            await this.props.fetchSharings();
+            await this.props.fetchPersonalAccounts(this.props.selectedFolderUuid, this.props.selectedSharingFromAccountEntityUuid);
         } catch (e) {
             console.error(e);
             await setStateAsync(this, {error: true});
@@ -36,10 +38,10 @@ class PersonalAccounts extends React.Component {
     };
 
     componentDidUpdate = async (prevProps) => {
-        if (this.props.selectedFolderUuid != prevProps.selectedFolderUuid) {
+        if (this.props.selectedFolderUuid != prevProps.selectedFolderUuid || this.props.selectedSharingFromAccountEntityUuid != prevProps.selectedSharingFromAccountEntityUuid) {
             await setStateAsync(this, {error: false, loading: true});
             try {
-                await this.props.fetchPersonalAccounts(this.props.selectedFolderUuid);
+                await this.props.fetchPersonalAccounts(this.props.selectedFolderUuid, this.props.selectedSharingFromAccountEntityUuid);
             } catch (e) {
                 console.error(e);
                 await setStateAsync(this, {error: true});
@@ -58,7 +60,9 @@ class PersonalAccounts extends React.Component {
             return <PageSpinner delay={150} className={styles.spinner}/>;
         }
 
+        const {t} = this.props;
         const activeFolder = this.props.folders.find(folder => folder.uuid === this.props.selectedFolderUuid);
+        const activeSharing = this.props.sharings.find(sharing => sharing.sharingFromAccountEntityUuid === this.props.selectedSharingFromAccountEntityUuid);
 
         return <Row>
             <Col xl={3} lg={4} md={4} className={styles.menuColumn}>
@@ -68,7 +72,7 @@ class PersonalAccounts extends React.Component {
                 {
                     <Row>
                         <Col>
-                            <h2>{activeFolder.name}</h2>
+                            <h2>{activeSharing ? `${t('personalAccounts.sharing.sharedFrom')} ${activeSharing.sharingFromEmail}` : activeFolder.name}</h2>
                         </Col>
                         <Col md={12} lg="auto" className={`d-flex ${styles.actionsRow}`}>
                             <Col
@@ -119,13 +123,16 @@ class PersonalAccounts extends React.Component {
 const mapStateToProps = (state) => {
     return {
         folders: state.personalAccountFolders.folders,
-        selectedFolderUuid: state.personalAccountFolders.selectedFolderUuid
+        sharings: state.personalAccountSharings.sharings,
+        selectedFolderUuid: state.personalAccountFolders.selectedFolderUuid,
+        selectedSharingFromAccountEntityUuid: state.personalAccountSharings.selectedSharingFromAccountEntityUuid
     }
 };
 
 const withConnect = connect(mapStateToProps, {
     fetchPersonalAccounts: personalAccountsOperations.fetchPersonalAccounts,
-    fetchFolders: personalAccountFoldersOperations.fetchPersonalAccountFolders
+    fetchFolders: personalAccountFoldersOperations.fetchPersonalAccountFolders,
+    fetchSharings: personalAccountSharingsOperations.fetchPersonalAccountSharings
 });
 
 export default compose(withTranslation(), withRouter, withConnect)(PersonalAccounts);

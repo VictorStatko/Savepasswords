@@ -29,7 +29,7 @@ class AccountCard extends React.Component {
     };
 
     handleDeleteConfirm = async () => {
-        await this.props.removePersonalAccount(this.props.account);
+        await this.props.removePersonalAccount(this.props.account, this.props.sharedFromUuid);
     };
 
     preventDragHandler = (e) => {
@@ -49,7 +49,7 @@ class AccountCard extends React.Component {
 
     render() {
         const {deleteModal, dataModal, shareModal} = this.state;
-
+        const {sharedFromUuid} = this.props;
         const {name} = this.props.account;
         let {url} = this.props.account;
         url = isEmpty(url) ? null : removeProtocols(url);
@@ -73,9 +73,9 @@ class AccountCard extends React.Component {
                             <Button customStyle={styles.button}
                                     content={<Icon name='key' styles={styles.buttonIcon}/>}
                                     onClick={this.handleDataModalToggle}/>
-                            <Button customStyle={styles.button}
-                                    content={<Icon name='share' styles={styles.buttonIcon}/>}
-                                    onClick={this.handleShareModalToggle}/>
+                            {sharedFromUuid ? null : <Button customStyle={styles.button}
+                                                       content={<Icon name='share' styles={styles.buttonIcon}/>}
+                                                       onClick={this.handleShareModalToggle}/>}
                             <Button customStyle={styles.button}
                                     content={<Icon name='delete' styles={styles.buttonIcon}/>}
                                     onClick={this.handleDeleteModalToggle}/>
@@ -89,11 +89,12 @@ class AccountCard extends React.Component {
                     <AccountRemovingConfirmation close={this.handleDeleteModalToggle}
                                                  delete={this.handleDeleteConfirm}
                                                  url={url}
+                                                 isShared={!!sharedFromUuid}
                                                  name={name}/>
                     : null
                 }
                 {dataModal ?
-                    <AccountModal close={this.handleDataModalToggle} account={this.props.account}/>
+                    <AccountModal close={this.handleDataModalToggle} account={this.props.account} isShared={!!sharedFromUuid}/>
                     : null
                 }
                 {shareModal ?

@@ -1,6 +1,8 @@
 import createReducer from "utils/createReducerUtils";
 import {SIGN_OUT} from "ducks/account/types";
 import * as types from "./types";
+import {SHARING_SELECTED} from "../personalAccountsSharings/types";
+import {isEmpty} from "utils/stringUtils";
 
 const INITIAL_STATE = {folders: [], selectedFolderUuid: null};
 
@@ -27,6 +29,14 @@ const personalAccountsFoldersReducer = createReducer(INITIAL_STATE)({
     [types.FOLDER_SELECTED]: (state, {folderUuid}) => {
         const folder = state.folders.find(folder => folder.uuid === folderUuid);
         return {...state, ...{selectedFolderUuid: folder.uuid}};
+    },
+
+    [SHARING_SELECTED]: (state, {selectedSharingFromAccountEntityUuid}) => {
+        let resultFolderUuid = null;
+        if (isEmpty(selectedSharingFromAccountEntityUuid)) {
+            resultFolderUuid = state.selectedFolderUuid;
+        }
+        return {...state, ...{selectedFolderUuid: resultFolderUuid}};
     },
 
     [types.FOLDERS_FETCH_SUCCESS]: (state, {folders}) => {

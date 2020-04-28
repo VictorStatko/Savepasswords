@@ -25,6 +25,7 @@ store.subscribe(throttle(() => {
     const state = {account: store.getState().account};
     if (store.getState().account && store.getState().account.isLoggedIn) {
         state.personalAccountFolders = {selectedFolderUuid: store.getState().personalAccountFolders.selectedFolderUuid};
+        state.personalAccountSharings = {selectedSharingFromAccountEntityUuid: store.getState().personalAccountSharings.selectedSharingFromAccountEntityUuid};
         state.personalAccounts = {pagination: {...store.getState().personalAccounts.pagination}}
     }
     saveState(state);
