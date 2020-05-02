@@ -17,18 +17,17 @@ export default async (method, path, data, headers) => {
             return response
         },
         async function (error) {
-            if (error.response && error.response.status === 401) {
-                const logoutTry = error.config.url === `${BACKEND_URL}${'auth/logout'}`;
+            const logoutTry = error.config.url === `${BACKEND_URL}${'auth/logout'}`;
+
+            if (logoutTry) {
                 await indexedDBService.clearKeys();
                 store.dispatch(userLoggedOut());
-
-                if (!logoutTry) {
-                    toast.error(i18n.t('global.auth.sessionExpired'));
-                    return Promise.reject(error.response);
-                }
-
                 return Promise.resolve();
-
+            } else if (error.response && error.response.status === 401) {
+                await indexedDBService.clearKeys();
+                store.dispatch(userLoggedOut());
+                toast.error(i18n.t('global.auth.sessionExpired'));
+                return Promise.reject(error.response);
             } else {
                 return Promise.reject(error.response)
             }

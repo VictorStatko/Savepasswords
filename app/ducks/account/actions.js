@@ -12,10 +12,12 @@ import {
     pemStringToPublicCryptoKey,
     publicCryptoKeyToPemString
 } from "utils/encryptionUtils";
-import {reverseString} from "utils/stringUtils";
+import {isNotEmpty, reverseString} from "utils/stringUtils";
 import argon2 from "argon2-browser";
 import {toast} from "react-toastify";
 import i18n from "i18n";
+import Fingerprint2 from "fingerprintjs2";
+import * as Bowser from "bowser";
 
 const indexedDBService = IndexedDBService.getService();
 
@@ -104,7 +106,46 @@ export const trySignIn = (payload) => async dispatch => {
         payload.grant_type = "password";
         payload.client_id = "webclient";
 
-        await fetch(POST, "auth/token", queryString.stringify(payload), {'Content-Type': 'application/x-www-form-urlencoded'});
+
+        const fingerprintComponents = await Fingerprint2.getPromise({});
+        const fingerprintComponentValues = fingerprintComponents.map(function (component) {
+            return component.value
+        });
+
+        const deviceId = Fingerprint2.x64hash128(fingerprintComponentValues.join(''), 31);
+
+        const bowerResult = Bowser.parse(window.navigator.userAgent);
+
+        let systemInfo = '';
+        if (bowerResult.os && isNotEmpty(bowerResult.os.name)) {
+            systemInfo += bowerResult.os.name;
+
+            if (isNotEmpty(bowerResult.os.version)) {
+                systemInfo += ' ';
+                systemInfo += bowerResult.os.version;
+            }
+
+        }
+
+        if (bowerResult.platform && isNotEmpty(bowerResult.platform.type)) {
+            if (isNotEmpty(systemInfo)) {
+                systemInfo += ' ';
+            }
+            systemInfo += `(${bowerResult.platform.type})`;
+        }
+
+        if (bowerResult.browser && isNotEmpty(bowerResult.browser.name)) {
+            if (isNotEmpty(systemInfo)) {
+                systemInfo += ', ';
+            }
+            systemInfo += bowerResult.browser.name;
+        }
+
+        await fetch(POST, "auth/token", queryString.stringify(payload), {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Device-Id': deviceId,
+            'X-System-Info': systemInfo
+        });
 
         const userDataResponse = await fetch(GET, "auth/accounts/current");
 
