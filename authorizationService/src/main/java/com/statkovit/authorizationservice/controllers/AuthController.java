@@ -1,18 +1,16 @@
 package com.statkovit.authorizationservice.controllers;
 
 import com.statkovit.authorizationservice.constants.ServerConstants;
+import com.statkovit.authorizationservice.domainServices.AuthSessionDomainService;
+import com.statkovit.authorizationservice.payload.SessionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
-@SuppressWarnings("deprecation")
 @RestController
 @RequiredArgsConstructor
 @Log4j2
@@ -20,14 +18,27 @@ public class AuthController {
 
     public static final String AUTH_CONTROLLER_ROUTE = ServerConstants.AUTH_API_ROUTE;
 
-    private final AuthorizationServerTokenServices authorizationServerTokenServices;
-    private final ConsumerTokenServices consumerTokenServices;
+    private final AuthSessionDomainService authSessionDomainService;
 
     @PostMapping(AUTH_CONTROLLER_ROUTE + "logout")
     public void logout(Principal principal) {
-        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
-        OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(oAuth2Authentication);
-        consumerTokenServices.revokeToken(accessToken.getValue());
+        authSessionDomainService.logout();
         log.debug("Successful logout for user: {}", principal.getName());
+    }
+
+    @GetMapping(AUTH_CONTROLLER_ROUTE + "/sessions")
+    public ResponseEntity<List<SessionDto>> getActiveSessions() {
+        List<SessionDto> sessionDtos = authSessionDomainService.getSessionsList();
+        return ResponseEntity.ok(sessionDtos);
+    }
+
+    @RequestMapping(
+            value = AUTH_CONTROLLER_ROUTE + "/sessions",
+            method = RequestMethod.POST,
+            params = "action=clear"
+    )
+    public ResponseEntity<?> clearSessions() {
+        authSessionDomainService.clearSessionsExceptCurrent();
+        return ResponseEntity.ok().build();
     }
 }

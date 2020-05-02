@@ -16,6 +16,8 @@ public class CustomProperties {
 
     private Aes aes;
 
+    private IpStack ipstack;
+
     @Getter
     @Setter
     public static final class Kafka {
@@ -41,5 +43,12 @@ public class CustomProperties {
     @Setter
     public static final class Aes {
         private String key;
+    }
+
+
+    @Getter
+    @Setter
+    public static final class IpStack {
+        private String accessKey;
     }
 }

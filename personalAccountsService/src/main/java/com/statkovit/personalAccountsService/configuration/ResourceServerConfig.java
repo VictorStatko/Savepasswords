@@ -1,9 +1,9 @@
 package com.statkovit.personalAccountsService.configuration;
 
+import com.statkovit.personalAccountsService.configuration.tokens.CustomUserInfoTokenServices;
 import feign.RequestInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequestInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +46,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     @Primary
     public ResourceServerTokenServices resourceServerTokenServices() {
-        return new UserInfoTokenServices(serverProperties.getUserInfoUri(), serverProperties.getClientId());
+        return new CustomUserInfoTokenServices(serverProperties.getUserInfoUri(), serverProperties.getClientId());
     }
 
     @Override

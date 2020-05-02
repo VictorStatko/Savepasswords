@@ -24,11 +24,18 @@ public class AccountsDomainService {
         return accountMapper.toDto(account);
     }
 
-    public ExtendedAccountDto getCurrentAccountData() {
+    public ExtendedAccountDto getCurrentExtendedAccountData() {
         Account account = accountService.getByEmail(
                 authenticationFacade.getAuthentication().getName()
         );
         return accountMapper.toExtendedDto(account);
+    }
+
+    public AccountDto getCurrentAccountData() {
+        Account account = accountService.getByEmail(
+                authenticationFacade.getAuthentication().getName()
+        );
+        return accountMapper.toDto(account);
     }
 
     public KeyPairDto getCurrentAccountKeypair() {

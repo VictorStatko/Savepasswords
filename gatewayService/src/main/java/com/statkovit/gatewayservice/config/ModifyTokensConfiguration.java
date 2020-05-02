@@ -26,6 +26,9 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -43,6 +46,8 @@ import static org.springframework.http.HttpHeaders.COOKIE;
 public class ModifyTokensConfiguration {
 
     private static final String COOKIE_SPLITTER = "; ";
+    private static final String DEVICE = "Device";
+    private static final String DEVICE_ID_HEADER = "X-Device-Id";
 
     private final ObjectMapper objectMapper;
     private final CustomProperties customProperties;
@@ -80,6 +85,7 @@ public class ModifyTokensConfiguration {
                     List<String> cookiesList = cookies.stream()
                             .flatMap(cookie -> Arrays.stream(cookie.split(COOKIE_SPLITTER)))
                             .filter(cookie -> !cookie.startsWith(AUTHORIZATION + "="))
+                            .filter(cookie -> !cookie.startsWith(DEVICE + "="))
                             .collect(Collectors.toList());
 
                     if (cookiesList.isEmpty()) {
@@ -92,12 +98,21 @@ public class ModifyTokensConfiguration {
 
         MultiValueMap<String, HttpCookie> cookies = request.getCookies();
 
-        if (cookies.containsKey(AUTHORIZATION) && !isSignInRequest(request)) {
+        if (cookies.containsKey(AUTHORIZATION)) {
             Optional.ofNullable(cookies.getFirst(AUTHORIZATION))
                     .map(HttpCookie::getValue)
                     .ifPresent(token -> {
                         headers.put(AUTHORIZATION, Collections.singletonList("Bearer " + token));
                         log.debug("Successfully transferred access token from cookie to header. Access token {}.", replaceLastFour(token));
+                    });
+        }
+
+        if (cookies.containsKey(DEVICE)) {
+            Optional.ofNullable(cookies.getFirst(DEVICE))
+                    .map(HttpCookie::getValue)
+                    .ifPresent(device -> {
+                        headers.put(DEVICE_ID_HEADER, Collections.singletonList(device));
+                        log.debug("Successfully transferred device id from cookie to header. Device id {}.", device);
                     });
         }
 
@@ -121,33 +136,64 @@ public class ModifyTokensConfiguration {
                 Flux<? extends DataBuffer> flux = (Flux<? extends DataBuffer>) body;
 
                 if (isSuccessSignInRequest(request, response)) {
-                    return super.writeWith(flux.map(buffer -> {
-                                CharBuffer charBuffer = StandardCharsets.UTF_8.decode(buffer.asByteBuffer());
-                                DataBufferUtils.release(buffer);
-                                JsonNode fullResponseNode = readNode(charBuffer.toString());
-                                JsonNode accessToken = fullResponseNode.get("access_token");
-                                JsonNode expires = fullResponseNode.get("expires_in");
+                    return super.writeWith(flux.buffer().map(dataBuffers -> {
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        dataBuffers.forEach(buffer -> {
+                            byte[] array = new byte[buffer.readableByteCount()];
+                            buffer.read(array);
+                            try {
+                                outputStream.write(array);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e.getMessage(), e);
+                            }
+                            DataBufferUtils.release(buffer);
+                        });
 
-                                if (!accessToken.isMissingNode() && !expires.isMissingNode()) {
-                                    String textToken = accessToken.asText();
-                                    response.addCookie(createTokenCookie(textToken, expires.asLong()));
-                                    log.debug("Successfully added access token cookie. Token {}.", replaceLastFour(textToken));
-                                } else {
-                                    log.error("Error during adding access token cookie. Access token present: {}, Expires present: {}",
-                                            !accessToken.isMissingNode(), !expires.isMissingNode()
-                                    );
-                                }
+                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(
+                                ByteBuffer.wrap(outputStream.toByteArray())
+                        );
 
-                                return response.bufferFactory().wrap(fullResponseNode.toString().getBytes(StandardCharsets.UTF_8));
-                            })
-                    );
+                        JsonNode fullResponseNode = readNode(charBuffer.toString());
+                        JsonNode accessToken = fullResponseNode.get("access_token");
+                        JsonNode expires = fullResponseNode.get("expires_in");
+                        JsonNode deviceId = fullResponseNode.get("client_device_id");
+
+                        if (isNodeContainValue(accessToken) && isNodeContainValue(expires)) {
+                            String textToken = accessToken.asText();
+                            response.addCookie(createCookie(AUTHORIZATION, textToken, expires.asLong()));
+                            log.debug("Successfully added access token cookie. Token {}.", replaceLastFour(textToken));
+                        } else {
+                            log.error("Error during adding access token cookie. Access token present: {}, Expires present: {}",
+                                    isNodeContainValue(accessToken), isNodeContainValue(expires)
+                            );
+                        }
+
+                        if (isNodeContainValue(deviceId) && isNodeContainValue(expires)) {
+                            String deviceIdText = deviceId.asText();
+                            response.addCookie(createCookie(DEVICE, deviceIdText, expires.asLong()));
+                            log.debug("Successfully added device cookie. Device {}.", deviceIdText);
+                        } else {
+                            log.error("Error during adding device cookie. Device present: {}, Expires present: {}",
+                                    isNodeContainValue(deviceId), isNodeContainValue(expires)
+                            );
+                        }
+
+                        return response.bufferFactory().wrap(fullResponseNode.toString().getBytes(StandardCharsets.UTF_8));
+                    }));
                 }
 
                 if (isSuccessLogoutRequest(request, response)) {
                     HttpCookie oldToken = request.getCookies().getFirst(AUTHORIZATION);
+                    HttpCookie oldDevice = request.getCookies().getFirst(DEVICE);
+
                     if (oldToken != null) {
-                        response.addCookie(createTokenCookie("", 0L));
+                        response.addCookie(createCookie(AUTHORIZATION, "", 0L));
                         log.debug("Successfully added revoke token cookie. Old token {}.", replaceLastFour(oldToken.getValue()));
+                    }
+
+                    if (oldDevice != null) {
+                        response.addCookie(createCookie(DEVICE, "", 0L));
+                        log.debug("Successfully removed device cookie. Old device {}.", oldDevice);
                     }
                 }
 
@@ -173,8 +219,8 @@ public class ModifyTokensConfiguration {
                 && response.getStatusCode().is2xxSuccessful();
     }
 
-    private ResponseCookie createTokenCookie(String accessToken, Long maxAge) {
-        return ResponseCookie.from(AUTHORIZATION, accessToken)
+    private ResponseCookie createCookie(String name, String value, Long maxAge) {
+        return ResponseCookie.from(name, value)
                 .path("/api")
                 .httpOnly(true)
                 .secure(customProperties.getCookie().isSecured())
@@ -197,5 +243,9 @@ public class ModifyTokensConfiguration {
         }
 
         return s.substring(0, length - 12) + "************";
+    }
+
+    public boolean isNodeContainValue(JsonNode node) {
+        return node != null && !node.isMissingNode();
     }
 }

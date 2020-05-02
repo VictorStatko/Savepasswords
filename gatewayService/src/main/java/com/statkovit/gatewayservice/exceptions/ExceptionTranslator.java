@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.exceptions.domain.ErrorDTO;
 import com.statkolibraries.exceptions.handlers.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +22,15 @@ import java.util.Objects;
 @Order(-2)
 @SuppressWarnings("NullableProblems")
 @RequiredArgsConstructor
+@Log4j2
 public class ExceptionTranslator implements WebExceptionHandler {
 
     private final ObjectMapper objectMapper;
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+        log.error(ex.getMessage(), ex);
+
         ResponseEntity<ErrorDTO> responseEntity = GlobalExceptionHandler.processException((Exception) ex);
 
         byte[] bytes = new byte[0];

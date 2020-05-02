@@ -1,10 +1,13 @@
 package com.statkovit.authorizationservice.configuration;
 
+import com.statkovit.authorizationservice.configuration.enhancers.AdditionalInformationTokenEnhancer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +19,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @SuppressWarnings("deprecation")
@@ -26,13 +30,13 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     private static final String PERMIT_ALL = "permitAll()";
-    private static final String IS_AUTHENTICATED = "isAuthenticated()";
 
     private final UserDetailsService userDetailsService;
     private final ClientDetailsService authClientDetailsService;
     private final PasswordEncoder encoder;
     private final TokenStore tokenStore;
     private final WebResponseExceptionTranslator<OAuth2Exception> exceptionTranslator;
+    private final AdditionalInformationTokenEnhancer tokenEnhancer;
 
     @Autowired
     @Qualifier("authenticationManagerBean")
@@ -45,18 +49,28 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.tokenStore(tokenStore)
+        endpoints
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .exceptionTranslator(exceptionTranslator)
-                .reuseRefreshTokens(false);
+                .tokenServices(tokenServices())
+                .exceptionTranslator(exceptionTranslator);
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
-        security.tokenKeyAccess(PERMIT_ALL)
-                .checkTokenAccess(IS_AUTHENTICATED)
+        security
+                .tokenKeyAccess(PERMIT_ALL)
                 .passwordEncoder(encoder)
                 .allowFormAuthenticationForClients();
+    }
+
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(tokenStore);
+        tokenServices.setClientDetailsService(authClientDetailsService);
+        tokenServices.setTokenEnhancer(tokenEnhancer);
+        return tokenServices;
     }
 }

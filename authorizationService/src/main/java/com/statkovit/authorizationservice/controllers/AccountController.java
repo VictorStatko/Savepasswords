@@ -3,7 +3,6 @@ package com.statkovit.authorizationservice.controllers;
 import com.statkovit.authorizationservice.constants.ServerConstants;
 import com.statkovit.authorizationservice.domainServices.AccountsDomainService;
 import com.statkovit.authorizationservice.payload.AccountDto;
-import com.statkovit.authorizationservice.payload.ExtendedAccountDto;
 import com.statkovit.authorizationservice.payload.KeyPairDto;
 import com.statkovit.authorizationservice.payload.StringDto;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +32,8 @@ public class AccountController {
     }
 
     @GetMapping(CONTROLLER_ROUTE + "/current")
-    public ResponseEntity<ExtendedAccountDto> getCurrentAccount() {
-        ExtendedAccountDto dto = accountsDomainService.getCurrentAccountData();
+    public ResponseEntity<AccountDto> getCurrentAccount() {
+        AccountDto dto = accountsDomainService.getCurrentAccountData();
         return ResponseEntity.ok(dto);
     }
 
