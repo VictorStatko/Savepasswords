@@ -46,7 +46,7 @@ public class AuthSessionDomainService {
 
         return dtos.stream().sorted((t1, t2) -> {
             if (isNull(t1.getCreatedAt()) && nonNull(t2.getCreatedAt())) {
-                return -1;
+                return 1;
             }
 
             if (isNull(t1.getCreatedAt()) && isNull(t2.getCreatedAt())) {
@@ -54,10 +54,10 @@ public class AuthSessionDomainService {
             }
 
             if (isNull(t2.getCreatedAt())) {
-                return 1;
+                return -1;
             }
 
-            return t1.getCreatedAt().compareTo(t2.getCreatedAt());
+            return t2.getCreatedAt().compareTo(t1.getCreatedAt());
         }).collect(Collectors.toList());
     }
 

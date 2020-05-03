@@ -12,8 +12,8 @@ import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 @Service
@@ -30,7 +30,11 @@ public class AuthSessionService {
     public List<OAuth2AccessToken> getSessionsList() {
         OAuth2Authentication oauth2Authentication = (OAuth2Authentication) authenticationFacade.getAuthentication();
         OAuth2Request clientAuthentication = oauth2Authentication.getOAuth2Request();
-        return new ArrayList<>(tokenStore.findTokensByClientIdAndUserName(clientAuthentication.getClientId(), oauth2Authentication.getName()));
+
+        return tokenStore.findTokensByClientIdAndUserName(clientAuthentication.getClientId(), oauth2Authentication.getName())
+                .stream()
+                .filter(token -> !token.isExpired())
+                .collect(Collectors.toList());
     }
 
     public void clearAllSessionsExceptCurrent() {

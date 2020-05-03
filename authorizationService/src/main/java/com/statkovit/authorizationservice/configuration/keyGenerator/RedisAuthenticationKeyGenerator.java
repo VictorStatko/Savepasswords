@@ -1,6 +1,5 @@
 package com.statkovit.authorizationservice.configuration.keyGenerator;
 
-import com.statkovit.authorizationservice.utils.WebUtils;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
@@ -11,6 +10,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -21,9 +21,7 @@ public class RedisAuthenticationKeyGenerator implements AuthenticationKeyGenerat
 
     private static final String CLIENT_ID = "client_id";
 
-    private static final String CLIENT_IP = "client_ip";
-
-    private static final String CLIENT_DEVICE_ID = "client_device_id";
+    private static final String TIME = "time";
 
     private static final String SCOPE = "scope";
 
@@ -45,8 +43,7 @@ public class RedisAuthenticationKeyGenerator implements AuthenticationKeyGenerat
                 values.put(SCOPE, OAuth2Utils.formatParameterList(scope))
         );
 
-        WebUtils.getClientIpFromRequest().ifPresent(ip -> values.put(CLIENT_IP, ip));
-        WebUtils.getDeviceId().ifPresent(deviceId -> values.put(CLIENT_DEVICE_ID, deviceId));
+        values.put(TIME, String.valueOf(Instant.now().toEpochMilli()));
 
         MessageDigest digest;
         try {
