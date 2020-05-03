@@ -1,0 +1,62 @@
+@import "styles/colors";
+
+.container {
+
+  .spinner {
+    height: 20px;
+    width: 20px;
+    margin-left: 1rem;
+  }
+
+  .header {
+    text-align: center;
+  }
+
+  .finish {
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    color: $blue;
+    min-height: 25px;
+    span {
+      cursor: pointer;
+    }
+
+    span:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .finishDisabled {
+    color: $gray;
+
+    span {
+      cursor: not-allowed;
+    }
+
+    span:hover {
+      text-decoration: none;
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+
+  table, td, th {
+    border: 1px solid rgba(0, 0, 0, .1);
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  td {
+    height: 50px;
+    vertical-align: middle;
+  }
+
+  th {
+    font-weight: bold;
+  }
+}

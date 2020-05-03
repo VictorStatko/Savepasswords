@@ -13,6 +13,7 @@ import {ReactComponent as NewFolderIcon} from 'images/icons/new-folder.svg';
 import {ReactComponent as FolderIcon} from 'images/icons/folder.svg';
 import {ReactComponent as EditIcon} from 'images/icons/edit.svg';
 import {ReactComponent as ShareIcon} from 'images/icons/share.svg';
+import {ReactComponent as SettingIcon} from 'images/icons/settings.svg';
 import * as PropTypes from "prop-types";
 
 const Icon = ({name, styles, onClick}) => {
@@ -45,6 +46,8 @@ const Icon = ({name, styles, onClick}) => {
             return (<EditIcon className={styles} onClick={onClick}/>);
         case 'share':
             return (<ShareIcon className={styles} onClick={onClick}/>);
+        case 'settings':
+            return (<SettingIcon className={styles} onClick={onClick}/>);
         default:
             return null;
     }

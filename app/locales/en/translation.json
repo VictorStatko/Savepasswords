@@ -50,6 +50,7 @@
 
 "profile.dropdownItem.signOut": "Sign out",
 "sidebar.item.accounts": "Accounts",
+"sidebar.item.settings": "Settings",
 
 "personalAccounts.header": "Accounts",
 "personalAccounts.modal.header.new": "Add new account",
@@ -99,5 +100,16 @@
  "personalAccountsFolders.removeConfirmation.folderName": "Folder name:",
  "personalAccountsFolders.removeConfirmation.option.folderOnly": "Remove folder without accounts (accounts will be moved to unfoldered items)",
  "personalAccountsFolders.removeConfirmation.option.withAccounts": "Remove folder and all its accounts",
- "exceptions.folderAlreadyExists": "Personal account folder with specified name already exists."
+ "exceptions.folderAlreadyExists": "Personal account folder with specified name already exists.",
+
+ "settings.header": "Application settings",
+ "settings.menu.item.SECURITY": "Security",
+ "settings.menu.item.WITH_ACCOUNTS": "Account",
+ "settings.security.activityHistory": "Activity history",
+ "settings.security.current": "Current",
+ "settings.security.date": "Date",
+ "settings.security.systemInformation": "System",
+ "settings.security.geoInformation": "GEO",
+ "settings.security.finishAllSessions": "Finish all sessions",
+ "settings.security.finishSuccess": "All sessions successfully finished (except for the current)."
 }

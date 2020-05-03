@@ -6,6 +6,7 @@ import GuestRoute from "utils/routes/GuestRoute";
 import PersonalAccounts from "pages/private/PersonalAccounts";
 import PrivatePage from "containers/PrivatePage";
 import NotFoundPage from "pages/private/404";
+import Settings from "pages/private/Settings";
 
 const App = () => (
     <Switch>
@@ -13,6 +14,7 @@ const App = () => (
         <GuestRoute path="/sign-in" component={props => (<GuestPage {...props} process="sign-in"/>)}/>
         <PrivateRoute exact path="/" component={() => ( <Redirect to="/accounts"/>)}/>
         <PrivateRoute exact path="/accounts" component={props => (<PrivatePage {...props} component={<PersonalAccounts/>}/>)}/>
+        <PrivateRoute exact path="/settings" component={props => (<PrivatePage {...props} component={<Settings/>}/>)}/>
         <PrivateRoute component={props => (<PrivatePage {...props} component={<NotFoundPage/>}/>)}/>
     </Switch>
 );

@@ -106,7 +106,7 @@ class PersonalAccounts extends React.Component {
             <React.Fragment>
                 <Row className={styles.headerRow}>
                     <Col>
-                        <h1 className={styles.header}>{t('personalAccounts.header')}</h1>
+                        <h1>{t('personalAccounts.header')}</h1>
                     </Col>
                     <Col className="d-flex justify-content-end">
                         <ButtonRow/>

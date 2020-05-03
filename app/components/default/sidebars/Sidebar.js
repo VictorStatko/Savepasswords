@@ -37,6 +37,7 @@ class Sidebar extends React.Component {
                     <img src={logo} className={styles.logo} onClick={() => history.push('/accounts')}/>
                     <span className={styles.closebtn} onClick={this.toggleSidebar}>&times;</span>
                     <a onClick={() => history.push('/accounts')}>  <Icon name='password' styles={styles.icon}/> {t('sidebar.item.accounts')}</a>
+                    <a onClick={() => history.push('/settings')}>  <Icon name='settings' styles={styles.icon}/> {t('sidebar.item.settings')}</a>
                 </div>
             </React.Fragment>
         );
