@@ -49,6 +49,11 @@ public class PersonalAccountService {
         personalAccountRepository.delete(personalAccount);
     }
 
+    @Transactional
+    public void deleteAllByEntityId(Long accountEntityId) {
+        personalAccountRepository.deleteAllByAccountEntityId(accountEntityId);
+    }
+
     public PersonalAccount findOneByUuid(UUID accountUuid) {
         Long accountEntityId = securityUtils.getCurrentAccountEntityId();
         JPAQuery<PersonalAccount> query = expressionsBuilder.createUuidAccountEntityIdQuery(accountUuid, accountEntityId);

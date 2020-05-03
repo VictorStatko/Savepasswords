@@ -16,10 +16,19 @@ import java.util.UUID;
 public class AccountDataService {
 
     private final AccountDataRepository accountDataRepository;
+    private final PersonalAccountService personalAccountService;
+    private final PersonalAccountFolderService personalAccountFolderService;
 
     @Transactional
     public AccountData save(AccountData accountData) {
         return accountDataRepository.save(accountData);
+    }
+
+    @Transactional
+    public void fullRemove(AccountData accountData) {
+        personalAccountService.deleteAllByEntityId(accountData.getId());
+        personalAccountFolderService.removeAllByAccountEntityId(accountData.getId());
+        accountDataRepository.delete(accountData);
     }
 
     public AccountData internalGetById(Long id) {

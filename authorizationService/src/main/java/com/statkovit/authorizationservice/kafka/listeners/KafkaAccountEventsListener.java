@@ -7,6 +7,7 @@ import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkolibraries.kafkaUtils.enums.AccountKafkaActions;
 import com.statkovit.authorizationservice.entities.OutboxEvent;
 import com.statkovit.authorizationservice.events.AccountCreatedEvent;
+import com.statkovit.authorizationservice.events.AccountRemovedEvent;
 import com.statkovit.authorizationservice.repositories.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -37,6 +38,25 @@ public class KafkaAccountEventsListener {
                 KafkaTopics.Accounts.TOPIC_NAME,
                 objectMapper.writeValueAsString(kafkaMessage),
                 accountCreatedEvent.getAccount().getUuid().toString()
+        );
+
+        outboxEvent = outboxEventRepository.save(outboxEvent);
+
+        logOutboxEvent(outboxEvent);
+    }
+
+    @EventListener
+    @Transactional
+    @SneakyThrows(IOException.class)
+    public void onAccountRemoved(AccountRemovedEvent accountRemovedEvent) {
+        KafkaMessage kafkaMessage = new KafkaMessage(
+                AccountKafkaActions.ACCOUNT_REMOVED, objectMapper.writeValueAsString(accountRemovedEvent.getAccount())
+        );
+
+        OutboxEvent outboxEvent = new OutboxEvent(
+                KafkaTopics.Accounts.TOPIC_NAME,
+                objectMapper.writeValueAsString(kafkaMessage),
+                accountRemovedEvent.getAccount().getUuid().toString()
         );
 
         outboxEvent = outboxEventRepository.save(outboxEvent);

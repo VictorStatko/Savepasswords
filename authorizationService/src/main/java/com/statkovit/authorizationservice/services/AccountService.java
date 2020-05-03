@@ -4,6 +4,7 @@ import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkolibraries.utils.SecuredRandomStringGenerator;
 import com.statkovit.authorizationservice.entities.Account;
 import com.statkovit.authorizationservice.events.AccountCreatedEvent;
+import com.statkovit.authorizationservice.events.AccountRemovedEvent;
 import com.statkovit.authorizationservice.mappers.AccountKafkaMapper;
 import com.statkovit.authorizationservice.payload.AccountDto;
 import com.statkovit.authorizationservice.properties.CustomProperties;
@@ -33,6 +34,7 @@ public class AccountService {
     private final CustomProperties customProperties;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AccountKafkaMapper accountKafkaMapper;
+    private final AuthSessionService authSessionService;
 
     @Transactional
     public Account create(AccountDto accountDto) {
@@ -74,6 +76,17 @@ public class AccountService {
         );
 
         return account;
+    }
+
+    @Transactional
+    public void remove(Account account) {
+        accountRepository.delete(account);
+
+        applicationEventPublisher.publishEvent(
+                new AccountRemovedEvent(accountKafkaMapper.toDto(account))
+        );
+
+        authSessionService.clearAllSessions();
     }
 
     public Account getByEmail(String email) {

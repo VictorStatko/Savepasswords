@@ -16,4 +16,6 @@ public interface PersonalAccountFolderRepository extends JpaRepository<PersonalA
     boolean existsByUuidAndAccountEntityId(UUID uuid, Long accountEntityId);
 
     List<PersonalAccountFolder> findAllByAccountEntityId(Long accountEntityId);
+
+    void deleteAllByAccountEntityId(Long accountEntityId);
 }

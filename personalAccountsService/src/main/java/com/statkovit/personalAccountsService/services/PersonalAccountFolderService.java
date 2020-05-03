@@ -62,4 +62,9 @@ public class PersonalAccountFolderService {
 
         personalAccountFolderRepository.delete(folder);
     }
+
+    @Transactional
+    public void removeAllByAccountEntityId(Long accountEntityId) {
+        personalAccountFolderRepository.deleteAllByAccountEntityId(accountEntityId);
+    }
 }

@@ -28,6 +28,13 @@ public class AccountDataDomainService {
         accountDataService.save(data);
     }
 
+    @Transactional
+    public void remove(AccountDataDto dto) {
+        AccountData data = accountDataService.internalGetById(dto.getId());
+
+        accountDataService.fullRemove(data);
+    }
+
     public AccountDataForSharingDto getAccountDataForSharing(String accountEmail) {
         AccountData accountData = accountDataService.internalGetByEmail(accountEmail);
 

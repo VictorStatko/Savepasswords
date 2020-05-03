@@ -30,7 +30,7 @@ public class AuthSessionDomainService {
 
     public List<SessionDto> getSessionsList() {
         Optional<String> currentBearerToken = WebUtils.getBearerTokenValue();
-        List<OAuth2AccessToken> accessTokens = authSessionService.getSessionsList();
+        List<OAuth2AccessToken> accessTokens = authSessionService.getNotExpiredSessionsList();
         List<SessionDto> dtos = new ArrayList<>();
 
         accessTokens.forEach(oAuth2AccessToken -> {

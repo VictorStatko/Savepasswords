@@ -6,4 +6,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 public interface PersonalAccountRepository extends JpaRepository<PersonalAccount, Long>, QuerydslPredicateExecutor<PersonalAccount> {
 
+    void deleteAllByAccountEntityId(Long accountEntityId);
+
 }

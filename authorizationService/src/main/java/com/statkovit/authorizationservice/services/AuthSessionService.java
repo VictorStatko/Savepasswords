@@ -27,7 +27,7 @@ public class AuthSessionService {
         consumerTokenServices.revokeToken(getCurrentToken());
     }
 
-    public List<OAuth2AccessToken> getSessionsList() {
+    public List<OAuth2AccessToken> getNotExpiredSessionsList() {
         OAuth2Authentication oauth2Authentication = (OAuth2Authentication) authenticationFacade.getAuthentication();
         OAuth2Request clientAuthentication = oauth2Authentication.getOAuth2Request();
 
@@ -37,9 +37,15 @@ public class AuthSessionService {
                 .collect(Collectors.toList());
     }
 
+    public void clearAllSessions() {
+        final List<OAuth2AccessToken> tokens = getNotExpiredSessionsList();
+
+        tokens.forEach(token -> consumerTokenServices.revokeToken(token.getValue()));
+    }
+
     public void clearAllSessionsExceptCurrent() {
         final String currentToken = getCurrentToken();
-        final List<OAuth2AccessToken> tokens = getSessionsList();
+        final List<OAuth2AccessToken> tokens = getNotExpiredSessionsList();
 
         tokens.stream()
                 .filter(token -> !currentToken.equals(token.getValue()))

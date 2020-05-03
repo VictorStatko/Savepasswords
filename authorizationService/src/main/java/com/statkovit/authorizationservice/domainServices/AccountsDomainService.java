@@ -41,6 +41,15 @@ public class AccountsDomainService {
         return accountMapper.toDto(account);
     }
 
+    @Transactional
+    public void removeCurrentAccount() {
+        Account account = accountService.getByEmail(
+                authenticationFacade.getAuthentication().getName()
+        );
+
+        accountService.remove(account);
+    }
+
     public KeyPairDto getCurrentAccountKeypair() {
         Pair<String, String> keypair = accountService.getAccountKeypair(
                 authenticationFacade.getAuthentication().getName()

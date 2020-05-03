@@ -37,6 +37,12 @@ public class AccountController {
         return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping(CONTROLLER_ROUTE + "/current")
+    public ResponseEntity<?> removeCurrentAccount() {
+        accountsDomainService.removeCurrentAccount();
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(CONTROLLER_ROUTE + "/current/keypair")
     public ResponseEntity<KeyPairDto> getCurrentAccountKeypair() {
         KeyPairDto dto = accountsDomainService.getCurrentAccountKeypair();

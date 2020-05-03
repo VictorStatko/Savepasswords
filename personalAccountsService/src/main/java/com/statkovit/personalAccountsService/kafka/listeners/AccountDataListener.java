@@ -38,10 +38,14 @@ public class AccountDataListener {
     ) {
         logMessageReceive(message, idempotencyKey);
 
+        AccountDataDto dataDto = objectMapper.readValue(message.getPayload(), AccountDataDto.class);
+
         switch (message.getAction()) {
             case ACCOUNT_CREATED:
-                AccountDataDto dataDto = objectMapper.readValue(message.getPayload(), AccountDataDto.class);
                 accountDataDomainService.create(dataDto);
+                break;
+            case ACCOUNT_REMOVED:
+                accountDataDomainService.remove(dataDto);
                 break;
         }
 
