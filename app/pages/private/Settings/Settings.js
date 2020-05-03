@@ -7,6 +7,7 @@ import {compose} from "redux";
 import {withRouter} from "react-router-dom";
 import SettingsMenu from "components/Private/Settings/SettingsMenu";
 import SecuritySettings from "components/Private/Settings/SecuritySettings/SecuritySettings";
+import AccountSettings from "components/Private/Settings/AccountSettings";
 
 class Settings extends React.Component {
     state = {
@@ -19,6 +20,8 @@ class Settings extends React.Component {
         switch (selectedSettings) {
             case 'SECURITY':
                 return <SecuritySettings/>;
+            case 'ACCOUNTS':
+                return <AccountSettings/>;
         }
     };
 

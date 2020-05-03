@@ -104,12 +104,20 @@
 
  "settings.header": "Application settings",
  "settings.menu.item.SECURITY": "Security",
- "settings.menu.item.WITH_ACCOUNTS": "Account",
+ "settings.menu.item.ACCOUNTS": "Account",
  "settings.security.activityHistory": "Activity history",
  "settings.security.current": "Current",
  "settings.security.date": "Date",
  "settings.security.systemInformation": "System",
  "settings.security.geoInformation": "GEO",
  "settings.security.finishAllSessions": "Finish all sessions",
- "settings.security.finishSuccess": "All sessions successfully finished (except for the current)."
+ "settings.security.finishSuccess": "All sessions successfully finished (except for the current).",
+
+ "settings.account.deepRemove": "Deep account deletion",
+ "settings.account.deepRemoveConfirmation.header": "Deep account remove confirmation",
+ "settings.account.deepRemoveConfirmation.question": "Are you sure you want to execute the complete deletion of your account from the system?",
+ "settings.account.deepRemoveConfirmation.info": "All your data will be permanently deleted.",
+ "settings.account.deepRemove.info": "Account was successfully removed."
+
+
 }

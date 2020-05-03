@@ -1,0 +1,19 @@
+@import 'styles/global-modal-styles';
+@import "styles/colors";
+
+.submitButton {
+  background-color: $red;
+  color: $white;
+}
+
+.submitButton:hover {
+  background-color: $dark-red;
+}
+
+.submitButton:disabled {
+  background-color: $red-half-opacity;
+}
+
+.submitButton:disabled:hover {
+  background-color: $red-half-opacity;
+}
