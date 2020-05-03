@@ -9,7 +9,8 @@ import {
     isStringMaxLengthValid,
     isStringMinLengthValid,
     MAX_LENGTH_EMAIL,
-    MAX_LENGTH_PASSWORD, MIN_LENGTH_PASSWORD
+    MAX_LENGTH_PASSWORD,
+    MIN_LENGTH_PASSWORD
 } from "utils/validationUtils";
 import {compose} from "redux";
 import {connect} from "react-redux";
@@ -18,6 +19,7 @@ import {PrimaryButton} from "components/default/buttons/Button/Button";
 class FormUserDetails extends Component {
     state = {
         passwordError: '',
+        repeatPasswordError: '',
         emailError: ''
     };
 
@@ -34,8 +36,9 @@ class FormUserDetails extends Component {
     validate = () => {
         const validPassword = this.validatePassword();
         const validEmail = this.validateEmail();
+        const validRepeatPassword = this.validateRepeatPassword();
 
-        return validPassword && validEmail;
+        return validPassword && validEmail && validRepeatPassword;
     };
 
     validateEmail = () => {
@@ -55,6 +58,24 @@ class FormUserDetails extends Component {
         } else if (!isStringMaxLengthValid(email, MAX_LENGTH_EMAIL)) {
             this.setState({
                 emailError: t('global.validation.maxLength', {maxLength: MAX_LENGTH_EMAIL})
+            });
+            valid = false;
+        }
+
+        return valid;
+    };
+
+    validateRepeatPassword = () => {
+        const {t, repeatPassword, password} = this.props;
+        let valid = true;
+        if (isEmpty(repeatPassword)) {
+            this.setState({
+                repeatPasswordError: t('global.validation.notEmpty')
+            });
+            valid = false;
+        } else if (repeatPassword !== password) {
+            this.setState({
+                repeatPasswordError: t('signUp.passwordNotEqual')
             });
             valid = false;
         }
@@ -103,10 +124,19 @@ class FormUserDetails extends Component {
         this.props.handleChange('password', e.target.value);
     };
 
+    handleRepeatChange = e => {
+
+        this.setState({
+            repeatPasswordError: ''
+        });
+
+        this.props.handleChange('repeatPassword', e.target.value);
+    };
+
 
     render() {
-        const {t, password, email, loading, serverError} = this.props;
-        const {passwordError, emailError} = this.state;
+        const {t, password, repeatPassword, email, loading, serverError} = this.props;
+        const {passwordError, emailError, repeatPasswordError} = this.state;
 
         return (
             <React.Fragment>
@@ -115,6 +145,10 @@ class FormUserDetails extends Component {
                 <TextInput id="password" secret label={t('signUp.passwordLabel')} className={styles.textInput}
                            value={password}
                            onChange={this.handlePasswordChange} error={passwordError}/>
+                <TextInput id="repeatPassword" secret label={t('signUp.passwordLabelRepeat')}
+                           className={styles.textInput}
+                           value={repeatPassword}
+                           onChange={this.handleRepeatChange} error={repeatPasswordError}/>
                 {isEmpty(serverError) ? null : <div className={styles.serverError}>{serverError}</div>}
                 <div className={styles.buttonContainer}>
                     <PrimaryButton type="submit" disabled={loading} loading={loading} onClick={this.submit}
@@ -139,6 +173,7 @@ FormUserDetails.propTypes = {
     email: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
     password: PropTypes.string.isRequired,
+    repeatPassword: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired
 };
 

@@ -15,6 +15,7 @@ class SignUpForm extends Component {
     state = {
         email: "",
         password: "",
+        repeatPassword: "",
         serverError: '',
         loading: false
     };
@@ -63,6 +64,7 @@ class SignUpForm extends Component {
                     <FormUserDetails
                         handleChange={this.handleChange}
                         password={this.state.password}
+                        repeatPassword={this.state.repeatPassword}
                         email={this.state.email}
                         loading={this.state.loading}
                         serverError={this.state.serverError}
