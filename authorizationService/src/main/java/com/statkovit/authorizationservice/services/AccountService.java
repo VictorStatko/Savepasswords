@@ -24,6 +24,7 @@ import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AccountService {
 
     private final PasswordEncoder passwordEncoder;
@@ -75,7 +76,6 @@ public class AccountService {
         return account;
     }
 
-    @Transactional(readOnly = true)
     public Account getByEmail(String email) {
         return accountRepository.getByEmail(email).orElseThrow(
                 () -> new LocalizedException(
@@ -85,7 +85,6 @@ public class AccountService {
         );
     }
 
-    @Transactional(readOnly = true)
     public Pair<String, String> getAccountKeypair(String email) {
         final Account account = getByEmail(email);
 

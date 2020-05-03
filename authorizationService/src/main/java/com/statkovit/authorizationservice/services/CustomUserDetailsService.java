@@ -19,12 +19,12 @@ import java.util.Collections;
 @Service
 @Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return accountRepository.getByEmail(email)
                 .map(CustomUserDetails::new)

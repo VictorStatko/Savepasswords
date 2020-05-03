@@ -11,11 +11,11 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    @Transactional(readOnly = true)
     public Role getAccountOwnerRole() {
         return getRoleByAuthority(RoleName.ACCOUNT_OWNER);
     }

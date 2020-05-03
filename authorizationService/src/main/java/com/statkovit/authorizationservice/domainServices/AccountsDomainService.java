@@ -11,14 +11,17 @@ import com.statkovit.authorizationservice.utils.AuthenticationFacade;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class AccountsDomainService {
     private final AccountMapper accountMapper;
     private final AccountService accountService;
     private final AuthenticationFacade authenticationFacade;
 
+    @Transactional
     public AccountDto create(AccountDto accountDto) {
         Account account = accountService.create(accountDto);
         return accountMapper.toDto(account);

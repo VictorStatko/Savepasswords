@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomAuthClientDetailsService implements ClientDetailsService {
 
     private final AuthClientRepository authClientRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         return authClientRepository.findByClientId(clientId).orElseThrow(
                 () -> new NoSuchClientException(String.format("Client with id %s is not found!", clientId))
