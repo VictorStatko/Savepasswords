@@ -767,12 +767,3 @@ export async function rsaDecrypt (privateKey, encryptedData) {
 
     return arrayBufferToString(decrypted);
 }
-
-/* const data = 'qwertyui';
-        console.log(data);
-        const publicKey = await indexedDBService.loadPublicKey();
-        const encrypted = await rsaEncrypt(publicKey.key, data);
-        console.log(encrypted);
-        const privateKey = await indexedDBService.loadPrivateKey();
-        const decrypted = await rsaDecrypt(privateKey.key, encrypted);
-        console.log(decrypted);*/

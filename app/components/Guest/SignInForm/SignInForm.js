@@ -119,17 +119,17 @@ class SignInForm extends Component {
         const {email, password, emailError, passwordError, serverError} = this.state;
 
         return (
-            <form onSubmit={this.onSubmit}>
+            <form onSubmit={this.onSubmit} className={styles.formContainerSignIn}>
                 <TextInput id="email" label={t('signIn.emailLabel')} className={styles.textInput} value={email}
                            onChange={e => this.handleChange('email', e.target.value)} error={emailError}/>
                 <TextInput id="password" secret label={t('signIn.passwordLabel')} className={styles.textInput} value={password}
                            onChange={e => this.handleChange('password', e.target.value)} error={passwordError}/>
                 <div className={styles.serverError}>{serverError}</div>
-                <div className={styles.buttonContainer}>
+                <div className={`${styles.buttonContainer} ${styles.buttonSignIn}`}>
                     <PrimaryButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
                 </div>
                 <div className={styles.changePageLink}>
-                    <Link to={'/sign-up'}>{t('signIn.notRegisteredLink.part1')}<br/>{t('signIn.notRegisteredLink.part2')}</Link>
+                    <Link to={'/sign-up'}><span className={styles.newAccount}>{(t('signIn.createAccount'))}</span></Link>
                 </div>
             </form>
         );

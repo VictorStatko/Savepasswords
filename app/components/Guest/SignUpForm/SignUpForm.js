@@ -16,7 +16,7 @@ class SignUpForm extends Component {
         email: "",
         password: "",
         repeatPassword: "",
-        serverError: '',
+        serverError: "",
         loading: false
     };
 
@@ -37,6 +37,14 @@ class SignUpForm extends Component {
                 email: this.state.email,
                 password: this.state.password,
             });
+
+            this.setState({
+                email: "",
+                password: "",
+                repeatPassword: "",
+                serverError: ""
+            });
+            toast.success(i18n.t('signUp.confirmationNeeded'));
         } catch (error) {
             if (error && error.message && error.message === 'showOnForm') {
                 this.setState({
@@ -45,14 +53,9 @@ class SignUpForm extends Component {
             } else {
                 console.error(error);
             }
-
-            throw e;
         } finally {
             await setStateAsync(this, {loading: false});
         }
-
-        toast.success(i18n.t('signUp.success'));
-        history.push('/sign-in');
     };
 
     render() {
@@ -71,8 +74,10 @@ class SignUpForm extends Component {
                     />
                 </form>
                 <div className={styles.changePageLink}>
-                    <Link
-                        to={'/sign-in'}>{t('signUp.alreadyRegisteredLink.part1')}<br/>{t('signUp.alreadyRegisteredLink.part2')}
+                    <Link to={'/sign-in'}><span className={styles.existingAccount}>{t('signUp.useExistingAccount')}</span>
+                    </Link>
+                   {/* //TODO open modal*/}
+                    <Link to={'/sign-in'}><span className={styles.verificationCodeIssues}>{t('signUp.verificationCodeIssues')}</span>
                     </Link>
                 </div>
             </React.Fragment>
