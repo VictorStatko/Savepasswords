@@ -1,4 +1,4 @@
-package com.statkovit.authorizationservice.properties;
+package com.statkovit.emailservice.properties;
 
 
 import lombok.Getter;
@@ -13,25 +13,14 @@ import org.springframework.context.annotation.Configuration;
 public class CustomProperties {
 
     private Kafka kafka;
-
-    private Aes aes;
-
-    private IpStack ipstack;
-
-    private Registration registration;
+    private Aws aws;
+    private Email email;
+    private Frontend frontend;
 
     @Getter
     @Setter
     public static final class Kafka {
-        private Outbox outbox;
         private Producer producer;
-
-
-        @Getter
-        @Setter
-        public static final class Outbox {
-            private Long fixedRateInMs;
-        }
 
         @Getter
         @Setter
@@ -40,23 +29,22 @@ public class CustomProperties {
         }
     }
 
-
     @Getter
     @Setter
-    public static final class Aes {
-        private String key;
-    }
-
-
-    @Getter
-    @Setter
-    public static final class IpStack {
+    public static final class Aws {
         private String accessKey;
+        private String secretKey;
     }
 
     @Getter
     @Setter
-    public static final class Registration {
-        private int confirmationTokenExpirationInHours;
+    public static final class Email {
+        private String from;
+    }
+
+    @Getter
+    @Setter
+    public static final class Frontend {
+        private String url;
     }
 }

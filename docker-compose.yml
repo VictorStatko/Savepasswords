@@ -173,6 +173,42 @@ services:
       - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
       - KAFKA_BROKERS_URLS=${KAFKA_BROKERS_URLS}
 
+  email-redis:
+    ports:
+      - "5009:6379"
+    image: redis:5.0.6
+    command: redis-server --requirepass ${EMAIL_SERVICE_REDIS_PASSWORD}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h email-redis -p 6379 -a ${EMAIL_SERVICE_REDIS_PASSWORD} --no-auth-warning ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - /home/victor/development/data/docker/personal-accounts-redis/data:/data
+
+  email-service:
+    ports:
+      - "8891:8891"
+    build:
+      context: ./emailService
+      dockerfile: docker/Dockerfile
+      target: run
+    depends_on:
+      configuration-service:
+        condition: service_healthy
+      email-redis:
+        condition: service_healthy
+      kafka3:
+        condition: service_started
+    environment:
+      - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
+      - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
+      - KAFKA_BROKERS_URLS=${KAFKA_BROKERS_URLS}
+      - REDIS_CLUSTERS=${EMAIL_SERVICE_REDIS_CLUSTERS}
+      - REDIS_PASSWORD=${EMAIL_SERVICE_REDIS_PASSWORD}
+      - FRONTEND_URL=${FRONTEND_URL}
+
   zookeeper1:
     image: bitnami/zookeeper:3.5.6
     restart: always

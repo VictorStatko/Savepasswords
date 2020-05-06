@@ -3,12 +3,14 @@ package com.statkovit.authorizationservice.services;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkolibraries.utils.SecuredRandomStringGenerator;
 import com.statkovit.authorizationservice.entities.Account;
-import com.statkovit.authorizationservice.events.AccountCreatedEvent;
+import com.statkovit.authorizationservice.events.AccountVerifiedEvent;
+import com.statkovit.authorizationservice.events.AccountVerificationRequestedEvent;
 import com.statkovit.authorizationservice.events.AccountRemovedEvent;
 import com.statkovit.authorizationservice.mappers.AccountKafkaMapper;
 import com.statkovit.authorizationservice.payload.AccountDto;
 import com.statkovit.authorizationservice.properties.CustomProperties;
 import com.statkovit.authorizationservice.repositories.AccountRepository;
+import com.statkovit.authorizationservice.services.RegistrationConfirmationVerificationService.VerificationCode;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,6 +37,7 @@ public class AccountService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AccountKafkaMapper accountKafkaMapper;
     private final AuthSessionService authSessionService;
+    private final RegistrationConfirmationVerificationService registrationConfirmationVerificationService;
 
     @Transactional
     public Account create(AccountDto accountDto) {
@@ -54,6 +57,7 @@ public class AccountService {
         account.setEmail(accountDto.getEmail());
         account.setRole(roleService.getAccountOwnerRole());
         account.setPublicKey(accountDto.getPublicKey());
+        account.setEnabled(false);
 
         String privateKeySalt = new String(
                 Hex.encode(
@@ -71,8 +75,26 @@ public class AccountService {
 
         account = accountRepository.save(account);
 
+        VerificationCode verificationCode = registrationConfirmationVerificationService.createNewVerificationCode(account.getId());
+
         applicationEventPublisher.publishEvent(
-                new AccountCreatedEvent(accountKafkaMapper.toDto(account))
+                new AccountVerificationRequestedEvent(
+                        account.getEmail(), account.getUuid(), verificationCode.getVerificationCode(), verificationCode.getExpirationInHours()
+                )
+        );
+
+        return account;
+    }
+
+    @Transactional
+    public Account confirmRegistration(String verificationCode) {
+        Long accountId = registrationConfirmationVerificationService.confirmRegistration(verificationCode);
+        Account account = getById(accountId);
+        account.setEnabled(true);
+        account = accountRepository.save(account);
+
+        applicationEventPublisher.publishEvent(
+                new AccountVerifiedEvent(accountKafkaMapper.toDto(account))
         );
 
         return account;
@@ -94,6 +116,15 @@ public class AccountService {
                 () -> new LocalizedException(
                         new EntityNotFoundException("Account with email = " + email + " has not been found."),
                         "exceptions.accountNotFoundByEmail"
+                )
+        );
+    }
+
+    public Account getById(Long id) {
+        return accountRepository.findById(id).orElseThrow(
+                () -> new LocalizedException(
+                        new EntityNotFoundException("Account with id = " + id + " has not been found."),
+                        "exceptions.accountNotFoundById"
                 )
         );
     }

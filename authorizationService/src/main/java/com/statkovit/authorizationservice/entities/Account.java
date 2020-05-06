@@ -39,4 +39,7 @@ public class Account extends BaseIndexedEntity {
 
     @Column(name = "public_key", nullable = false)
     private String publicKey;
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
 }

@@ -2,32 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.statkovit</groupId>
-    <artifactId>authorizationService</artifactId>
-    <version>0.0.1</version>
-    <description>Authorization service</description>
-
-    <properties>
-        <java.version>11</java.version>
-        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-        <exceptions-library.version>0.0.2-beta1</exceptions-library.version>
-        <utils-library.version>0.0.2-beta2</utils-library.version>
-        <kafka-util-library.version>0.0.1-beta1</kafka-util-library.version>
-        <lombok.version>1.18.10</lombok.version>
-        <commons-lang.version>3.9</commons-lang.version>
-        <commons-collections.version>4.1</commons-collections.version>
-        <liquibase.version>3.8.4</liquibase.version>
-        <postgres-driver.version>42.2.9</postgres-driver.version>
-        <model-mapper.version>2.3.6</model-mapper.version>
-        <redisson.version>3.12.5</redisson.version>
-    </properties>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <groupId>com.statkovit</groupId>
+    <artifactId>emailservice</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>emailService</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>11</java.version>
+        <redisson.version>3.12.5</redisson.version>
+        <kafka-util-library.version>0.0.1-beta1</kafka-util-library.version>
+        <exceptions-library.version>0.0.2-beta1</exceptions-library.version>
+        <lombok.version>1.18.12</lombok.version>
+        <aws.version>2.13.8</aws.version>
+        <commons-collections.version>4.1</commons-collections.version>
+        <commons-lang.version>3.9</commons-lang.version>
+        <commons-io.version>2.6</commons-io.version>
+        <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
+        <javax-mail-api.version>1.6.2</javax-mail-api.version>
+        <sun-mail-api.version>1.6.2</sun-mail-api.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -41,6 +41,7 @@
             </exclusions>
         </dependency>
 
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
@@ -48,7 +49,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <dependency>
@@ -57,15 +58,17 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>${javax-mail-api.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.4.0.RELEASE</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${sun-mail-api.version}</version>
         </dependency>
+
 
 
         <dependency>
@@ -74,75 +77,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgres-driver.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.statkolibraries</groupId>
-            <artifactId>exceptions</artifactId>
-            <version>${exceptions-library.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.statkolibraries</groupId>
-            <artifactId>utils</artifactId>
-            <version>${utils-library.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>${commons-collections.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>${model-mapper.version}</version>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
         <dependency>
@@ -156,6 +92,50 @@
             <artifactId>kafkaUtils</artifactId>
             <version>${kafka-util-library.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.statkolibraries</groupId>
+            <artifactId>exceptions</artifactId>
+            <version>${exceptions-library.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>ses</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -167,9 +147,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
-    </dependencyManagement>
 
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -192,5 +179,6 @@
             </snapshots>
         </repository>
     </repositories>
+
 
 </project>

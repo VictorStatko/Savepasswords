@@ -6,8 +6,9 @@ import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkolibraries.kafkaUtils.enums.AccountKafkaActions;
 import com.statkovit.authorizationservice.entities.OutboxEvent;
-import com.statkovit.authorizationservice.events.AccountCreatedEvent;
 import com.statkovit.authorizationservice.events.AccountRemovedEvent;
+import com.statkovit.authorizationservice.events.AccountVerificationRequestedEvent;
+import com.statkovit.authorizationservice.events.AccountVerifiedEvent;
 import com.statkovit.authorizationservice.repositories.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -29,15 +30,34 @@ public class KafkaAccountEventsListener {
     @EventListener
     @Transactional
     @SneakyThrows(IOException.class)
-    public void onAccountCreated(AccountCreatedEvent accountCreatedEvent) {
+    public void onAccountVerified(AccountVerifiedEvent accountVerifiedEvent) {
         KafkaMessage kafkaMessage = new KafkaMessage(
-                AccountKafkaActions.ACCOUNT_CREATED, objectMapper.writeValueAsString(accountCreatedEvent.getAccount())
+                AccountKafkaActions.ACCOUNT_VERIFIED, objectMapper.writeValueAsString(accountVerifiedEvent.getAccount())
         );
 
         OutboxEvent outboxEvent = new OutboxEvent(
                 KafkaTopics.Accounts.TOPIC_NAME,
                 objectMapper.writeValueAsString(kafkaMessage),
-                accountCreatedEvent.getAccount().getUuid().toString()
+                accountVerifiedEvent.getAccount().getUuid().toString()
+        );
+
+        outboxEvent = outboxEventRepository.save(outboxEvent);
+
+        logOutboxEvent(outboxEvent);
+    }
+
+    @EventListener
+    @Transactional
+    @SneakyThrows(IOException.class)
+    public void onAccountVerificationRequested(AccountVerificationRequestedEvent verificationRequestedEvent) {
+        KafkaMessage kafkaMessage = new KafkaMessage(
+                AccountKafkaActions.ACCOUNT_VERIFICATION_REQUESTED, objectMapper.writeValueAsString(verificationRequestedEvent)
+        );
+
+        OutboxEvent outboxEvent = new OutboxEvent(
+                KafkaTopics.Accounts.TOPIC_NAME,
+                objectMapper.writeValueAsString(kafkaMessage),
+                verificationRequestedEvent.getUuid().toString()
         );
 
         outboxEvent = outboxEventRepository.save(outboxEvent);

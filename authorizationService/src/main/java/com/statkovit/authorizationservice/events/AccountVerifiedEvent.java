@@ -8,6 +8,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AccountCreatedEvent {
+public class AccountVerifiedEvent {
     public AccountKafkaDto account;
 }

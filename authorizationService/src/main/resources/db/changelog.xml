@@ -8,4 +8,5 @@
     <includeAll path="classpath:db/changelog/02.2020" relativeToChangelogFile="false"/>
     <includeAll path="classpath:db/changelog/03.2020" relativeToChangelogFile="false"/>
     <includeAll path="classpath:db/changelog/04.2020" relativeToChangelogFile="false"/>
+    <includeAll path="classpath:db/changelog/05.2020" relativeToChangelogFile="false"/>
 </databaseChangeLog>

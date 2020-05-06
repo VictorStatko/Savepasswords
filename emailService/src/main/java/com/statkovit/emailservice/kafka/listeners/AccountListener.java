@@ -1,14 +1,14 @@
-package com.statkovit.personalAccountsService.kafka.listeners;
+package com.statkovit.emailservice.kafka.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.statkolibraries.kafkaUtils.CustomKafkaHeaders;
 import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
-import com.statkovit.personalAccountsService.configuration.KafkaConfiguration;
-import com.statkovit.personalAccountsService.domainService.AccountDataDomainService;
-import com.statkovit.personalAccountsService.kafka.RedisKafkaManager;
-import com.statkovit.personalAccountsService.payload.AccountDataDto;
-import com.statkovit.personalAccountsService.utils.ObjectMapperUtils;
+import com.statkovit.emailservice.configuration.KafkaConfiguration;
+import com.statkovit.emailservice.kafka.RedisKafkaManager;
+import com.statkovit.emailservice.payload.AccountVerificationRequestedDto;
+import com.statkovit.emailservice.services.AccountEmailService;
+import com.statkovit.emailservice.utils.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -20,11 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class AccountDataListener {
+public class AccountListener {
 
     private final RedisKafkaManager redisKafkaManager;
     private final ObjectMapperUtils objectMapperUtils;
-    private final AccountDataDomainService accountDataDomainService;
+    private final AccountEmailService accountEmailService;
     private final ObjectMapper objectMapper;
 
     @KafkaListener(
@@ -38,16 +38,11 @@ public class AccountDataListener {
     ) {
         logMessageReceive(message, idempotencyKey);
 
-        AccountDataDto dataDto;
-
         switch (message.getAction()) {
-            case ACCOUNT_VERIFIED:
-                dataDto = objectMapper.readValue(message.getPayload(), AccountDataDto.class);
-                accountDataDomainService.create(dataDto);
-                break;
-            case ACCOUNT_REMOVED:
-                dataDto = objectMapper.readValue(message.getPayload(), AccountDataDto.class);
-                accountDataDomainService.remove(dataDto);
+            case ACCOUNT_VERIFICATION_REQUESTED:
+                accountEmailService.sendAccountVerificationEmail(
+                        objectMapper.readValue(message.getPayload(), AccountVerificationRequestedDto.class)
+                );
                 break;
         }
 

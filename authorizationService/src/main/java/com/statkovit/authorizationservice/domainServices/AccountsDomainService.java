@@ -27,6 +27,12 @@ public class AccountsDomainService {
         return accountMapper.toDto(account);
     }
 
+    @Transactional
+    public AccountDto confirmRegistration(String verificationCode) {
+        Account account = accountService.confirmRegistration(verificationCode);
+        return accountMapper.toDto(account);
+    }
+
     public ExtendedAccountDto getCurrentExtendedAccountData() {
         Account account = accountService.getByEmail(
                 authenticationFacade.getAuthentication().getName()

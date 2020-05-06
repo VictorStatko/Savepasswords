@@ -7,12 +7,15 @@ import com.statkovit.authorizationservice.payload.KeyPairDto;
 import com.statkovit.authorizationservice.payload.StringDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class AccountController {
 
     private static final String CONTROLLER_ROUTE = ServerConstants.AUTH_API_ROUTE + "accounts";
@@ -28,6 +31,16 @@ public class AccountController {
     @PostMapping(CONTROLLER_ROUTE)
     public ResponseEntity<AccountDto> createAccount(@Valid @RequestBody AccountDto accountDto) {
         AccountDto dto = accountsDomainService.create(accountDto);
+        return ResponseEntity.ok(dto);
+    }
+
+    @RequestMapping(
+            value = CONTROLLER_ROUTE,
+            method = RequestMethod.POST,
+            params = "action=confirm-registration"
+    )
+    public ResponseEntity<AccountDto> confirmRegistration(@RequestParam @NotEmpty String verificationCode) {
+        AccountDto dto = accountsDomainService.confirmRegistration(verificationCode);
         return ResponseEntity.ok(dto);
     }
 

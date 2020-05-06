@@ -38,11 +38,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         private Role role;
         private String email;
         private String password;
+        private boolean enabled;
 
         public CustomUserDetails(Account account) {
             this.role = account.getRole();
             this.email = account.getEmail();
             this.password = account.getPassword();
+            this.enabled = account.isEnabled();
         }
 
         @Override
@@ -78,7 +80,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public boolean isEnabled() {
-            return true;
+            return enabled;
         }
     }
 }

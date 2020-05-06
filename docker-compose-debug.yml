@@ -35,3 +35,10 @@ services:
       - "5010:5010"
     build:
       target: debug
+
+  email-service:
+    ports:
+      - "8891:8891"
+      - "5011:5011"
+    build:
+      target: debug
