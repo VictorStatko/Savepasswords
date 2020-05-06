@@ -104,7 +104,7 @@ a[x-apple-data-detectors] {
                        </table></td> 
                      </tr> 
                      <tr style="border-collapse:collapse;"> 
-                      <td align="left" style="padding:0;Margin:0;padding-bottom:15px;"><h2 style="Margin:0;line-height:27px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:18px;font-style:normal;font-weight:normal;color:#333333;">Registration confirmation</h2></td> 
+                      <td align="left" style="padding:0;Margin:0;"><h2 style="Margin:0;line-height:27px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:18px;font-style:normal;font-weight:normal;color:#333333;">Registration confirmation</h2></td>
                      </tr> 
                      <tr style="border-collapse:collapse;"> 
                       <td align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;">Congratulations on your successful registration on our password manager! To confirm registration and go to the site, please click on this link.<br><a target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:14px;text-decoration:none;color:#1376C8;" th:href="@{|${frontendUrl}?action=confirmRegistration&amp;verificationCode=${verificationCode}|}" th:text="@{|${frontendUrl}?action=confirmRegistration&amp;verificationCode=${verificationCode}|}">https://savepasswords.online?action=confirmRegistration&verificationCode=1ef23fsdf2fd</a><br><br></p></td>
@@ -113,9 +113,23 @@ a[x-apple-data-detectors] {
                  </tr> 
                  <tr style="border-collapse:collapse;"> 
                   <td width="560" align="center" valign="top" style="padding:0;Margin:0;"> 
-                   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;"> 
-                     <tr style="border-collapse:collapse;"> 
-                      <td align="left" style="padding:0;Margin:0;"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:18px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:27px;color:#333333;">Having a problem?<br><span style="font-size:14px;line-height:21px;">You can manually copy provided code and paste it at the verification code section on <a target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:14px;text-decoration:none;color:#1376C8;" th:href="@{|${frontendUrl}/sign-up|}" th:text="@{|${frontendUrl}/sign-up|}">https://savepasswords.online/sign-up</a> page.<br><br></span></p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;">Verification code: <strong th:text="${verificationCode}">1ef23fsdf2fd</strong></p></td>
+                   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                       <tr style="border-collapse:collapse;">
+                           <td align="left" style="Margin:0;padding: 0 0 10px;">
+                               <h2 style="Margin:0;line-height:27px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:18px;font-style:normal;font-weight:normal;color:#333333;">Having a problem?</h2>
+                           </td>
+                       </tr>
+                       <tr style="border-collapse:collapse;">
+                      <td align="left" style="Margin:0;padding: 0 0 10px;">
+                          <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;">
+                              You can manually copy provided code and paste it at the verification code section on <a target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:14px;text-decoration:none;color:#1376C8;" th:href="@{|${frontendUrl}/sign-up|}" th:text="@{|${frontendUrl}/sign-up|}">https://savepasswords.online/sign-up</a> page.
+                              <br>
+                              <br>
+                          </p>
+                          <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;">
+                              Verification code: <strong th:text="${verificationCode}">1ef23fsdf2fd</strong>
+                          </p>
+                      </td>
                      </tr> 
                    </table></td> 
                  </tr> 

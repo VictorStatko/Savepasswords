@@ -208,6 +208,8 @@ services:
       - REDIS_CLUSTERS=${EMAIL_SERVICE_REDIS_CLUSTERS}
       - REDIS_PASSWORD=${EMAIL_SERVICE_REDIS_PASSWORD}
       - FRONTEND_URL=${FRONTEND_URL}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
 
   zookeeper1:
     image: bitnami/zookeeper:3.5.6

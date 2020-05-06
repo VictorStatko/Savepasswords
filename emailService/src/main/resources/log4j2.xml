@@ -34,7 +34,7 @@
             <AppenderRef ref="RollingFile" />
         </Root>
         <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug"/>
-        <Logger name="com.statkovit.emailService" level="debug" additivity="false">
+        <Logger name="com.statkovit.emailservice" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile" />
         </Logger>

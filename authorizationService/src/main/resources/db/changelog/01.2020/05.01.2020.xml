@@ -134,17 +134,6 @@
             <column name="id" valueSequenceNext="role_id_seq"/>
             <column name="authority" value="ACCOUNT_OWNER"/>
         </insert>
-        <insert tableName="account">
-            <column name="id" valueSequenceNext="account_id_seq"/>
-            <column name="uuid" value="09561dbe-c333-449a-b490-dfd2ff9e3f17"/>
-            <column name="created_date" value="now()"/>
-            <column name="updated_date" value="now()"/>
-            <column name="version" value="1"/>
-            <column name="email" value="statkovit@gmail.com"/>
-            <column name="password" value="$2a$10$fWNTd3H.u7G/aNROVQSifebOkZ2xzU5nUPOCI2Ld42M8E25/ljJqK"/>
-            <column name="name" value="statk"/>
-            <column name="role_id" valueComputed="(SELECT MAX(id) FROM role)"/>
-        </insert>
     </changeSet>
 
     <changeSet author="Victor Statko" id="19:00.vstatko" runAlways="false">
