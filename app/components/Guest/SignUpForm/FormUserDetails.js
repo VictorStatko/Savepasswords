@@ -118,7 +118,8 @@ class FormUserDetails extends Component {
     handlePasswordChange = e => {
 
         this.setState({
-            passwordError: ''
+            passwordError: '',
+            repeatPasswordError: ''
         });
 
         this.props.handleChange('password', e.target.value);

@@ -4,14 +4,13 @@ import {PageSpinner} from "components/default/spinner/Spinner";
 import styles from "./Root.module.scss";
 import queryString from 'query-string';
 import {isNotEmpty} from "utils/stringUtils";
-import {processErrorAsNotification} from "utils/errorHandlingUtils";
 import {toast} from "react-toastify";
-import fetch from "utils/fetch";
-import {POST} from "utils/appConstants";
 import history from 'utils/history';
+import {connect} from "react-redux";
+import {compose} from "redux";
+import {accountOperations} from "ducks/account";
 
 class Root extends React.Component {
-
     state = {
         loading: false
     };
@@ -29,11 +28,9 @@ class Root extends React.Component {
                     loading: true
                 });
 
-                await fetch(POST, `auth/accounts?action=confirm-registration&verificationCode=${verificationCode}`);
+                await this.props.confirmVerification(verificationCode, false);
                 toast.success(t('signUp.confirmationSuccess'));
             }
-        } catch (e) {
-            processErrorAsNotification(e);
         } finally {
             this.setState({
                 loading: false
@@ -53,4 +50,8 @@ class Root extends React.Component {
 
 }
 
-export default withTranslation()(Root);
+const withConnect = connect(null, {
+    confirmVerification: accountOperations.confirmVerification
+});
+
+export default compose(withTranslation(), withConnect)(Root);

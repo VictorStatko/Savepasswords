@@ -8,8 +8,8 @@ import {withTranslation} from "react-i18next";
 import {Link} from "react-router-dom";
 import {toast} from 'react-toastify';
 import i18n from "i18n";
-import history from "utils/history";
 import {setStateAsync} from "utils/stateUtils";
+import VerificationCodeModal from "../VerificationCodeModal";
 
 class SignUpForm extends Component {
     state = {
@@ -17,6 +17,7 @@ class SignUpForm extends Component {
         password: "",
         repeatPassword: "",
         serverError: "",
+        verificationCodeModal: false,
         loading: false
     };
 
@@ -27,6 +28,13 @@ class SignUpForm extends Component {
             }
         );
     };
+
+    handleVerificationCodeModalToggle = () => {
+        this.setState({
+            verificationCodeModal: !this.state.verificationCodeModal
+        });
+    };
+
 
     onSubmit = async e => {
         e.preventDefault();
@@ -60,6 +68,7 @@ class SignUpForm extends Component {
 
     render() {
         const {t} = this.props;
+        const {verificationCodeModal} = this.state;
 
         return (
             <React.Fragment>
@@ -74,12 +83,17 @@ class SignUpForm extends Component {
                     />
                 </form>
                 <div className={styles.changePageLink}>
-                    <Link to={'/sign-in'}><span className={styles.existingAccount}>{t('signUp.useExistingAccount')}</span>
+                    <Link to={'/sign-in'}><span
+                        className={styles.existingAccount}>{t('signUp.useExistingAccount')}</span>
                     </Link>
-                   {/* //TODO open modal*/}
-                    <Link to={'/sign-in'}><span className={styles.verificationCodeIssues}>{t('signUp.verificationCodeIssues')}</span>
-                    </Link>
+                    <span className={styles.verificationCodeIssues}
+                          onClick={this.handleVerificationCodeModalToggle}>{t('signUp.verificationCodeIssues')}</span>
+
                 </div>
+                {verificationCodeModal ?
+                    <VerificationCodeModal close={this.handleVerificationCodeModalToggle}/>
+                    : null
+                }
             </React.Fragment>
         )
     }

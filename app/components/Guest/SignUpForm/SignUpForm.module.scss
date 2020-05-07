@@ -8,7 +8,16 @@
 .verificationCodeIssues {
   display: block;
   font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
 }
+
+.verificationCodeIssues:hover {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 @media (min-width: 400px) {
 

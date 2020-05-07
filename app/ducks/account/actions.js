@@ -89,6 +89,26 @@ export const signOut = () => async dispatch => {
     }
 };
 
+export const confirmVerification = (verificationCode, errorAsForm) => async () => {
+    try {
+        await fetch(POST, `auth/accounts?action=confirm-registration&verificationCode=${verificationCode}`);
+    } catch (error) {
+        if (errorAsForm) {
+            throw processErrorAsFormOrNotification(error);
+        } else {
+            throw processErrorAsNotification(error);
+        }
+    }
+};
+
+export const resendVerificationCode = (email) => async () => {
+    try {
+        await fetch(POST, `auth/accounts?action=resend-verification-code&email=${email}`);
+    } catch (error) {
+        throw processErrorAsFormOrNotification(error);
+    }
+};
+
 export const trySignIn = (payload) => async dispatch => {
     try {
         const clientSaltResponse = await fetch(GET, `auth/accounts/client-encryption-salt?email=${payload.username}`);

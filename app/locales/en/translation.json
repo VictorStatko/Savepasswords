@@ -12,6 +12,7 @@
 "global.serverValidationError": "An error occurred during server validation of form. Please check the entered data.",
 "global.validation.maxLength": "Field length must not exceed {{maxLength}} symbols.",
 "global.validation.minLength": "Field length must be greater than {{minLength}} symbols.",
+"global.validation.exactLength": "Field length must be {{exactLength}} symbols.",
 "global.validation.notEmpty": "Field must not be empty.",
  "global.validation.email": "Please enter valid email address",
 "global.authError": "Problems with authorization. Try again later or contact your system administrator.",
@@ -32,8 +33,20 @@
 "signUp.useExistingAccount": "Use existing account",
 "signUp.verificationCodeIssues": "Verification code issues",
 "signUp.confirmationNeeded": "Sign up was successful. Please check your email for registration confirmation.",
+"signUp.resendCodeSuccess": "Verification code successfully resent. Please check your email for registration confirmation.",
 "signUp.confirmationSuccess": "Email successfully verified. Please sign in.",
 "exceptions.registrationTokenNotFound": "The verification code is not found or is no longer valid. Please check the data or request the code again.",
+"exceptions.accountAlreadyVerified": "Account with this email is already verified.",
+
+"verificationCodeModal.header": "Verification code issues",
+
+"verificationCodeModal.option.enter": "I already have verification code and would like to enter it manually",
+"verificationCodeModal.option.text": "I did not receive a verification code and would like to resend it",
+
+"verificationCodeModal.enter.text": "Please enter the verification code sent to you by email.",
+"verificationCodeModal.enter.placeholder": "Verification code",
+"verificationCodeModal.resend.text": "Please enter the email with which you registered in the system.",
+"verificationCodeModal.resend.placeholder": "Email",
 
 "signIn.title": "Sign in",
 "signIn.createAccount": "Create new account",

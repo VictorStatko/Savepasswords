@@ -1,0 +1,29 @@
+@import 'styles/global-modal-styles';
+@import "styles/colors";
+
+.footer {
+  border-top: 0 !important;
+}
+
+.header {
+  border-bottom: 0 !important;
+}
+
+.text {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 991px) {
+
+  .body {
+    margin-top: 1rem;
+    min-height: 130px;
+  }
+}
+
+.serverError {
+  color: $red;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: bold;
+}
