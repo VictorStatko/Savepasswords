@@ -10,46 +10,59 @@ import {compose} from "redux";
 import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL, MAX_LENGTH_PASSWORD} from "utils/validationUtils";
 import history from 'utils/history';
 import {PrimaryButton} from "components/default/buttons/Button/Button";
-import {setStateAsync} from "utils/stateUtils";
+import Recaptcha from "components/default/recaptcha";
 
 class SignInForm extends Component {
-    state = {
-        email: '',
-        password: '',
-        emailError: '',
-        passwordError: '',
-        serverError: '',
-        loading: false
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            password: '',
+            emailError: '',
+            passwordError: '',
+            serverError: '',
+            loading: false,
+            captchaReady: false,
+            captchaVerified: false,
+            captchaRendered: false,
+            loginAttempt: 1
+        };
+        this.captcha = null;
+    }
 
-    handleChange = (input, value) => {
-        this.setState({
-            [input]: value,
-            [input + 'Error']: '',
-            serverError: ''
-        });
-    };
-
-    onSubmit = async e => {
+    onSubmit = async (e) => {
         e.preventDefault();
-
-        const {email, password} = this.state;
 
         if (!this.validate()) {
             return;
         }
 
+        if (this.state.loginAttempt > 1 && !this.state.captchaVerified) {
+            if (!this.state.captchaRendered) {
+                await this.captcha.renderExplicitly();
+            }
+            return;
+        }
+
         try {
-            await setStateAsync(this, {loading: true});
+            this.setState({loading: true});
+
+            const {email, password} = this.state;
 
             await this.props.trySignIn({
                 username: email,
                 password: password
             });
 
+            this.setState({loading: false});
+
             history.push('/accounts');
         } catch (error) {
-            await setStateAsync(this, {loading: false});
+
+            this.setState({
+                loading: false,
+                loginAttempt: this.state.loginAttempt + 1
+            });
 
             if (error && error.message && error.message === 'showOnForm') {
                 this.setState({
@@ -59,6 +72,14 @@ class SignInForm extends Component {
                 console.error(error);
             }
         }
+    };
+
+    handleChange = (input, value) => {
+        this.setState({
+            [input]: value,
+            [input + 'Error']: '',
+            serverError: ''
+        });
     };
 
     validate = () => {
@@ -114,22 +135,36 @@ class SignInForm extends Component {
         return valid;
     };
 
+    renderRecaptcha = () => {
+        return <Recaptcha classRef={e => (this.captcha = e)}
+                          onVerify={() => this.setState({captchaVerified: true})}
+                          onLoad={() => this.setState({captchaReady: true})}
+                          onRender={() => this.setState({captchaRendered: true})}/>
+    };
+
     render() {
         const {t} = this.props;
-        const {email, password, emailError, passwordError, serverError} = this.state;
+        const {email, password, emailError, passwordError, serverError, captchaReady, loading, captchaVerified, captchaRendered} = this.state;
 
         return (
             <form onSubmit={this.onSubmit} className={styles.formContainerSignIn}>
                 <TextInput id="email" label={t('signIn.emailLabel')} className={styles.textInput} value={email}
                            onChange={e => this.handleChange('email', e.target.value)} error={emailError}/>
-                <TextInput id="password" secret label={t('signIn.passwordLabel')} className={styles.textInput} value={password}
+                <TextInput id="password" secret label={t('signIn.passwordLabel')} className={styles.textInput}
+                           value={password}
                            onChange={e => this.handleChange('password', e.target.value)} error={passwordError}/>
                 <div className={styles.serverError}>{serverError}</div>
+                <div className={styles.recaptchaContainer}>
+                    {this.renderRecaptcha()}
+                </div>
                 <div className={`${styles.buttonContainer} ${styles.buttonSignIn}`}>
-                    <PrimaryButton type="submit" disabled={this.state.loading} content={t('global.submit')} loading={this.state.loading}/>
+                    <PrimaryButton type="submit"
+                                   disabled={loading || !captchaReady || (captchaRendered && !captchaVerified)}
+                                   content={t('global.submit')} loading={loading}/>
                 </div>
                 <div className={styles.changePageLink}>
-                    <Link to={'/sign-up'}><span className={styles.newAccount}>{(t('signIn.createAccount'))}</span></Link>
+                    <Link to={'/sign-up'}><span
+                        className={styles.newAccount}>{(t('signIn.createAccount'))}</span></Link>
                 </div>
             </form>
         );
