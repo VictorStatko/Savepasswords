@@ -44,6 +44,16 @@ public class AccountController {
         return ResponseEntity.ok(dto);
     }
 
+    @RequestMapping(
+            value = CONTROLLER_ROUTE,
+            method = RequestMethod.POST,
+            params = "action=resend-verification-code"
+    )
+    public ResponseEntity<Void> resendVerificationCode(@RequestParam @NotEmpty String email) {
+        accountsDomainService.resendVerificationCode(email);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(CONTROLLER_ROUTE + "/current")
     public ResponseEntity<AccountDto> getCurrentAccount() {
         AccountDto dto = accountsDomainService.getCurrentAccountData();

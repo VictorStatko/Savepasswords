@@ -3,9 +3,9 @@ package com.statkovit.authorizationservice.services;
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkolibraries.utils.SecuredRandomStringGenerator;
 import com.statkovit.authorizationservice.entities.Account;
-import com.statkovit.authorizationservice.events.AccountVerifiedEvent;
-import com.statkovit.authorizationservice.events.AccountVerificationRequestedEvent;
 import com.statkovit.authorizationservice.events.AccountRemovedEvent;
+import com.statkovit.authorizationservice.events.AccountVerificationRequestedEvent;
+import com.statkovit.authorizationservice.events.AccountVerifiedEvent;
 import com.statkovit.authorizationservice.mappers.AccountKafkaMapper;
 import com.statkovit.authorizationservice.payload.AccountDto;
 import com.statkovit.authorizationservice.properties.CustomProperties;
@@ -98,6 +98,18 @@ public class AccountService {
         );
 
         return account;
+    }
+
+
+    @Transactional
+    public void resendVerificationCode(Account account) {
+        VerificationCode verificationCode = registrationConfirmationVerificationService.createNewVerificationCode(account.getId());
+
+        applicationEventPublisher.publishEvent(
+                new AccountVerificationRequestedEvent(
+                        account.getEmail(), account.getUuid(), verificationCode.getVerificationCode(), verificationCode.getExpirationInHours()
+                )
+        );
     }
 
     @Transactional

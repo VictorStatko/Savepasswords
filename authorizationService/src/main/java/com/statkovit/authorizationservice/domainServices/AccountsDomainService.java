@@ -1,5 +1,6 @@
 package com.statkovit.authorizationservice.domainServices;
 
+import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkovit.authorizationservice.entities.Account;
 import com.statkovit.authorizationservice.mappers.AccountMapper;
 import com.statkovit.authorizationservice.payload.AccountDto;
@@ -31,6 +32,20 @@ public class AccountsDomainService {
     public AccountDto confirmRegistration(String verificationCode) {
         Account account = accountService.confirmRegistration(verificationCode);
         return accountMapper.toDto(account);
+    }
+
+    @Transactional
+    public void resendVerificationCode(String email) {
+        Account account = accountService.getByEmail(email);
+
+        if (account.isEnabled()) {
+            throw new LocalizedException(
+                    String.format("Account with email %s is already verified.", email),
+                    "exceptions.accountAlreadyVerified"
+            );
+        }
+
+        accountService.resendVerificationCode(account);
     }
 
     public ExtendedAccountDto getCurrentExtendedAccountData() {
