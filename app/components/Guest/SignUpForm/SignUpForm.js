@@ -18,7 +18,8 @@ class SignUpForm extends Component {
         repeatPassword: "",
         serverError: "",
         verificationCodeModal: false,
-        loading: false
+        loading: false,
+        signUpAttempt: 1
     };
 
     handleChange = (input, value) => {
@@ -54,6 +55,10 @@ class SignUpForm extends Component {
             });
             toast.success(i18n.t('signUp.confirmationNeeded'));
         } catch (error) {
+            this.setState({
+                signUpAttempt: this.state.signUpAttempt + 1
+            });
+
             if (error && error.message && error.message === 'showOnForm') {
                 this.setState({
                     serverError: error.messageTranslation
@@ -80,6 +85,7 @@ class SignUpForm extends Component {
                         email={this.state.email}
                         loading={this.state.loading}
                         serverError={this.state.serverError}
+                        signUpAttempt={this.state.signUpAttempt}
                     />
                 </form>
                 <div className={styles.changePageLink}>

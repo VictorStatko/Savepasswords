@@ -15,20 +15,36 @@ import {
 import {compose} from "redux";
 import {connect} from "react-redux";
 import {PrimaryButton} from "components/default/buttons/Button/Button";
+import Recaptcha from "components/default/recaptcha";
 
 class FormUserDetails extends Component {
-    state = {
-        passwordError: '',
-        repeatPasswordError: '',
-        emailError: ''
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            passwordError: '',
+            repeatPasswordError: '',
+            emailError: '',
+            captchaReady: false,
+            captchaVerified: false,
+            captchaRendered: false
+        };
+
+        this.captcha = null;
     };
 
     submit = async e => {
-        const {t} = this.props;
-
         const clientValidation = this.validate();
 
         if (!clientValidation) {
+            e.preventDefault();
+        }
+
+        if (this.props.signUpAttempt > 1 && !this.state.captchaVerified) {
+            if (!this.state.captchaRendered) {
+                await this.captcha.renderExplicitly();
+            }
+
             e.preventDefault();
         }
     };
@@ -134,10 +150,17 @@ class FormUserDetails extends Component {
         this.props.handleChange('repeatPassword', e.target.value);
     };
 
+    renderRecaptcha = () => {
+        return <Recaptcha classRef={e => (this.captcha = e)}
+                          onVerify={() => this.setState({captchaVerified: true})}
+                          onLoad={() => this.setState({captchaReady: true})}
+                          onRender={() => this.setState({captchaRendered: true})}/>
+    };
+
 
     render() {
         const {t, password, repeatPassword, email, loading, serverError} = this.props;
-        const {passwordError, emailError, repeatPasswordError} = this.state;
+        const {passwordError, emailError, repeatPasswordError, captchaReady, captchaVerified, captchaRendered} = this.state;
 
         return (
             <React.Fragment>
@@ -151,9 +174,13 @@ class FormUserDetails extends Component {
                            value={repeatPassword}
                            onChange={this.handleRepeatChange} error={repeatPasswordError}/>
                 {isEmpty(serverError) ? null : <div className={styles.serverError}>{serverError}</div>}
+                <div className={styles.recaptchaContainer}>
+                    {this.renderRecaptcha()}
+                </div>
                 <div className={styles.buttonContainer}>
-                    <PrimaryButton type="submit" disabled={loading} loading={loading} onClick={this.submit}
-                                   content={t('global.submit')}/>
+                    <PrimaryButton type="submit"
+                                   disabled={loading || !captchaReady || (captchaRendered && !captchaVerified)}
+                                   loading={loading} onClick={this.submit} content={t('global.submit')}/>
                 </div>
             </React.Fragment>
         );
@@ -175,7 +202,8 @@ FormUserDetails.propTypes = {
     handleChange: PropTypes.func.isRequired,
     password: PropTypes.string.isRequired,
     repeatPassword: PropTypes.string.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    signUpAttempt: PropTypes.number.isRequired
 };
 
 export default compose(withTranslation(), withConnect)(FormUserDetails);
