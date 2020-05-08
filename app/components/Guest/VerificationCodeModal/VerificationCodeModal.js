@@ -13,6 +13,7 @@ import {toast} from "react-toastify";
 import history from "utils/history";
 import {isEmpty} from "utils/stringUtils";
 import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL} from "utils/validationUtils";
+import Recaptcha from "components/default/recaptcha";
 
 const LENGTH_VERIFICATION_CODE = 8;
 
@@ -36,7 +37,15 @@ const INITIAL_STATE = {
 //Not nice design
 class VerificationCodeModal extends React.Component {
 
-    state = Object.assign({}, INITIAL_STATE);
+    constructor(props) {
+        super(props);
+        this.state = INITIAL_STATE;
+        this.state.captchaReady = false;
+        this.state.captchaVerified = false;
+        this.state.captchaRendered = false;
+        this.state.attempt = 1;
+        this.captcha = null;
+    }
 
     handleRadioChange = e => {
         const {value} = e.target;
@@ -68,6 +77,13 @@ class VerificationCodeModal extends React.Component {
             return;
         }
 
+        if (this.state.attempt > 1 && !this.state.captchaVerified) {
+            if (!this.state.captchaRendered) {
+                await this.captcha.renderExplicitly();
+            }
+            return;
+        }
+
         const {t} = this.props;
 
         try {
@@ -79,7 +95,8 @@ class VerificationCodeModal extends React.Component {
             toast.success(t('signUp.confirmationSuccess'));
         } catch (error) {
             this.setState({
-                loading: false
+                loading: false,
+                attempt: this.state.attempt + 1
             });
 
             if (error && error.message && error.message === 'showOnForm') {
@@ -92,6 +109,13 @@ class VerificationCodeModal extends React.Component {
 
     onResendSubmit = async () => {
         if (!this.validateEmail()) {
+            return;
+        }
+
+        if (this.state.attempt > 1 && !this.state.captchaVerified) {
+            if (!this.state.captchaRendered) {
+                await this.captcha.renderExplicitly();
+            }
             return;
         }
 
@@ -108,7 +132,8 @@ class VerificationCodeModal extends React.Component {
             toast.success(t('signUp.resendCodeSuccess'));
         } catch (error) {
             this.setState({
-                loading: false
+                loading: false,
+                attempt: this.state.attempt + 1
             });
 
             if (error && error.message && error.message === 'showOnForm') {
@@ -199,7 +224,16 @@ class VerificationCodeModal extends React.Component {
     };
 
     onBackButtonClick = () => {
-        this.setState(Object.assign({}, INITIAL_STATE));
+        this.setState({
+            selectedOption: null,
+            selectedOptionForRenderForm: null,
+            verificationCode: "",
+            verificationCodeError: "",
+            email: "",
+            emailError: "",
+            serverError: "",
+            loading: false
+        });
     };
 
     renderFormForManualSendVerificationCode = () => {
@@ -227,9 +261,19 @@ class VerificationCodeModal extends React.Component {
         </div>
     };
 
+    renderRecaptcha = () => {
+        return this.state.captchaVerified ? null :
+            <Recaptcha classRef={e => (this.captcha = e)}
+                       onVerify={() => setTimeout(() => {
+                           this.setState({captchaVerified: true});
+                       }, 500)}
+                       onLoad={() => this.setState({captchaReady: true})}
+                       onRender={() => this.setState({captchaRendered: true})}/>;
+    };
+
     render() {
         const {t, close} = this.props;
-        const {loading} = this.state;
+        const {loading, captchaReady, captchaVerified, captchaRendered} = this.state;
 
         return (
             <Modal size={"lg"} show centered backdrop='static'>
@@ -242,10 +286,14 @@ class VerificationCodeModal extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         {this.state.selectedOptionForRenderForm ? this.renderSelectedForm() : this.renderRadio()}
+                        <div className={styles.recaptchaContainer}>
+                            {this.renderRecaptcha()}
+                        </div>
                     </Modal.Body>
                     <Modal.Footer className={styles.footer}>
                         {this.state.selectedOptionForRenderForm ?
-                            <PrimaryButton disabled={loading} loading={loading} onClick={this.onSubmitButtonClick}
+                            <PrimaryButton disabled={loading || !captchaReady || (captchaRendered && !captchaVerified)}
+                                           loading={loading} onClick={this.onSubmitButtonClick}
                                            content={t('global.submit')}/>
                             : null}
                         {this.state.selectedOptionForRenderForm ?

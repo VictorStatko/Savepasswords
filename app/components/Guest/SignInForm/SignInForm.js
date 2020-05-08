@@ -136,10 +136,13 @@ class SignInForm extends Component {
     };
 
     renderRecaptcha = () => {
-        return <Recaptcha classRef={e => (this.captcha = e)}
-                          onVerify={() => this.setState({captchaVerified: true})}
-                          onLoad={() => this.setState({captchaReady: true})}
-                          onRender={() => this.setState({captchaRendered: true})}/>
+        return this.state.captchaVerified ? null :
+            <Recaptcha classRef={e => (this.captcha = e)}
+                       onVerify={() => setTimeout(() => {
+                           this.setState({captchaVerified: true});
+                       }, 500)}
+                       onLoad={() => this.setState({captchaReady: true})}
+                       onRender={() => this.setState({captchaRendered: true})}/>
     };
 
     render() {
