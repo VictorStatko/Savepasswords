@@ -10,7 +10,7 @@ class Recaptcha extends Component {
         return (
             <Reaptcha
                 ref={classRef}
-                sitekey="6Lc3F_QUAAAAABbSwMrx3RL9rf_m3oV0sLUQpcRx"
+                sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT_TOKEN}
                 onVerify={onVerify}
                 onLoad={onLoad}
                 onRender={onRender}
