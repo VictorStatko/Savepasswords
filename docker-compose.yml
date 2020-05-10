@@ -177,7 +177,7 @@ services:
       - SERVER_PORT=${EMAIL_SERVICE_PORT}
 
   zookeeper1:
-    image: confluentinc/cp-zookeeper:5.4.0
+    image: bitnami/zookeeper:3.6.1
     restart: always
     healthcheck:
       test: ["CMD-SHELL", 'zkServer.sh status | grep -E "follower|leader|standalone"']
@@ -185,22 +185,15 @@ services:
       timeout: 10s
       retries: 5
     environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOO_SERVERS=zookeeper1:2888:3888
     volumes:
       - ${ZOOKEPEER1_VOLUME}
 
   kafka1:
-    image: confluentinc/cp-kafka:5.4.0
+    image: bitnami/kafka:2.5.0
     depends_on:
       - zookeeper1
     environment:
-      KAFKA_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:9092
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper1:2181
     volumes:
-      - ${KAFKA1_VOLUME}
+      - ${KAFKA1_DATA_VOLUME}

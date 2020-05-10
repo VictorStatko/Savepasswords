@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: @spring.profiles.active@
   cloud:
     config:
       name: auth-service

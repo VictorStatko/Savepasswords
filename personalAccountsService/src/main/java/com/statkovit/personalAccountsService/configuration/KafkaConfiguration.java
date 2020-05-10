@@ -5,16 +5,21 @@ import com.statkolibraries.kafkaUtils.KafkaTopics;
 import com.statkolibraries.kafkaUtils.domain.KafkaMessage;
 import com.statkovit.personalAccountsService.kafka.RedisKafkaManager;
 import com.statkovit.personalAccountsService.properties.CustomProperties;
+import com.statkovit.personalAccountsService.properties.CustomProperties.Kafka;
+import com.statkovit.personalAccountsService.utils.ProfilesManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.requests.IsolationLevel;
+import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -47,6 +52,7 @@ public class KafkaConfiguration {
     private final KafkaProperties kafkaProperties;
     private final CustomProperties customProperties;
     private final RedisKafkaManager redisKafkaManager;
+    private final ProfilesManager profilesManager;
 
     public static final String LISTENER_FACTORY_NAME = "kafkaListenerContainerFactory";
 
@@ -60,6 +66,26 @@ public class KafkaConfiguration {
                 ProducerConfig.TRANSACTIONAL_ID_CONFIG,
                 customProperties.getKafka().getProducer().getTransactionIdPrefix()
         );
+
+        if (profilesManager.isProduction()) {
+            Kafka kafka = customProperties.getKafka();
+            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SASL_SSL.name);
+            props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+            props.put(
+                    SaslConfigs.SASL_JAAS_CONFIG,
+                    "org.apache.kafka.common.security.plain.PlainLoginModule required username=\""
+                            + kafka.getClientUsername()
+                            + "\" password=\""
+                            + kafka.getClientPassword()
+                            + "\";"
+            );
+            props.put("ssl.truststore.location", kafka.getTrustStoreLocation());
+            props.put("ssl.truststore.password", kafka.getPassword());
+            props.put("ssl.key.password", kafka.getPassword());
+            props.put("ssl.keystore.password", kafka.getPassword());
+            props.put("ssl.keystore.location", kafka.getKeyStoreLocation());
+        }
+
         return props;
     }
 
@@ -85,6 +111,25 @@ public class KafkaConfiguration {
         props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, IsolationLevel.READ_COMMITTED.toString().toLowerCase(Locale.ROOT));
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+
+        if (profilesManager.isProduction()) {
+            Kafka kafka = customProperties.getKafka();
+            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SASL_SSL.name);
+            props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+            props.put(
+                    SaslConfigs.SASL_JAAS_CONFIG,
+                    "org.apache.kafka.common.security.plain.PlainLoginModule required username=\""
+                            + kafka.getClientUsername()
+                            + "\" password=\""
+                            + kafka.getClientPassword()
+                            + "\";"
+            );
+            props.put("ssl.truststore.location", kafka.getTrustStoreLocation());
+            props.put("ssl.truststore.password", kafka.getPassword());
+            props.put("ssl.key.password", kafka.getPassword());
+            props.put("ssl.keystore.password", kafka.getPassword());
+            props.put("ssl.keystore.location", kafka.getKeyStoreLocation());
+        }
 
         return props;
     }

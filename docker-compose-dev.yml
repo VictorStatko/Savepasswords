@@ -8,8 +8,7 @@ services:
       - "5005:5005"
     build:
       context: ./configurationService
-      dockerfile: docker/Dockerfile
-      target: debug
+      dockerfile: docker/DockerfileDev
 
   discovery-service:
     ports:
@@ -17,8 +16,7 @@ services:
       - "5006:5006"
     build:
       context: ./discoveryService
-      dockerfile: docker/Dockerfile
-      target: debug
+      dockerfile: docker/DockerfileDev
 
   gateway-service:
     ports:
@@ -26,8 +24,7 @@ services:
       - "5007:5007"
     build:
       context: ./gatewayService
-      dockerfile: docker/Dockerfile
-      target: debug
+      dockerfile: docker/DockerfileDev
 
   authorization-service:
     ports:
@@ -35,8 +32,7 @@ services:
       - "5008:5008"
     build:
       context: ./authorizationService
-      dockerfile: docker/Dockerfile
-      target: debug
+      dockerfile: docker/DockerfileDev
 
   auth-redis:
     ports:
@@ -60,8 +56,7 @@ services:
       - "5010:5010"
     build:
       context: ./personalAccountsService
-      dockerfile: docker/Dockerfile
-      target: debug
+      dockerfile: docker/DockerfileDev
 
   email-redis:
     ports:
@@ -73,13 +68,20 @@ services:
       - "5011:5011"
     build:
       context: ./emailService
-      dockerfile: docker/Dockerfile
-      target: debug
+      dockerfile: docker/DockerfileDev
 
   zookeeper1:
     ports:
       - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka1:
     ports:
       - "9092:9092"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=DOCKER_LISTENER:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=DOCKER_LISTENER://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=DOCKER_LISTENER://kafka1:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=DOCKER_LISTENER

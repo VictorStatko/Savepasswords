@@ -1,19 +1,10 @@
-FROM openjdk:11 as run
+FROM openjdk:11
 LABEL maintainer="statkovit@gmail.com"
 ENV APP_HOME /personal-accounts-service
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/log
 VOLUME $APP_HOME/log
-WORKDIR $APP_HOME
 COPY /target/*.jar /personal-accounts-service/personal-accounts-service.jar
+COPY /docker/kafka.keystore.jks /personal-accounts-service/kafka.keystore.jks
+COPY /docker/kafka.truststore.jks /personal-accounts-service/kafka.truststore.jks
 ENTRYPOINT ["java", "-jar", "/personal-accounts-service/personal-accounts-service.jar"]
-
-FROM openjdk:11 as debug
-LABEL maintainer="statkovit@gmail.com"
-ENV APP_HOME /personal-accounts-service
-RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/log
-VOLUME $APP_HOME/log
-WORKDIR $APP_HOME
-COPY /target/*.jar /personal-accounts-service/personal-accounts-service.jar
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010", "-jar", "/personal-accounts-service/personal-accounts-service.jar"]

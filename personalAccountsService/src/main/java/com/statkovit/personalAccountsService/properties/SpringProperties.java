@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class SpringProperties {
 
     private Redis redis;
+    private Profiles profiles;
 
     @Getter
     @Setter
@@ -19,6 +20,12 @@ public class SpringProperties {
         private String host;
         private String port;
         private String password;
+    }
+
+    @Getter
+    @Setter
+    public static final class Profiles {
+        private String active;
     }
 
 }

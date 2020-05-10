@@ -21,6 +21,11 @@ public class CustomProperties {
     @Setter
     public static final class Kafka {
         private Producer producer;
+        private String trustStoreLocation;
+        private String keyStoreLocation;
+        private String password;
+        private String clientUsername;
+        private String clientPassword;
 
         @Getter
         @Setter

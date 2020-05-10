@@ -25,6 +25,11 @@ public class CustomProperties {
     public static final class Kafka {
         private Outbox outbox;
         private Producer producer;
+        private String trustStoreLocation;
+        private String keyStoreLocation;
+        private String password;
+        private String clientUsername;
+        private String clientPassword;
 
 
         @Getter
