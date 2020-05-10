@@ -1,6 +1,5 @@
 FROM openjdk:11 as run
 LABEL maintainer="statkovit@gmail.com"
-EXPOSE 8890
 ENV APP_HOME /personal-accounts-service
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/log
@@ -11,7 +10,6 @@ ENTRYPOINT ["java", "-jar", "/personal-accounts-service/personal-accounts-servic
 
 FROM openjdk:11 as debug
 LABEL maintainer="statkovit@gmail.com"
-EXPOSE 8890
 ENV APP_HOME /personal-accounts-service
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/log

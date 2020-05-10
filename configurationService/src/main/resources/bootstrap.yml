@@ -5,20 +5,19 @@ spring:
     config:
       server:
         git:
-          uri: ${SPRING_CLOUD_CONFIG_GIT_URL:https://github.com/passwordManagerr/passwordManager-configs.git}
-          username: ${SPRING_CLOUD_CONFIG_GIT_USERNAME:victorstatko9@gmail.com}
-          password: ${SPRING_CLOUD_CONFIG_GIT_PASSWORD:Managerrpassword}
+          uri: ${SPRING_CLOUD_CONFIG_GIT_URL}
+          username: ${SPRING_CLOUD_CONFIG_GIT_USERNAME}
+          password: ${SPRING_CLOUD_CONFIG_GIT_PASSWORD}
           clone-on-start: true
 
 server:
-  port: 8088
-debug: true
+  port: ${SERVER_PORT}
 encrypt:
-  key: ${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY:aqj12Kuu432Iodfkitdne7YjsleuYCWQueh48jfuO9j4U2dw12o}
+  key: ${SPRING_CLOUD_CONFIG_ENCRYPTION_KEY}
 
 eureka:
   client:
     region: default
     registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: ${SPRING_CLOUD_EUREKA_URL:http://localhost:8761/eureka/}
+      defaultZone: ${SPRING_CLOUD_EUREKA_URL}

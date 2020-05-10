@@ -1,0 +1,61 @@
+version: "2.4"
+
+services:
+
+  configuration-service:
+    expose:
+      - "8088"
+    image: myCustomImage
+
+  discovery-service:
+    expose:
+      - "8761"
+    image: myCustomImage
+
+  gateway-service:
+    expose:
+      - "8887"
+    image: myCustomImage
+
+  authorization-service:
+    expose:
+      - "8888"
+    image: myCustomImage
+
+  auth-redis:
+    expose:
+      - "6379"
+
+  auth-postgres:
+    expose:
+      - "5432"
+
+  personal-accounts-postgres:
+    expose:
+      - "5432"
+
+  personal-accounts-redis:
+    expose:
+      - "6379"
+
+  personal-accounts-service:
+    expose:
+      - "8890"
+    image: myCustomImage
+
+  email-redis:
+    expose:
+      - "6379"
+
+  email-service:
+    expose:
+      - "8891"
+    image: myCustomImage
+
+  zookeeper1:
+    expose:
+      - "2181"
+
+  kafka1:
+    expose:
+      - "9092"

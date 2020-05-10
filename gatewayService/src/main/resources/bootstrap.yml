@@ -1,5 +1,5 @@
 spring:
   cloud:
     config:
-      name: gateway
-      uri: ${SPRING_CLOUD_CONFIG_URL:http://localhost:8088}
+      name: gateway-service
+      uri: ${SPRING_CLOUD_CONFIG_URL}

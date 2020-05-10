@@ -1,6 +1,5 @@
 FROM openjdk:11 as run
 LABEL maintainer="statkovit@gmail.com"
-EXPOSE 8761
 ENV APP_HOME /discovery-service
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/log
@@ -11,7 +10,6 @@ ENTRYPOINT ["java", "-jar", "/discovery-service/discovery-service.jar"]
 
 FROM openjdk:11 as debug
 LABEL maintainer="statkovit@gmail.com"
-EXPOSE 8761
 ENV APP_HOME /discovery-service
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/log

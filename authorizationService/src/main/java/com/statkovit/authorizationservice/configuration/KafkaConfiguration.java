@@ -50,7 +50,7 @@ public class KafkaConfiguration {
     public NewTopic accountsTopic() {
         return TopicBuilder.name(KafkaTopics.Accounts.TOPIC_NAME)
                 .partitions(4)
-                .replicas(2)
+                .replicas(1)
                 .build();
     }
 
@@ -58,7 +58,7 @@ public class KafkaConfiguration {
     public NewTopic accountsFailureTopic() {
         return TopicBuilder.name(KafkaTopics.Accounts.FAILURES_TOPIC_NAME)
                 .partitions(4)
-                .replicas(2)
+                .replicas(1)
                 .build();
     }
 

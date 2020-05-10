@@ -16,7 +16,8 @@ public class SpringProperties {
     @Getter
     @Setter
     public static final class Redis {
-        private String clusters;
+        private String host;
+        private String port;
         private String password;
     }
 

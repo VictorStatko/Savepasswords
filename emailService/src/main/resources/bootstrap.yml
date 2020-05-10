@@ -2,6 +2,6 @@ spring:
   cloud:
     config:
       name: email-service
-      uri: ${SPRING_CLOUD_CONFIG_URL:http://localhost:8088}
+      uri: ${SPRING_CLOUD_CONFIG_URL}
   main:
     allow-bean-definition-overriding: true
