@@ -14,7 +14,7 @@ services:
 
   gateway-service:
     ports:
-      - "8887:8887"
+      - "8887"
     image: myCustomImage
 
   authorization-service:
@@ -90,3 +90,10 @@ services:
     volumes:
       - ${KAFKA1_KEYSTORE_VOLUME}
       - ${KAFKA1_TRUSTORE_VOLUME}
+
+  frontend:
+    ports:
+      - "1337:80"
+    build:
+      context: frontend
+      dockerfile: Dockerfile
