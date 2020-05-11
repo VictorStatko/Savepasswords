@@ -77,6 +77,7 @@
 "personalAccounts.modal.form.name": "Name",
 "personalAccounts.modal.form.username": "Username",
 "personalAccounts.modal.form.password": "Password",
+"personalAccounts.modal.form.password.generate": "Generate",
 "personalAccounts.modal.form.description": "Description",
 "personalAccounts.modal.form.validation.nameUrl": "At least one of the fields (url, name) must not be empty",
 "personalAccounts.creationSuccess": "Account was created successfully",

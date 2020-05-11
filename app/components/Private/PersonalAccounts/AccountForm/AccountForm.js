@@ -68,7 +68,8 @@ class AccountForm extends React.Component {
                                    readOnly={disabled}
                                    value={account.password} className={styles.textInput}
                                    onChange={e => handleChange('password', e.target.value)}/>
-                        {disabled ? null : <a href="#" onClick={this.onPasswordGenerate} className={styles.generate}>Generate</a>}
+                        {disabled ? null : <a href="#" onClick={this.onPasswordGenerate}
+                                              className={styles.generate}>{t('personalAccounts.modal.form.password.generate')}</a>}
                     </Col>
                 </Row>
                 <div className={disabled ? null : styles.folderInput}>
