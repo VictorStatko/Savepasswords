@@ -40,6 +40,7 @@ services:
       - SPRING_CLOUD_CONFIG_URL=${SPRING_CLOUD_CONFIG_URL}
       - SPRING_CLOUD_EUREKA_URL=${SPRING_CLOUD_EUREKA_URL}
       - SERVER_PORT=${GATEWAY_SERVICE_PORT}
+      - FRONTEND_URL=${FRONTEND_URL}
 
   authorization-service:
     depends_on:

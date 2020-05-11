@@ -13,10 +13,17 @@ import org.springframework.context.annotation.Configuration;
 public class CustomProperties {
 
     private Cookie cookie;
+    private Frontend frontend;
 
     @Getter
     @Setter
     public static final class Cookie {
         private boolean secured;
+    }
+
+    @Getter
+    @Setter
+    public static final class Frontend {
+        private String url;
     }
 }
