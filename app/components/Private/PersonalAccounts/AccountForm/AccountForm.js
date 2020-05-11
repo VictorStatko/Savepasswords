@@ -9,6 +9,7 @@ import CustomCreatableSelect from "components/default/inputs/CustomCreatableSele
 import {connect} from "react-redux";
 import {compose} from "redux";
 import {isNotEmpty} from "utils/stringUtils";
+import cryptoRandomString from "crypto-random-string";
 
 class AccountForm extends React.Component {
 
@@ -41,6 +42,11 @@ class AccountForm extends React.Component {
         this.props.handleChange('folderUuid', newOption && newOption.value ? newOption.value : null);
     };
 
+    onPasswordGenerate = (e) => {
+        e.preventDefault();
+        this.props.handleChange('password', cryptoRandomString({length: 12, type: 'base64'}));
+    };
+
     render() {
         const {t} = this.props;
         const {account, urlError, nameError, serverError, handleChange, disabled} = this.props;
@@ -58,12 +64,16 @@ class AccountForm extends React.Component {
                                    onChange={e => handleChange('username', e.target.value)}/>
                     </Col>
                     <Col md={6}>
-                        <TextInput id="password" secret label={t('personalAccounts.modal.form.password')} readOnly={disabled}
+                        <TextInput id="password" secret label={t('personalAccounts.modal.form.password')}
+                                   readOnly={disabled}
                                    value={account.password} className={styles.textInput}
                                    onChange={e => handleChange('password', e.target.value)}/>
+                        {disabled ? null : <a href="#" onClick={this.onPasswordGenerate} className={styles.generate}>Generate</a>}
                     </Col>
                 </Row>
-                {this.renderFolderSelect()}
+                <div className={disabled ? null : styles.folderInput}>
+                    {this.renderFolderSelect()}
+                </div>
                 <TextArea id="description" label={t('personalAccounts.modal.form.description')} readOnly={disabled}
                           value={account.description} className={styles.textInput} textarea
                           onChange={e => handleChange('description', e.target.value)}/>
