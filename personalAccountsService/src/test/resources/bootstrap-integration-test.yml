@@ -29,8 +29,9 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
   redis:
-    clusters: ${embedded.redis.host}:${embedded.redis.port}
     password: ${embedded.redis.password}
+    host: ${embedded.redis.host}
+    port: ${embedded.redis.port}
   liquibase:
     change-log: classpath:/db/changelog.xml
   kafka:
@@ -57,4 +58,3 @@ security:
       scope: service
     resource:
       user-info-uri: http://localhost:9999/api/v1/auth/accounts/current
-      token-info-uri: http://localhost:9999/oauth/check_token

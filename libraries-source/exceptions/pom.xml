@@ -6,7 +6,7 @@
 
     <groupId>com.statkolibraries</groupId>
     <artifactId>exceptions</artifactId>
-    <version>0.0.2-beta1</version>
+    <version>1.0.0</version>
 
     <properties>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>

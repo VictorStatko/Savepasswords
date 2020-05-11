@@ -5,7 +5,7 @@
 
     <groupId>com.statkovit</groupId>
     <artifactId>gatewayservice</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>gatewayService</name>
 
     <parent>
@@ -18,7 +18,7 @@
         <java.version>11</java.version>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <lombok.version>1.18.10</lombok.version>
-        <exceptions-library.version>0.0.2-beta1</exceptions-library.version>
+        <exceptions-library.version>1.0.0</exceptions-library.version>
     </properties>
 
     <dependencies>
