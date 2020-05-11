@@ -114,12 +114,14 @@
             </activation>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
+                <log4j2.loglevel>DEBUG</log4j2.loglevel>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
                 <spring.profiles.active>prod</spring.profiles.active>
+                <log4j2.loglevel>WARN</log4j2.loglevel>
             </properties>
         </profile>
     </profiles>
