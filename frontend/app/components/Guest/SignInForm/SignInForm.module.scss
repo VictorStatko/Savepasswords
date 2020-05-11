@@ -1,0 +1,20 @@
+@import "components/Guest/Guest.module";
+
+.newAccount {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.formContainerSignIn {
+margin-top: 3rem;
+}
+
+.buttonSignIn {
+ margin-top: 1rem;
+}
+
+.recaptchaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

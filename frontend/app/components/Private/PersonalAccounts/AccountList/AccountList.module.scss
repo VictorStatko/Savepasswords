@@ -1,0 +1,28 @@
+.noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60%;
+}
+
+.blockWithoutData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.spinner {
+  margin-top: 5rem;
+}
+
+.column {
+  padding: 0.4rem;
+}
+
+.paginationRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}

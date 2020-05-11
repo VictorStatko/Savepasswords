@@ -1,0 +1,39 @@
+@import "styles/colors";
+
+.navItem {
+  min-height: 30px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+
+  & .icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-right: 0.2rem;
+  }
+
+  & .iconActive {
+    fill: $blue;
+  }
+
+  & .badge {
+    min-width: 1.7rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+
+  & .text {
+    margin-top: 0.2rem;
+  }
+
+}
+
+.navItem:hover {
+  background-color: $super-light-gray;
+  cursor: pointer;
+}
+
+.menuContainer {
+  margin: 0.5rem;
+}

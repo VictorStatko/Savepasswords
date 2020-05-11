@@ -1,0 +1,23 @@
+@import "styles/colors";
+
+.changePageLink {
+  text-align: center;
+}
+
+.textInput {
+  margin-top: 1.2rem;
+}
+
+.buttonContainer {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.serverError {
+  color: $red;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: bold;
+}

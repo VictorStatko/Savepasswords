@@ -1,0 +1,28 @@
+@import "styles/colors";
+
+.header {
+  overflow: hidden;
+  background-color: $light-gray;
+  padding: 1.0rem 0.5rem;
+  height: 56px;
+}
+
+.right {
+  float: right;
+}
+
+.menu {
+  margin-left: 1rem;
+  float: left;
+  cursor: pointer;
+  display: inline-block;
+}
+.dropdownIconWrapper {
+  float: right;
+}
+
+.dropdownIcon {
+  margin-right: 0.5rem;
+  width: 10px;
+  height: 10px;
+}

@@ -1,0 +1,75 @@
+@import "styles/colors";
+
+.toggleButton {
+  width: 20px;
+}
+
+.toggleButton:hover {
+  fill: $red;
+}
+
+.toggleButton:active {
+  fill: $dark-red;
+}
+
+.sidebar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: $super-light-gray;
+  overflow-x: hidden;
+  padding-top: 5rem;
+  transition: margin 0.5s;
+  margin: 56px 0 0 -250px;
+  cursor: auto;
+}
+
+.sidebar.opened {
+  margin-left: 0;
+}
+
+.sidebar a {
+  padding: 0.4rem 0.4rem 0.4rem 1.6rem;
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: black;
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+
+  cursor: pointer;
+
+  & .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.7rem;
+  }
+}
+
+.sidebar a:hover {
+  background-color: $light-gray;
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.sidebar .closebtn:hover {
+  color: $gray;
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  margin-top: 1rem;
+  margin-left: 5.5rem;
+  cursor: pointer;
+}

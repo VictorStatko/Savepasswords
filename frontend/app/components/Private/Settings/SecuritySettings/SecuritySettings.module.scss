@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.spinner {
+  margin-top: 5rem;
+}
+
+.errorBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70%;
+}

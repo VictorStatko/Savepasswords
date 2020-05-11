@@ -1,0 +1,77 @@
+.card {
+  min-height: 200px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  tab-index: 0;
+  margin: 0.5rem;
+  padding: 1.5rem;
+  transition: 0.2s;
+
+  & .imageHrefActive {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  & .imageHrefNotActive {
+    &:hover {
+      cursor: auto;
+    }
+  }
+
+  & .imageRow {
+    height: 65px;
+  }
+
+  & .image {
+    max-width: 65px;
+    max-height: 65px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  & .urlName {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.button {
+  margin-left: 0.4rem;
+}
+
+@media screen and (min-width: 768px) {
+  .card:hover {
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .card:focus {
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .card:focus .button {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .card:hover .button {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .button {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s linear;
+  }
+}
+
+.buttonIcon {
+  height: 20px;
+  width: 20px;
+}

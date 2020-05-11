@@ -1,0 +1,46 @@
+@import "components/Guest/Guest.module";
+
+.existingAccount,  .verificationCodeIssues{
+  display: block;
+  font-size: 0.9rem;
+}
+
+.verificationCodeIssues {
+  display: block;
+  font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.verificationCodeIssues:hover {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.recaptchaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+@media (min-width: 400px) {
+
+  .existingAccount {
+    float: left;
+  }
+
+  .verificationCodeIssues {
+    float: right;
+  }
+}
+
+@media (max-width: 400px) {
+  .existingAccount {
+    margin-top: 1rem;
+  }
+  .verificationCodeIssues {
+    margin-top: 0.5rem;
+  }
+}

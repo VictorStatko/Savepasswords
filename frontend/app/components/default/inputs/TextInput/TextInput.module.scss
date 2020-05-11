@@ -1,0 +1,70 @@
+@import "styles/colors";
+
+.textInput {
+  display: block;
+  width: 100%;
+  background-color: inherit;
+  border: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  margin-top: 0.2rem !important;
+  height: 45px;
+}
+
+.textInput:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px $blue;
+}
+
+.textInput:active {
+  outline: none;
+  box-shadow: inset 0 0 0 1px $blue;
+}
+
+.textInput:read-only {
+  background-color: $super-light-gray;
+  cursor: text;
+}
+
+.textInput:read-only:focus {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.textInput[type="password"] {
+  font:small-caption;
+}
+
+.textInput.error {
+  box-shadow: inset 0 0 0 1px $red;
+  background: url(~images/icons/error.svg) no-repeat top 50% right 1rem;
+  background-size: 25px 25px;
+  padding-right: 4rem;
+}
+
+.eyeIcon {
+  height: 20px;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:hover{
+    fill: $dark-gray;
+  }
+}
+
+.errorText {
+  color: $red;
+  font-weight: 500;
+  margin-top: 0.2rem;
+  margin-left: 0.3rem;
+}
+
+.labelText {
+  color: $gray;
+  font-weight: 500;
+  margin-left: 0.3rem;
+}

@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  flex-flow: wrap;
+  max-width: 100%;
+  text-align: center;
+
+  hr {
+    border: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  & .wrong {
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+
+  & .description {
+    font-size: 1.1rem;
+  }
+}
+
+.oops {
+  font-size: 5rem;
+  font-weight: bold;
+}
