@@ -70,6 +70,8 @@ services:
     image: redis:5.0.6
     command: redis-server --requirepass ${AUTH_SERVICE_REDIS_PASSWORD}
     restart: always
+    sysctls:
+      net.core.somaxconn: '511'
     healthcheck:
       test: ["CMD-SHELL", "redis-cli -h ${AUTH_SERVICE_REDIS_HOST} -p ${AUTH_SERVICE_REDIS_PORT} -a ${AUTH_SERVICE_REDIS_PASSWORD} --no-auth-warning ping"]
       interval: 10s
@@ -112,6 +114,8 @@ services:
     image: redis:5.0.6
     command: redis-server --requirepass ${PERSONAL_ACCOUNTS_SERVICE_REDIS_PASSWORD}
     restart: always
+    sysctls:
+      net.core.somaxconn: '511'
     healthcheck:
       test: ["CMD-SHELL", "redis-cli -h ${PERSONAL_ACCOUNTS_SERVICE_REDIS_HOST} -p ${PERSONAL_ACCOUNTS_SERVICE_REDIS_PORT} -a ${PERSONAL_ACCOUNTS_SERVICE_REDIS_PASSWORD} --no-auth-warning ping"]
       interval: 10s
@@ -149,6 +153,8 @@ services:
     image: redis:5.0.6
     command: redis-server --requirepass ${EMAIL_SERVICE_REDIS_PASSWORD}
     restart: always
+    sysctls:
+      net.core.somaxconn: '511'
     healthcheck:
       test: ["CMD-SHELL", "redis-cli -h ${EMAIL_SERVICE_REDIS_HOST} -p ${EMAIL_SERVICE_REDIS_PORT} -a ${EMAIL_SERVICE_REDIS_PASSWORD} --no-auth-warning ping"]
       interval: 10s

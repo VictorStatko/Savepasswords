@@ -7,4 +7,4 @@ VOLUME $APP_HOME/log
 COPY /target/*.jar /personal-accounts-service/personal-accounts-service.jar
 COPY /docker/kafka.keystore.jks /personal-accounts-service/kafka.keystore.jks
 COPY /docker/kafka.truststore.jks /personal-accounts-service/kafka.truststore.jks
-ENTRYPOINT ["java", "-jar", "/personal-accounts-service/personal-accounts-service.jar"]
+ENTRYPOINT ["java", "-XX:+UseParallelGC", "-XX:+UseStringDeduplication", "-Xmx550m", "-jar", "/personal-accounts-service/personal-accounts-service.jar"]

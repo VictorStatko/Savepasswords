@@ -7,4 +7,4 @@ VOLUME $APP_HOME/log
 COPY /target/*.jar /authorization-service/authorization-service.jar
 COPY /docker/kafka.keystore.jks /authorization-service/kafka.keystore.jks
 COPY /docker/kafka.truststore.jks /authorization-service/kafka.truststore.jks
-ENTRYPOINT ["java", "-jar", "/authorization-service/authorization-service.jar"]
+ENTRYPOINT ["java", "-XX:+UseParallelGC", "-XX:+UseStringDeduplication", "-Xmx550m", "-jar", "/authorization-service/authorization-service.jar"]
