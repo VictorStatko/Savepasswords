@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="basePath">/authorization-service/log</Property>
+        <Property name="basePath">/discovery-service/log</Property>
     </Properties>
 
     <Appenders>
@@ -17,28 +17,37 @@
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
             </PatternLayout>
             <Policies>
-                <!-- rollover on startup, daily and when the file reaches 10 MegaBytes -->
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
                 <OnStartupTriggeringPolicy />
                 <SizeBasedTriggeringPolicy
                         size="10 MB" />
                 <TimeBasedTriggeringPolicy />
             </Policies>
         </RollingFile>
+
+        <LogzioAppender name="Logzio">
+            <logzioToken>$LOGZIO_TOKEN</logzioToken>
+            <logzioUrl>https://listener.logz.io:8071</logzioUrl>
+            <additionalFields>service=discovery</additionalFields>
+        </LogzioAppender>
     </Appenders>
 
     <Loggers>
-
         <Root level="warn">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="Logzio"/>
         </Root>
         <Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="@log4j2.loglevel@" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="Logzio"/>
         </Logger>
-        <Logger name="com.statkovit.authorizationservice" level="@log4j2.loglevel@" additivity="false">
+        <Logger name="com.statkovit.discoveryservice" level="@log4j2.loglevel@" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="Logzio"/>
         </Logger>
     </Loggers>
 

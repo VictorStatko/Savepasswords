@@ -19,6 +19,7 @@
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <lombok.version>1.18.10</lombok.version>
         <exceptions-library.version>1.0.0</exceptions-library.version>
+        <logzio-log4j2.version>1.0.12</logzio-log4j2.version>
     </properties>
 
     <dependencies>
@@ -63,6 +64,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.logz.log4j2</groupId>
+            <artifactId>logzio-log4j2-appender</artifactId>
+            <version>${logzio-log4j2.version}</version>
         </dependency>
 
         <dependency>

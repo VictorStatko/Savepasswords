@@ -21,6 +21,7 @@
         <postgres-driver.version>42.2.9</postgres-driver.version>
         <model-mapper.version>2.3.6</model-mapper.version>
         <redisson.version>3.12.5</redisson.version>
+        <logzio-log4j2.version>1.0.12</logzio-log4j2.version>
     </properties>
 
     <parent>
@@ -155,6 +156,12 @@
             <groupId>com.statkolibraries</groupId>
             <artifactId>kafkaUtils</artifactId>
             <version>${kafka-util-library.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.logz.log4j2</groupId>
+            <artifactId>logzio-log4j2-appender</artifactId>
+            <version>${logzio-log4j2.version}</version>
         </dependency>
     </dependencies>
 

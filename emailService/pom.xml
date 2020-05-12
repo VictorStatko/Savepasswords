@@ -27,6 +27,7 @@
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
         <javax-mail-api.version>1.6.2</javax-mail-api.version>
         <sun-mail-api.version>1.6.2</sun-mail-api.version>
+        <logzio-log4j2.version>1.0.12</logzio-log4j2.version>
     </properties>
 
     <dependencies>
@@ -136,6 +137,11 @@
             <artifactId>ses</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.logz.log4j2</groupId>
+            <artifactId>logzio-log4j2-appender</artifactId>
+            <version>${logzio-log4j2.version}</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
