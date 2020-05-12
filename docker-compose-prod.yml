@@ -5,26 +5,27 @@ services:
   configuration-service:
     expose:
       - "8088"
-    image: myCustomImage
+    image: mamba4ka/savepasswords:configurationService-latest
 
   discovery-service:
     expose:
       - "8761"
-    image: myCustomImage
+    image: mamba4ka/savepasswords:discoveryService-latest
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
 
   gateway-service:
     ports:
-      - "8887"
-    image: myCustomImage
+      - "8887:8887"
+    image: mamba4ka/savepasswords:gatewayService-latest
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
+      - HTTPS_CERTIFICATE_PASSWORD=${GATEWAY_SERVICE_HTTPS_PASSWORD}
 
   authorization-service:
     expose:
       - "8888"
-    image: myCustomImage
+    image: mamba4ka/savepasswords:authorizationService-latest
     environment:
       - KAFKA_CLIENT_USER=${KAFKA_CLIENT_USER}
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
@@ -50,7 +51,7 @@ services:
   personal-accounts-service:
     expose:
       - "8890"
-    image: myCustomImage
+    image: mamba4ka/savepasswords:personalAccountsService-latest
     environment:
       - KAFKA_CLIENT_USER=${KAFKA_CLIENT_USER}
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
@@ -64,7 +65,7 @@ services:
   email-service:
     expose:
       - "8891"
-    image: myCustomImage
+    image: mamba4ka/savepasswords:emailService-latest
     environment:
       - KAFKA_CLIENT_USER=${KAFKA_CLIENT_USER}
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
@@ -101,4 +102,4 @@ services:
   frontend:
     ports:
       - "1337:80"
-    image: myCustomImage
+    image: mamba4ka/savepasswords:frontend-latest
