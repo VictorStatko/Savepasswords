@@ -1,14 +1,13 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
-name: Maven build and deploy docker images
+name: Package and push authorization service docker image
 
 on:
   push:
     branches: [ master ]
+    paths: 
+      - 'authorizationService/**'
 
 jobs:
-  build-auth-service:
+  authorizationService:
 
     runs-on: ubuntu-latest
 
@@ -18,7 +17,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Build with Maven
+    - name: Maven package
       run: mvn -B package -Pprod --file authorizationService/pom.xml
     - name: Build and push docker image
       uses: docker/build-push-action@v1
@@ -27,4 +26,5 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: authorizationService/docker/Dockerfile
-        tags: latest
+        tags: authorizationService
+        tag_with_sha: true
