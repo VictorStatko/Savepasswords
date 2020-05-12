@@ -184,3 +184,27 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: personalAccountsService/docker/Dockerfile
         tags: personalAccountsService:latest
+        
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: frontend/Dockerfile
+        tags: frontend:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: frontend/Dockerfile
+        tags: frontend:latest
