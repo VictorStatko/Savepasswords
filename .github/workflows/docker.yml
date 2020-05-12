@@ -1,0 +1,186 @@
+name: Images package and push after release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  authorizationService:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Maven package
+      run: mvn -B package -Pprod --file authorizationService/pom.xml
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: authorizationService/docker/Dockerfile
+        tags: authorizationService:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: authorizationService/docker/Dockerfile
+        tags: authorizationService:latest
+        
+  configurationService:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Maven package
+      run: mvn -B package -Pprod --file configurationService/pom.xml
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: configurationService/docker/Dockerfile
+        tags: configurationService:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: configurationService/docker/Dockerfile
+        tags: configurationService:latest
+        
+  discoveryService:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Maven package
+      run: mvn -B package -Pprod --file discoveryService/pom.xml
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: discoveryService/docker/Dockerfile
+        tags: discoveryService:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: discoveryService/docker/Dockerfile
+        tags: discoveryService:latest
+  
+  emailService:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Maven package
+      run: mvn -B package -Pprod --file emailService/pom.xml
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: emailService/docker/Dockerfile
+        tags: emailService:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: emailService/docker/Dockerfile
+        tags: emailService:latest
+        
+  gatewayService:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Maven package
+      run: mvn -B package -Pprod --file gatewayService/pom.xml
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: gatewayService/docker/Dockerfile
+        tags: gatewayService:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: gatewayService/docker/Dockerfile
+        tags: gatewayService:latest
+        
+  personalAccountsService:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Get last release version
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Maven package
+      run: mvn -B package -Pprod --file personalAccountsService/pom.xml
+    - name: Build and push release docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: personalAccountsService/docker/Dockerfile
+        tags: personalAccountsService:${{steps.vars.outputs.tag}}
+    - name: Build and push latest docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: mamba4ka/savepasswords
+        dockerfile: personalAccountsService/docker/Dockerfile
+        tags: personalAccountsService:latest
