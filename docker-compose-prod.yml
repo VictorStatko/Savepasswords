@@ -20,7 +20,6 @@ services:
     image: mamba4ka/savepasswords:gatewayService-latest
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
-      - HTTPS_CERTIFICATE_PASSWORD=${GATEWAY_SERVICE_HTTPS_PASSWORD}
 
   authorization-service:
     expose:
