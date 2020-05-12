@@ -19,7 +19,7 @@ jobs:
       with:
         java-version: 11
     - name: Build with Maven
-      run: mvn -B package --file authorizationService/pom.xml
+      run: mvn -B package -Pprod --file authorizationService/pom.xml
     - name: Build and push docker image
       uses: docker/build-push-action@v1
       with:
