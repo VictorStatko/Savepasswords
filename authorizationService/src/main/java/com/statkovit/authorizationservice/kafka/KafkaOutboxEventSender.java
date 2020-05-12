@@ -36,7 +36,7 @@ public class KafkaOutboxEventSender {
     private final ObjectMapper objectMapper;
 
     /**
-     * Garanties: No data will be deleted from 'Outbox' table before successful producing of messages.
+     * Garanties: No data will be deleted from 'Outbox' table before successful producing of messages
      * In case of successful Kafka transaction but failed JPA transaction the same message can be sent several times
      * Each consumer should check Idempotency-Key and discard message if it was already processed
      */
