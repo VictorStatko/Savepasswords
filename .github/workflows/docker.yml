@@ -26,6 +26,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: authorizationService/docker/Dockerfile
         tags: authorizationService-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -34,7 +35,8 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: authorizationService/docker/Dockerfile
         tags: authorizationService-latest
-        
+        add_git_labels: true
+      
   configurationService:
     runs-on: ubuntu-latest
     steps:
@@ -56,6 +58,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: configurationService/docker/Dockerfile
         tags: configurationService-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -64,6 +67,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: configurationService/docker/Dockerfile
         tags: configurationService-latest
+        add_git_labels: true
         
   discoveryService:
     runs-on: ubuntu-latest
@@ -86,6 +90,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: discoveryService/docker/Dockerfile
         tags: discoveryService-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -94,6 +99,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: discoveryService/docker/Dockerfile
         tags: discoveryService-latest
+        add_git_labels: true
   
   emailService:
     runs-on: ubuntu-latest
@@ -116,6 +122,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: emailService/docker/Dockerfile
         tags: emailService-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -124,6 +131,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: emailService/docker/Dockerfile
         tags: emailService-latest
+        add_git_labels: true
         
   gatewayService:
     runs-on: ubuntu-latest
@@ -146,6 +154,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: gatewayService/docker/Dockerfile
         tags: gatewayService-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -154,6 +163,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: gatewayService/docker/Dockerfile
         tags: gatewayService-latest
+        add_git_labels: true
         
   personalAccountsService:
     runs-on: ubuntu-latest
@@ -176,6 +186,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: personalAccountsService/docker/Dockerfile
         tags: personalAccountsService-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -184,6 +195,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: personalAccountsService/docker/Dockerfile
         tags: personalAccountsService-latest
+        add_git_labels: true
         
   frontend:
     runs-on: ubuntu-latest
@@ -200,6 +212,7 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: frontend/Dockerfile
         tags: frontend-${{steps.vars.outputs.tag}}
+        add_git_labels: true
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -208,3 +221,4 @@ jobs:
         repository: mamba4ka/savepasswords
         dockerfile: frontend/Dockerfile
         tags: frontend-latest
+        add_git_labels: true
