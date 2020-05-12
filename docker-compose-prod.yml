@@ -101,6 +101,4 @@ services:
   frontend:
     ports:
       - "1337:80"
-    build:
-      context: frontend
-      dockerfile: Dockerfile
+    image: myCustomImage
