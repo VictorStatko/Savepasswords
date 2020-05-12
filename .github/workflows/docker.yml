@@ -25,7 +25,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: authorizationService/docker/Dockerfile
-        tags: authorizationService:${{steps.vars.outputs.tag}}
+        tags: authorizationService-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -33,7 +33,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: authorizationService/docker/Dockerfile
-        tags: authorizationService:latest
+        tags: authorizationService-latest
         
   configurationService:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: configurationService/docker/Dockerfile
-        tags: configurationService:${{steps.vars.outputs.tag}}
+        tags: configurationService-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -63,7 +63,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: configurationService/docker/Dockerfile
-        tags: configurationService:latest
+        tags: configurationService-latest
         
   discoveryService:
     runs-on: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: discoveryService/docker/Dockerfile
-        tags: discoveryService:${{steps.vars.outputs.tag}}
+        tags: discoveryService-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -93,7 +93,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: discoveryService/docker/Dockerfile
-        tags: discoveryService:latest
+        tags: discoveryService-latest
   
   emailService:
     runs-on: ubuntu-latest
@@ -115,7 +115,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: emailService/docker/Dockerfile
-        tags: emailService:${{steps.vars.outputs.tag}}
+        tags: emailService-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -123,7 +123,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: emailService/docker/Dockerfile
-        tags: emailService:latest
+        tags: emailService-latest
         
   gatewayService:
     runs-on: ubuntu-latest
@@ -145,7 +145,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: gatewayService/docker/Dockerfile
-        tags: gatewayService:${{steps.vars.outputs.tag}}
+        tags: gatewayService-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -153,7 +153,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: gatewayService/docker/Dockerfile
-        tags: gatewayService:latest
+        tags: gatewayService-latest
         
   personalAccountsService:
     runs-on: ubuntu-latest
@@ -175,7 +175,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: personalAccountsService/docker/Dockerfile
-        tags: personalAccountsService:${{steps.vars.outputs.tag}}
+        tags: personalAccountsService-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -183,7 +183,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: personalAccountsService/docker/Dockerfile
-        tags: personalAccountsService:latest
+        tags: personalAccountsService-latest
         
   frontend:
     runs-on: ubuntu-latest
@@ -199,7 +199,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: frontend/Dockerfile
-        tags: frontend:${{steps.vars.outputs.tag}}
+        tags: frontend-${{steps.vars.outputs.tag}}
     - name: Build and push latest docker image
       uses: docker/build-push-action@v1
       with:
@@ -207,4 +207,4 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: mamba4ka/savepasswords
         dockerfile: frontend/Dockerfile
-        tags: frontend:latest
+        tags: frontend-latest
