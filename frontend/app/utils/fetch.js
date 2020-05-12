@@ -1,5 +1,4 @@
 import axios from "axios";
-import {BACKEND_URL} from "./appConstants";
 import {toast} from "react-toastify";
 import i18n from "../i18n";
 import {store} from "app";
@@ -17,7 +16,7 @@ export default async (method, path, data, headers) => {
             return response
         },
         async function (error) {
-            const logoutTry = error.config.url === `${BACKEND_URL}${'auth/logout'}`;
+            const logoutTry = error.config.url === `${process.env.REACT_APP_BACKEND_URL}${'auth/logout'}`;
 
             if (logoutTry) {
                 await indexedDBService.clearKeys();
@@ -35,7 +34,7 @@ export default async (method, path, data, headers) => {
 
     return transport({
         method,
-        url: `${BACKEND_URL}${path}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}${path}`,
         data,
         headers
     });
