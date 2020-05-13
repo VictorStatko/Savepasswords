@@ -21,7 +21,7 @@ class Header extends React.Component {
     };
 
     render() {
-        const {account, t} = this.props;
+        const {account, t, i18n} = this.props;
 
         const dropdownOptions = [{
             key: 'logout',
@@ -37,6 +37,10 @@ class Header extends React.Component {
                 <header className={styles.header}>
                     <div className={styles.menu}><Sidebar/></div>
                     <div className={styles.right}>
+                        <div className={styles.language}>
+                            <Icon name='uk' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('en')}}/>
+                            <Icon name='rus' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('ru')}}/>
+                        </div>
                         {ellipsisByCharactersCount(account.email, 30)}
                         <span className={styles.dropdownIconWrapper}>
                         <DropdownMenu options={dropdownOptions} handleChange={this.onDropdownValueSelected}/>

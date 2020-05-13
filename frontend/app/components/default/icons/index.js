@@ -14,6 +14,8 @@ import {ReactComponent as FolderIcon} from 'images/icons/folder.svg';
 import {ReactComponent as EditIcon} from 'images/icons/edit.svg';
 import {ReactComponent as ShareIcon} from 'images/icons/share.svg';
 import {ReactComponent as SettingIcon} from 'images/icons/settings.svg';
+import {ReactComponent as UKIcon} from 'images/icons/uk.svg';
+import {ReactComponent as RussiaIcon} from 'images/icons/russia.svg';
 import * as PropTypes from "prop-types";
 
 const Icon = ({name, styles, onClick}) => {
@@ -48,6 +50,10 @@ const Icon = ({name, styles, onClick}) => {
             return (<ShareIcon className={styles} onClick={onClick}/>);
         case 'settings':
             return (<SettingIcon className={styles} onClick={onClick}/>);
+        case 'uk':
+            return (<UKIcon className={styles} onClick={onClick}/>);
+        case 'rus':
+            return (<RussiaIcon className={styles} onClick={onClick}/>);
         default:
             return null;
     }

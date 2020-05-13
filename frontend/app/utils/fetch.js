@@ -12,6 +12,21 @@ export default async (method, path, data, headers) => {
         withCredentials: true
     });
 
+    transport.interceptors.request.use(
+        config => {
+            let i18n = localStorage.getItem('i18nextLng');
+            if (!i18n) {
+                i18n = 'en';
+            }
+            if (i18n) {
+                config.headers['Locale'] = i18n;
+            }
+            return config;
+        },
+        error => {
+            return Promise.reject(error.response)
+        });
+
     transport.interceptors.response.use((response) => {
             return response
         },

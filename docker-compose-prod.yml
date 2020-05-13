@@ -6,6 +6,7 @@ services:
     expose:
       - "8088"
     image: mamba4ka/savepasswords:configurationService-latest
+    restart: always
     networks:
       - back
 
@@ -13,6 +14,7 @@ services:
     expose:
       - "8761"
     image: mamba4ka/savepasswords:discoveryService-latest
+    restart: always
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
     networks:
@@ -22,6 +24,7 @@ services:
     expose:
       - "8887"
     image: mamba4ka/savepasswords:gatewayService-latest
+    restart: always
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
       - VIRTUAL_HOST=api.savepasswords.dev
@@ -35,6 +38,7 @@ services:
     expose:
       - "8888"
     image: mamba4ka/savepasswords:authorizationService-latest
+    restart: always
     environment:
       - KAFKA_CLIENT_USER=${KAFKA_CLIENT_USER}
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
@@ -44,30 +48,35 @@ services:
       - back
 
   auth-redis:
+    restart: always
     expose:
       - "6379"
     networks:
       - back
 
   auth-postgres:
+    restart: always
     expose:
       - "5432"
     networks:
       - back
 
   personal-accounts-postgres:
+    restart: always
     expose:
       - "5432"
     networks:
       - back
 
   personal-accounts-redis:
+    restart: always
     expose:
       - "6379"
     networks:
       - back
 
   personal-accounts-service:
+    restart: always
     expose:
       - "8890"
     image: mamba4ka/savepasswords:personalAccountsService-latest
@@ -80,12 +89,14 @@ services:
       - back
 
   email-redis:
+    restart: always
     expose:
       - "6379"
     networks:
       - back
 
   email-service:
+    restart: always
     expose:
       - "8891"
     image: mamba4ka/savepasswords:emailService-latest
@@ -99,6 +110,7 @@ services:
 
 
   zookeeper1:
+    restart: always
     expose:
       - "2181"
     environment:
@@ -109,6 +121,7 @@ services:
       - back
 
   kafka1:
+    restart: always
     expose:
       - "9092"
     networks:
@@ -129,6 +142,7 @@ services:
       - ${KAFKA1_TRUSTORE_VOLUME}
 
   frontend:
+    restart: always
     expose:
       - "80"
     image: mamba4ka/savepasswords:frontend-latest
@@ -141,6 +155,7 @@ services:
       - LETSENCRYPT_EMAIL=statkovit@gmail.com
 
   nginx-proxy:
+    restart: always
     image: jwilder/nginx-proxy:latest
     ports:
       - "80:80"
@@ -156,6 +171,7 @@ services:
       - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy:true
 
   nginx-letsencrypt:
+    restart: always
     image: jrcs/letsencrypt-nginx-proxy-companion
     networks:
       - reverse-proxy

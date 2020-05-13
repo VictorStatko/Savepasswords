@@ -4,6 +4,7 @@ import XHR from "i18next-xhr-backend";
 import { initReactI18next } from 'react-i18next';
 
 import translationEng from "locales/en/translation";
+import translationRu from "locales/ru/translation";
 
 i18n
     .use(XHR)
@@ -11,7 +12,7 @@ i18n
     .use(initReactI18next)
     .init({
         debug: true,
-        lng: "en",
+        lng: localStorage.getItem('i18nextLng') ? localStorage.getItem('i18nextLng'): 'en',
         fallbackLng: "en", // use en if detected lng is not available
 
         keySeparator: false, // we do not use keys in form messages.welcome
@@ -23,6 +24,9 @@ i18n
         resources: {
             en: {
                 translations: translationEng
+            },
+            ru: {
+                translations: translationRu
             },
         },
         // have a common namespace used around the full app

@@ -11,7 +11,7 @@ services:
       test: curl -sL -w "%{http_code}\\n" "${SPRING_CLOUD_CONFIG_URL}/discovery-service.yml" -o /dev/null | grep -q '200' && echo '1'
       interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 10
     environment:
       - SPRING_CLOUD_CONFIG_GIT_URL=${SPRING_CLOUD_CONFIG_GIT_URL}
       - SPRING_CLOUD_CONFIG_GIT_USERNAME=${SPRING_CLOUD_CONFIG_GIT_USERNAME}
@@ -70,7 +70,6 @@ services:
   auth-redis:
     image: redis:5.0.6
     command: redis-server --requirepass ${AUTH_SERVICE_REDIS_PASSWORD}
-    restart: always
     sysctls:
       net.core.somaxconn: '511'
     healthcheck:
@@ -83,7 +82,6 @@ services:
 
   auth-postgres:
     image: postgres:11.5
-    restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${AUTH_SERVICE_POSTGRES_USER} -d ${AUTH_SERVICE_POSTGRES_DB} -h auth-postgres -p 5432"]
       interval: 10s
@@ -98,7 +96,6 @@ services:
 
   personal-accounts-postgres:
     image: postgres:11.5
-    restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PERSONAL_ACCOUNTS_SERVICE_POSTGRES_USER} -d ${PERSONAL_ACCOUNTS_SERVICE_POSTGRES_DB} -h personal-accounts-postgres -p 5432"]
       interval: 10s
@@ -114,7 +111,6 @@ services:
   personal-accounts-redis:
     image: redis:5.0.6
     command: redis-server --requirepass ${PERSONAL_ACCOUNTS_SERVICE_REDIS_PASSWORD}
-    restart: always
     sysctls:
       net.core.somaxconn: '511'
     healthcheck:
@@ -153,7 +149,6 @@ services:
   email-redis:
     image: redis:5.0.6
     command: redis-server --requirepass ${EMAIL_SERVICE_REDIS_PASSWORD}
-    restart: always
     sysctls:
       net.core.somaxconn: '511'
     healthcheck:
@@ -186,7 +181,6 @@ services:
 
   zookeeper1:
     image: bitnami/zookeeper:3.6.1
-    restart: always
     healthcheck:
       test: ["CMD-SHELL", 'zkServer.sh status | grep -E "follower|leader|standalone"']
       interval: 10s

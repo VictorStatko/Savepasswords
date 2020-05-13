@@ -19,11 +19,10 @@
 "global.auth.sessionExpired": "Your session is expired. Please sign in again.",
 "global.badCredentials": "The sign in information is incorrect. Please recheck entered data.",
 "global.userDisabled": "This user is disabled. Please check your email to confirm registration.",
-"global.appName": "SYP Password Manager",
+"global.appName": "savepasswords.dev",
 "global.recheckData": "Please recheck entered data.",
 
 "signUp.title": "Sign up",
-"signUp.nameLabel": "Please enter your name for contact",
 "signUp.emailLabel": "Please enter your email",
 "signUp.passwordLabel": "Please enter your password",
 "signUp.passwordLabelRepeat": "Please repeat your password",
@@ -136,6 +135,4 @@
  "settings.account.deepRemoveConfirmation.question": "Are you sure you want to execute the complete deletion of your account from the system?",
  "settings.account.deepRemoveConfirmation.info": "All your data will be permanently deleted.",
  "settings.account.deepRemove.info": "Account was successfully removed."
-
-
 }
