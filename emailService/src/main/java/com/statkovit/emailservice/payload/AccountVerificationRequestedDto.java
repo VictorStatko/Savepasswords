@@ -12,6 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 public class AccountVerificationRequestedDto {
+    private String locale;
     private String email;
     private UUID uuid;
     private String verificationCode;

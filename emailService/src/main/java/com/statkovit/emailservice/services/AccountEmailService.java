@@ -19,13 +19,32 @@ public class AccountEmailService {
     private final CustomProperties customProperties;
 
     public void sendAccountVerificationEmail(AccountVerificationRequestedDto dto) {
+        String htmlTemplateLocation;
+        String subject;
+        //TODO replace text to messages and use separate files (messages.en and messages.ru)
+        switch (dto.getLocale()) {
+            case "en":
+                htmlTemplateLocation = "en/registrationConfirmation.html";
+                subject = "Registration confirmation";
+                break;
+            case "ru":
+                htmlTemplateLocation = "ru/registrationConfirmation.html";
+                subject = "Подтверждение регистрации";
+                break;
+            default:
+                log.warn("Correct locale is not provided (Verification email request for {}). Fallback to default.", dto.getEmail());
+                htmlTemplateLocation = "en/registrationConfirmation.html";
+                subject = "Registration confirmation";
+        }
+
         final Context context = new Context();
+
         context.setVariable("frontendUrl", customProperties.getFrontend().getUrl());
         context.setVariable("verificationCode", dto.getVerificationCode());
 
-        final String htmlContent = springTemplateEngine.process("registrationConfirmation.html", context);
+        final String htmlContent = springTemplateEngine.process(htmlTemplateLocation, context);
 
-        boolean result = emailHelper.sendEmail("Registration confirmation", dto.getEmail(), htmlContent);
+        boolean result = emailHelper.sendEmail(subject, dto.getEmail(), htmlContent);
 
         if (result) {
             log.debug("Successfully sent account verification email for {}.", dto.getEmail());

@@ -32,6 +32,7 @@ public final class WebUtils {
     private static final String X_HTTP_CLIENT_IP_HEADER = "X-Http-Client-Ip";
     private static final String DEVICE_ID_HEADER = "X-Device-Id";
     private static final String SYSTEM_INFO_HEADER = "X-System-Info";
+    private static final String LOCALE_HEADER = "Locale";
     private static final String UNKNOWN = "unknown";
 
 
@@ -65,6 +66,15 @@ public final class WebUtils {
     public static Optional<String> getDeviceId() {
         try {
             return Optional.ofNullable(getCurrentRequest().getHeader(DEVICE_ID_HEADER));
+        } catch (IllegalStateException ex) {
+            log.error(ex.getMessage(), ex);
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<String> getLocaleHeader() {
+        try {
+            return Optional.ofNullable(getCurrentRequest().getHeader(LOCALE_HEADER));
         } catch (IllegalStateException ex) {
             log.error(ex.getMessage(), ex);
             return Optional.empty();

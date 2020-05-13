@@ -2,6 +2,7 @@ package com.statkovit.authorizationservice.services;
 
 import com.statkolibraries.exceptions.exceptions.LocalizedException;
 import com.statkolibraries.utils.SecuredRandomStringGenerator;
+import com.statkovit.authorizationservice.constants.ServerConstants;
 import com.statkovit.authorizationservice.entities.Account;
 import com.statkovit.authorizationservice.events.AccountRemovedEvent;
 import com.statkovit.authorizationservice.events.AccountVerificationRequestedEvent;
@@ -11,6 +12,7 @@ import com.statkovit.authorizationservice.payload.AccountDto;
 import com.statkovit.authorizationservice.properties.CustomProperties;
 import com.statkovit.authorizationservice.repositories.AccountRepository;
 import com.statkovit.authorizationservice.services.RegistrationConfirmationVerificationService.VerificationCode;
+import com.statkovit.authorizationservice.utils.WebUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -77,9 +79,12 @@ public class AccountService {
 
         VerificationCode verificationCode = registrationConfirmationVerificationService.createNewVerificationCode(account.getId());
 
+        String locale = WebUtils.getLocaleHeader().orElse(ServerConstants.DEFAULT_LOCALE);
+
         applicationEventPublisher.publishEvent(
                 new AccountVerificationRequestedEvent(
-                        account.getEmail(), account.getUuid(), verificationCode.getVerificationCode(), verificationCode.getExpirationInHours()
+                        locale, account.getEmail(), account.getUuid(),
+                        verificationCode.getVerificationCode(), verificationCode.getExpirationInHours()
                 )
         );
 
@@ -103,11 +108,14 @@ public class AccountService {
 
     @Transactional
     public void resendVerificationCode(Account account) {
+        String locale = WebUtils.getLocaleHeader().orElse(ServerConstants.DEFAULT_LOCALE);
+
         VerificationCode verificationCode = registrationConfirmationVerificationService.createNewVerificationCode(account.getId());
 
         applicationEventPublisher.publishEvent(
                 new AccountVerificationRequestedEvent(
-                        account.getEmail(), account.getUuid(), verificationCode.getVerificationCode(), verificationCode.getExpirationInHours()
+                        locale, account.getEmail(), account.getUuid(),
+                        verificationCode.getVerificationCode(), verificationCode.getExpirationInHours()
                 )
         );
     }

@@ -5,4 +5,6 @@ public final class ServerConstants {
     public static final String INTERNAL_API_ROUTE = "/internal-api/v1/";
 
     public static final String AUTH_API_ROUTE = API_ROUTE + "auth/";
+
+    public static final String DEFAULT_LOCALE = "en";
 }

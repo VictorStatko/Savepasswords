@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class AccountVerificationRequestedEvent {
+    private String locale;
     private String email;
     private UUID uuid;
     private String verificationCode;
