@@ -41,7 +41,12 @@ class Header extends React.Component {
                             <Icon name='uk' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('en')}}/>
                             <Icon name='rus' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('ru')}}/>
                         </div>
-                        {ellipsisByCharactersCount(account.email, 30)}
+                        <span className="d-sm-none">
+                            {ellipsisByCharactersCount(account.email, 15)}
+                        </span>
+                        <span className="d-none d-sm-inline">
+                            {account.email}
+                        </span>
                         <span className={styles.dropdownIconWrapper}>
                         <DropdownMenu options={dropdownOptions} handleChange={this.onDropdownValueSelected}/>
                     </span>
