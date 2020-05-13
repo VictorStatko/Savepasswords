@@ -23,7 +23,7 @@ don't forget in compose debug config set=true "--build/force build images
 For testing use mvn test (only unit) or mvn verify (unit and integration). Currently tests only in personalAccountService.
 
 **Production:**
-sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --build 
+sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --detach --force-recreate --no-deps --build
 
 **Restart single service (example):**
 docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --detach --force-recreate --no-deps --build email-service
