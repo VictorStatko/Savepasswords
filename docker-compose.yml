@@ -7,7 +7,8 @@ services:
       kafka1:
         condition: service_started
     healthcheck:
-      test: curl ${SPRING_CLOUD_CONFIG_URL} || echo 1
+      #curl any config for testing
+      test: curl -sL -w "%{http_code}\\n" "${SPRING_CLOUD_CONFIG_URL}/discovery-service.yml" -o /dev/null | grep -q '200' && echo '1'
       interval: 10s
       timeout: 10s
       retries: 5
