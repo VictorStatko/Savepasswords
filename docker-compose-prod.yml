@@ -149,7 +149,7 @@ services:
       - reverse-proxy
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - savepasswords/certs:/etc/nginx/certs:ro
+      - savepasswords/sslCerts:/etc/nginx/certs:ro
       - /etc/nginx/vhost.d
       - /usr/share/nginx/html
     labels:
@@ -162,7 +162,7 @@ services:
     volumes_from:
       - nginx-proxy
     volumes:
-      - savepasswords/certs:/etc/nginx/certs:rw
+      - savepasswords/sslCerts:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
       -
 networks:
