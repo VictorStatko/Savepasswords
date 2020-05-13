@@ -153,7 +153,7 @@ services:
       - /etc/nginx/vhost.d
       - /usr/share/nginx/html
     labels:
-      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy:true
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy:"true"
 
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
