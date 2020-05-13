@@ -6,6 +6,8 @@ services:
     expose:
       - "8088"
     image: mamba4ka/savepasswords:configurationService-latest
+    networks:
+      - back
 
   discovery-service:
     expose:
@@ -13,13 +15,21 @@ services:
     image: mamba4ka/savepasswords:discoveryService-latest
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
+    networks:
+      - back
 
   gateway-service:
-    ports:
-      - "8887:8887"
+    expose:
+      - "8887"
     image: mamba4ka/savepasswords:gatewayService-latest
     environment:
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
+      - VIRTUAL_HOST=api.savepasswords.dev
+      - LETSENCRYPT_HOST=api.savepasswords.dev
+      - LETSENCRYPT_EMAIL=statkovit@gmail.com
+    networks:
+      - back
+      - reverse-proxy
 
   authorization-service:
     expose:
@@ -30,22 +40,32 @@ services:
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
       - KAFKA_PASSWORD=${KAFKA_CERTIFICATE_PASSWORD}
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
+    networks:
+      - back
 
   auth-redis:
     expose:
       - "6379"
+    networks:
+      - back
 
   auth-postgres:
     expose:
       - "5432"
+    networks:
+      - back
 
   personal-accounts-postgres:
     expose:
       - "5432"
+    networks:
+      - back
 
   personal-accounts-redis:
     expose:
       - "6379"
+    networks:
+      - back
 
   personal-accounts-service:
     expose:
@@ -56,10 +76,14 @@ services:
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
       - KAFKA_PASSWORD=${KAFKA_CERTIFICATE_PASSWORD}
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
+    networks:
+      - back
 
   email-redis:
     expose:
       - "6379"
+    networks:
+      - back
 
   email-service:
     expose:
@@ -70,6 +94,8 @@ services:
       - KAFKA_CLIENT_PASSWORD=${KAFKA_CLIENT_PASSWORD}
       - KAFKA_PASSWORD=${KAFKA_CERTIFICATE_PASSWORD}
       - LOGZIO_TOKEN=${LOGZIO_TOKEN}
+    networks:
+      - back
 
 
   zookeeper1:
@@ -79,10 +105,14 @@ services:
       - ZOO_ENABLE_AUTH=yes
       - ZOO_SERVER_USERS=${ZOOKEPEER_USER}
       - ZOO_SERVER_PASSWORDS=${ZOOKEPEER_PASSWORD}
+    networks:
+      - back
 
   kafka1:
     expose:
       - "9092"
+    networks:
+      - back
     environment:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_SSL:SASL_SSL
       - KAFKA_CFG_LISTENERS=SASL_SSL://:9092
@@ -99,6 +129,45 @@ services:
       - ${KAFKA1_TRUSTORE_VOLUME}
 
   frontend:
-    ports:
-      - "1337:80"
+    expose:
+      - "80"
     image: mamba4ka/savepasswords:frontend-latest
+    networks:
+      - back
+      - reverse-proxy
+    environment:
+      - VIRTUAL_HOST=savepasswords.dev
+      - LETSENCRYPT_HOST=savepasswords.dev
+      - LETSENCRYPT_EMAIL=statkovit@gmail.com
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - reverse-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - savepasswords/certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy:true
+
+  nginx-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    networks:
+      - reverse-proxy
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - savepasswords/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      -
+networks:
+  reverse-proxy:
+    external:
+      name: reverse-proxy
+  back:
+    driver: bridge
