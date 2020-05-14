@@ -16,10 +16,8 @@ class GuestPage extends React.Component {
                 <div className={styles.formContainer}>
                     <Row className={styles.row}>
                         <Col lg={5} className={styles.leftColumn}>
-                            <h1>{t('global.appName')}
-                                <Icon name='uk' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('en')}}/>
-                                <Icon name='rus' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('ru')}}/>
-                            </h1>
+                            <Icon name='uk' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('en')}}/>
+                            <Icon name='rus' styles={styles.languageIcon} onClick={async () => {await i18n.changeLanguage('ru')}}/>
                             <hr/>
                             <img src={logo} className={styles.logo} alt="logo"/>
                         </Col>

@@ -22,8 +22,14 @@
 
   .logo {
     max-width: 250px;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 991px) {
+
+    .logo {
+      margin-bottom: 5.5rem;
+    }
   }
 
   .formContainer {

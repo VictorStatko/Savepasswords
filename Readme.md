@@ -23,6 +23,7 @@ don't forget in compose debug config set=true "--build/force build images
 For testing use mvn test (only unit) or mvn verify (unit and integration). Currently tests only in personalAccountService.
 
 **Production:**
+pass show docker-credential-helpers/docker-pass-initialized-check
 start: sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --detach --force-recreate --no-deps --build
 pull: docker-compose -f docker-compose.yml -f docker-compose-prod.yml pull
 stop: sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml stop
