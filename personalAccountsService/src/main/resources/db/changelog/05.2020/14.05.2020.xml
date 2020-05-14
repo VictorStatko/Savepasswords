@@ -3,7 +3,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <includeAll path="classpath:db/changelog/03.2020" relativeToChangelogFile="false"/>
-    <includeAll path="classpath:db/changelog/04.2020" relativeToChangelogFile="false"/>
-    <includeAll path="classpath:db/changelog/05.2020" relativeToChangelogFile="false"/>
+    <changeSet author="Victor Statko" id="2020-04-25_18-00" runAlways="false">
+        <addColumn tableName="personal_account">
+            <column name="encrypted_aes_client_key" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

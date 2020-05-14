@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
@@ -43,6 +44,9 @@ public class PersonalAccountDto {
     private String description;
 
     private String encryptionPublicKey;
+
+    @NotEmpty
+    private String encryptedAesClientKey;
 
     private String ownerEmail;
 

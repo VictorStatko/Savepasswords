@@ -87,6 +87,7 @@ class PersonalAccountConverterUTest {
                 .username("username")
                 .password("password")
                 .description("description")
+                .encryptedAesClientKey("aesKey")
                 .build();
 
         personalAccountConverter.toEntity(dtoForUpdate, accountForUpdate);
@@ -96,6 +97,7 @@ class PersonalAccountConverterUTest {
         Assertions.assertEquals("name", accountForUpdate.getName());
         Assertions.assertEquals("username", accountForUpdate.getUsername());
         Assertions.assertEquals("password", accountForUpdate.getPassword());
+        Assertions.assertEquals("aesKey", accountForUpdate.getEncryptedAesClientKey());
         Assertions.assertEquals("description", accountForUpdate.getDescription());
     }
 
@@ -161,6 +163,7 @@ class PersonalAccountConverterUTest {
                 .url("url")
                 .name("name")
                 .description("description")
+                .encryptedAesClientKey("encryptedKey")
                 .duplicatedAccountEntity(AccountData.builder().publicKey("publicKey").build())
                 .folder(PersonalAccountFolder.builder().uuid(UUID_2).build())
                 .build();
@@ -177,6 +180,7 @@ class PersonalAccountConverterUTest {
         assertEquals(account.getDescription(), dto.getDescription());
         assertEquals(account.getFolder().getUuid(), dto.getFolderUuid());
         assertEquals(account.getDuplicatedAccountEntity().getPublicKey(), dto.getEncryptionPublicKey());
+        assertEquals(account.getEncryptedAesClientKey(), "encryptedKey");
     }
 
 }

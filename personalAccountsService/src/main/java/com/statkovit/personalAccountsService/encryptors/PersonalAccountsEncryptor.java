@@ -34,6 +34,20 @@ public class PersonalAccountsEncryptor {
                         .map(username -> aesUtils.encrypt(username, salt))
                         .orElse(null)
         );
+
+        account.setDescription(
+                Optional.ofNullable(account.getDescription())
+                        .filter(StringUtils::isNotBlank)
+                        .map(description -> aesUtils.encrypt(description, salt))
+                        .orElse(null)
+        );
+
+        account.setEncryptedAesClientKey(
+                Optional.ofNullable(account.getEncryptedAesClientKey())
+                        .filter(StringUtils::isNotBlank)
+                        .map(key -> aesUtils.encrypt(key, salt))
+                        .orElse(null)
+        );
     }
 
     public void decryptFields(String salt, PersonalAccountDto dto) {
@@ -48,6 +62,20 @@ public class PersonalAccountsEncryptor {
                 Optional.ofNullable(dto.getPassword())
                         .filter(StringUtils::isNotBlank)
                         .map(password -> aesUtils.decrypt(password, salt))
+                        .orElse(null)
+        );
+
+        dto.setDescription(
+                Optional.ofNullable(dto.getDescription())
+                        .filter(StringUtils::isNotBlank)
+                        .map(description -> aesUtils.decrypt(description, salt))
+                        .orElse(null)
+        );
+
+        dto.setEncryptedAesClientKey(
+                Optional.ofNullable(dto.getEncryptedAesClientKey())
+                        .filter(StringUtils::isNotBlank)
+                        .map(key -> aesUtils.decrypt(key, salt))
                         .orElse(null)
         );
     }

@@ -13,7 +13,7 @@ import {isEmpty, isNotEmpty} from "utils/stringUtils";
 import {isStringMaxLengthValid} from "utils/validationUtils";
 import {toast} from "react-toastify";
 import {IndexedDBService} from "indexedDB";
-import {rsaDecrypt} from "utils/encryptionUtils";
+import {rsaDecrypt, symmetricDecryptUsingStringKey} from "utils/encryptionUtils";
 import {personalAccountFoldersOperations} from "ducks/personalAccountFolders";
 import {isObjectModified} from "utils/objectUtils";
 
@@ -37,11 +37,16 @@ class AccountModal extends React.Component {
 
         if (this.props.account) {
             const privateKey = await indexedDBService.loadPrivateKey();
+            const aesKey = await rsaDecrypt(privateKey, account.encryptedAesClientKey);
+
             if (isNotEmpty(account.username)) {
-                account.username = await rsaDecrypt(privateKey, account.username);
+                account.username = await symmetricDecryptUsingStringKey(aesKey, account.username);
             }
             if (isNotEmpty(account.password)) {
-                account.password = await rsaDecrypt(privateKey, account.password);
+                account.password = await symmetricDecryptUsingStringKey(aesKey, account.password);
+            }
+            if (isNotEmpty(account.description)) {
+                account.description = await symmetricDecryptUsingStringKey(aesKey, account.description);
             }
         } else {
             account = {};

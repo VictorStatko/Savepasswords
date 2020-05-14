@@ -89,7 +89,7 @@ function decodeAb(base64) {
     return arrayBuffer;
 }
 
-function arrayBufferToString (arrayBuffer) {
+function arrayBufferToString(arrayBuffer) {
     if (typeof arrayBuffer !== 'object') {
         throw new TypeError('Expected input to be an ArrayBuffer Object')
     }
@@ -748,7 +748,7 @@ export async function rsaEncrypt(publicKey, data) {
     return arrayBufferToBase64(encrypted);
 }
 
-export async function rsaDecrypt (privateKey, encryptedData) {
+export async function rsaDecrypt(privateKey, encryptedData) {
     if (Object.prototype.toString.call(privateKey) !== '[object CryptoKey]' && privateKey.type !== 'private') {
         throw new TypeError('Expected input of privateKey to be a CryptoKey of type private')
     }
@@ -763,6 +763,66 @@ export async function rsaDecrypt (privateKey, encryptedData) {
         },
         privateKey,
         base64ToArrayBuffer(encryptedData)
+    );
+
+    return arrayBufferToString(decrypted);
+}
+
+export async function symmetricEncryptUsingStringKey(stringKey, data) {
+    if (typeof stringKey !== 'string') {
+        throw new TypeError('Expected input of key to be a string')
+    }
+
+    if (typeof data !== 'string') {
+        throw new TypeError('Expected input of data to be an String')
+    }
+
+    const arrayBuffer = stringToArrayBuffer(data);
+    const cryptoKey = await cryptoApi.importKey("raw", stringToArrayBuffer(stringKey), 'AES-GCM', false, ["encrypt"]);
+
+    const ivAb = cryptoLib.getRandomValues(new Uint8Array(12))
+
+    const encrypted = await cryptoApi.encrypt(
+        {
+            name: 'AES-GCM',
+            iv: ivAb,
+            tagLength: 128
+        },
+        cryptoKey,
+        arrayBuffer
+    );
+
+    const ivB64 = arrayBufferToBase64(ivAb)
+    const encryptedB64 = arrayBufferToBase64(encrypted)
+
+    return ivB64 + encryptedB64;
+}
+
+
+export async function symmetricDecryptUsingStringKey(stringKey, encryptedData) {
+    if (typeof stringKey !== 'string') {
+        throw new TypeError('Expected input of key to be a string')
+    }
+
+    if (typeof encryptedData !== 'string') {
+        throw new TypeError('Expected input of encryptedData to be a String')
+    }
+
+    const ivB64 = encryptedData.substring(0, 16)
+    const encryptedB64 = encryptedData.substring(16)
+    const ivAb = base64ToArrayBuffer(ivB64);
+    const encryptedAb = base64ToArrayBuffer(encryptedB64);
+
+    const cryptoKey = await cryptoApi.importKey("raw", stringToArrayBuffer(stringKey), 'AES-GCM', false, ["decrypt"]);
+
+    const decrypted =  await cryptoApi.decrypt(
+        {
+            name: 'AES-GCM',
+            iv: ivAb,
+            tagLength: 128
+        },
+        cryptoKey,
+        encryptedAb
     );
 
     return arrayBufferToString(decrypted);

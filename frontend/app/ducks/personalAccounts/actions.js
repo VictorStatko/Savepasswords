@@ -8,6 +8,8 @@ import {IndexedDBService} from "indexedDB";
 import {folderAccountsCountDecreased, folderAccountsCountIncreased} from "../personalAccountFolders/actions";
 import {progressFinished, progressStarted} from "ducks/progressBar/actions";
 import {sharingAccountsCountIncreased, sharingAccountsCountUpdated} from "../personalAccountsSharings/actions";
+import cryptoRandomString from "crypto-random-string";
+import {symmetricEncryptUsingStringKey} from "../../utils/encryptionUtils";
 
 const indexedDBService = IndexedDBService.getService();
 
@@ -52,14 +54,23 @@ export const createPersonalAccount = (account, inSelectedFolder) => async dispat
     try {
         dispatch(progressStarted());
         const publicKey = await indexedDBService.loadPublicKey();
+        const aesKey = cryptoRandomString({length: 32});
+
+        console.log((new TextEncoder().encode(aesKey)).length);
 
         if (isNotEmpty(account.password)) {
-            account.password = await rsaEncrypt(publicKey, account.password);
+            account.password = await symmetricEncryptUsingStringKey(aesKey, account.password);
         }
 
         if (isNotEmpty(account.username)) {
-            account.username = await rsaEncrypt(publicKey, account.username);
+            account.username = await symmetricEncryptUsingStringKey(aesKey, account.username);
         }
+
+        if (isNotEmpty(account.description)) {
+            account.description = await symmetricEncryptUsingStringKey(aesKey, account.description);
+        }
+
+        account.encryptedAesClientKey = await rsaEncrypt(publicKey, aesKey);
 
         const response = await fetch(POST, "personal-accounts-management/accounts", account);
         const newAccount = response.data;
@@ -81,14 +92,22 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
         const publicKey = await indexedDBService.loadPublicKey();
         const newPasswordDecrypted = newAccount.password;
         const newUsernameDecrypted = newAccount.username;
+        const newDescriptionDecrypted = newAccount.description;
+        const aesKey = cryptoRandomString({length: 32})
 
         if (isNotEmpty(newAccount.password)) {
-            newAccount.password = await rsaEncrypt(publicKey, newPasswordDecrypted);
+            newAccount.password = await symmetricEncryptUsingStringKey(aesKey, newPasswordDecrypted);
         }
 
         if (isNotEmpty(newAccount.username)) {
-            newAccount.username = await rsaEncrypt(publicKey, newUsernameDecrypted);
+            newAccount.username = await symmetricEncryptUsingStringKey(aesKey, newUsernameDecrypted);
         }
+
+        if (isNotEmpty(newAccount.description)) {
+            newAccount.description = await symmetricEncryptUsingStringKey(aesKey, newDescriptionDecrypted);
+        }
+
+        newAccount.encryptedAesClientKey = await rsaEncrypt(publicKey, aesKey);
 
         if (newAccount.sharedAccounts && newAccount.sharedAccounts.length > 0) {
 
@@ -109,8 +128,13 @@ export const updatePersonalAccount = (newAccount, oldAccount) => async dispatch 
                     }
                 );
 
-                sharedAccount.password = await rsaEncrypt(accountPublicKey, newPasswordDecrypted);
-                sharedAccount.username = await rsaEncrypt(accountPublicKey, newUsernameDecrypted);
+                const accountAesKey = cryptoRandomString({length: 32})
+
+                sharedAccount.password = await symmetricEncryptUsingStringKey(accountAesKey, newPasswordDecrypted);
+                sharedAccount.username = await symmetricEncryptUsingStringKey(accountAesKey, newUsernameDecrypted);
+                sharedAccount.description = await symmetricEncryptUsingStringKey(accountAesKey, newDescriptionDecrypted);
+
+                sharedAccount.encryptedAesClientKey = await rsaEncrypt(accountPublicKey, accountAesKey);
             }
         }
 
@@ -193,13 +217,21 @@ export const sharePersonalAccount = (parentAccount, emailToShare) => async dispa
             }
         );
 
+        const accountAesKey = cryptoRandomString({length: 32})
+
         if (isNotEmpty(parentAccount.password)) {
-            parentAccount.password = await rsaEncrypt(publicKey, parentAccount.password);
+            parentAccount.password = await symmetricEncryptUsingStringKey(accountAesKey, parentAccount.password);
         }
 
         if (isNotEmpty(parentAccount.username)) {
-            parentAccount.username = await rsaEncrypt(publicKey, parentAccount.username);
+            parentAccount.username = await symmetricEncryptUsingStringKey(accountAesKey, parentAccount.username);
         }
+
+        if (isNotEmpty(parentAccount.description)) {
+            parentAccount.description = await symmetricEncryptUsingStringKey(accountAesKey, parentAccount.description);
+        }
+
+        parentAccount.encryptedAesClientKey = await rsaEncrypt(publicKey, accountAesKey);
 
         const response = await fetch(POST, `personal-accounts-management/accounts?type=shared&fromPersonalAccountUuid=${parentUuid}&toUserAccountUuid=${accountDataResponse.data.entityUuid}`, parentAccount);
         const newSharedAccount = response.data;

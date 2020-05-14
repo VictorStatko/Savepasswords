@@ -17,10 +17,10 @@ public final class PersonalAccountDomainHelper {
     }
 
     public static PersonalAccountDto.PersonalAccountDtoBuilder<?, ?> prePopulatedValidAccountDtoBuilder() {
-        return PersonalAccountDto.builder().url(NN);
+        return PersonalAccountDto.builder().url(NN).encryptedAesClientKey("key");
     }
 
     public static PersonalAccount.PersonalAccountBuilder<?, ?> prePopulatedValidAccountBuilder() {
-        return PersonalAccount.builder().accountEntityId(DEFAULT_ID).url(NN).fieldsEncryptionSalt(NN);
+        return PersonalAccount.builder().accountEntityId(DEFAULT_ID).url(NN).fieldsEncryptionSalt(NN).encryptedAesClientKey("key");
     }
 }

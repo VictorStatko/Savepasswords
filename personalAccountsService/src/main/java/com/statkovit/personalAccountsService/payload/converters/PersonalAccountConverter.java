@@ -26,6 +26,7 @@ public final class PersonalAccountConverter {
         personalAccount.setUsername(personalAccountDto.getUsername());
         personalAccount.setPassword(personalAccountDto.getPassword());
         personalAccount.setDescription(personalAccountDto.getDescription());
+        personalAccount.setEncryptedAesClientKey(personalAccountDto.getEncryptedAesClientKey());
 
         personalAccountsEncryptor.encryptFields(personalAccount);
 
@@ -59,6 +60,7 @@ public final class PersonalAccountConverter {
         dto.setPassword(account.getPassword());
         dto.setUrl(account.getUrl());
         dto.setEncryptionPublicKey(account.getDuplicatedAccountEntity().getPublicKey());
+        dto.setEncryptedAesClientKey(account.getEncryptedAesClientKey());
         dto.setOwnerEmail(account.getDuplicatedAccountEntity().getEmail());
         dto.setSharedAccounts(
                 account.getSharedAccounts().stream().map(this::toDto).collect(Collectors.toList())

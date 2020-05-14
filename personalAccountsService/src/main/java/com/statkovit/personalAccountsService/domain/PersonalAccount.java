@@ -45,6 +45,10 @@ public class PersonalAccount extends BaseAccountEntity {
     @Column(name = "fields_encryption_salt")
     private String fieldsEncryptionSalt;
 
+    @NotNull
+    @Column(name = "encrypted_aes_client_key")
+    private String encryptedAesClientKey;
+
     @ManyToOne
     @JoinColumn(name = "folder_id")
     private PersonalAccountFolder folder;

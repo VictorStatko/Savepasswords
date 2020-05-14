@@ -11,7 +11,7 @@ import TextInput from "components/default/inputs/TextInput";
 import {isEmpty, isNotEmpty} from "utils/stringUtils";
 import {isEmailValid, isStringMaxLengthValid, MAX_LENGTH_EMAIL} from "utils/validationUtils";
 import {personalAccountsOperations} from "ducks/personalAccounts";
-import {rsaDecrypt} from "utils/encryptionUtils";
+import {rsaDecrypt, symmetricDecryptUsingStringKey} from "utils/encryptionUtils";
 import {IndexedDBService} from "indexedDB";
 import {toast} from "react-toastify";
 import {Spinner} from "components/default/spinner/Spinner";
@@ -30,11 +30,16 @@ class AccountSharingModal extends React.Component {
     componentDidMount = async () => {
         let account = {...this.props.account};
         const privateKey = await indexedDBService.loadPrivateKey();
+        const aesKey = await rsaDecrypt(privateKey, account.encryptedAesClientKey);
+
         if (isNotEmpty(account.username)) {
-            account.username = await rsaDecrypt(privateKey, account.username);
+            account.username = await symmetricDecryptUsingStringKey(aesKey, account.username);
         }
         if (isNotEmpty(account.password)) {
-            account.password = await rsaDecrypt(privateKey, account.password);
+            account.password = await symmetricDecryptUsingStringKey(aesKey, account.password);
+        }
+        if (isNotEmpty(account.description)) {
+            account.description = await symmetricDecryptUsingStringKey(aesKey, account.description);
         }
 
         this.setState({account: account});
