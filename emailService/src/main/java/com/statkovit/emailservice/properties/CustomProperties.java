@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 public class CustomProperties {
 
     private Kafka kafka;
-    private Aws aws;
-    private Email email;
     private Frontend frontend;
 
     @Getter
@@ -32,19 +30,6 @@ public class CustomProperties {
         public static final class Producer {
             private String transactionIdPrefix;
         }
-    }
-
-    @Getter
-    @Setter
-    public static final class Aws {
-        private String accessKey;
-        private String secretKey;
-    }
-
-    @Getter
-    @Setter
-    public static final class Email {
-        private String from;
     }
 
     @Getter

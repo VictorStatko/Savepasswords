@@ -14,6 +14,13 @@ export function reverseString(str) {
     return str.split("").reverse().join("");
 }
 
+export function addhttp(url) {
+    if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
+        url = "http://" + url;
+    }
+    return url;
+}
+
 export function ellipsisByCharactersCount(str, charactersCount) {
     if (!str || !charactersCount) {
         return "";

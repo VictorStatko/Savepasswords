@@ -13,6 +13,7 @@ public class SpringProperties {
 
     private Redis redis;
     private Profiles profiles;
+    private Mail mail;
 
     @Getter
     @Setter
@@ -26,6 +27,12 @@ public class SpringProperties {
     @Setter
     public static final class Profiles {
         private String active;
+    }
+
+    @Getter
+    @Setter
+    public static final class Mail {
+        private String username;
     }
 
 }

@@ -12,6 +12,7 @@ import {personalAccountsOperations} from "ducks/personalAccounts";
 import {compose} from "redux";
 import AccountModal from "../AccountModal";
 import AccountSharingModal from "../AccountSharingModal";
+import {addhttp} from "../../../../utils/stringUtils";
 
 class AccountCard extends React.Component {
     state = {};
@@ -51,6 +52,7 @@ class AccountCard extends React.Component {
         const {deleteModal, dataModal, shareModal} = this.state;
         const {sharedFromUuid} = this.props;
         const {name} = this.props.account;
+        const redirectUrl = isEmpty(this.props.account.url) ? null : addhttp(this.props.account.url);
         let {url} = this.props.account;
         url = isEmpty(url) ? null : removeProtocols(url);
 
@@ -64,7 +66,7 @@ class AccountCard extends React.Component {
                 <div className={styles.card}>
                     <Row className={styles.imageRow}>
                         <Col xs={4}>
-                            <a href={`//${url}`} target="_blank" className={hrefClass} onClick={this.onHrefClick}>
+                            <a href={redirectUrl} target="_blank" className={hrefClass} onClick={this.onHrefClick}>
                                 <img className={styles.image} onDragStart={this.preventDragHandler}
                                      src={imageSrc} onError={e => this.onImageNotFound(e)}/>
                             </a>
