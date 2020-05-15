@@ -116,8 +116,20 @@ function filterAccounts(accounts, search) {
 
     const trimSearch = search.trim();
     return newAccounts.filter(account => {
-        return (!isEmpty(account.name) && account.name.includes(trimSearch))
-            || (!isEmpty(account.url) && account.url.includes(trimSearch))
+        const lowerSearch = trimSearch.toLowerCase();
+        if (!isEmpty(account.name)) {
+            const lowerName = account.name.toLowerCase();
+            if (lowerName.includes(lowerSearch)) {
+                return true;
+            }
+        }
+        if (!isEmpty(account.url)) {
+            const lowerUrl = account.url.toLowerCase();
+            if (lowerUrl.includes(lowerSearch)) {
+                return true;
+            }
+        }
+        return false;
     });
 }
 
