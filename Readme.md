@@ -1,4 +1,4 @@
-Selfhosted password manager with client side encryption, implemented with microservice architecture - created for educational purposes.
+Selfhosted password manager with client side encryption. Implemented with microservice architecture. Created for educational purposes.
 
 **Requirements:**  
 Docker-ce 18.09.7  
