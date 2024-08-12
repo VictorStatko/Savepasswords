@@ -1,3 +1,5 @@
+Selfhosted password manager with client side encryption, implemented with microservice architecture - created for educational purposes.
+
 **Requirements:**  
 Docker-ce 18.09.7  
 Browser with Web Crypto API and IndexedDB support  
